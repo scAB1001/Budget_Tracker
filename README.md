@@ -10,8 +10,8 @@ You will create a simple budget tracker web application using Flask with a SQLAl
 - See their progress towards this goal
 - Edit or delete their goal.
 
-** You are not expected to add a logic or authentication system. **
-You should ensure that you validate any data entered by the user, both client- and server-side where appropriate.
+* You are not expected to add a logic or authentication system.
+* You should ensure that you validate any data entered by the user, both client- and server-side where appropriate.
 
 Your website should have a professional layout which is easy to navigate and complies with the WCAG standards for accessibility. You can use open source CSS libraries such as Bootstrap, but should not rely on them for all of your styling – add some additional CSS to make your site stand out. You must develop your layout yourself using HTML, CSS and JavaScript if appropriate. You cannot use any software or services to create your layout for you. All JavaScript and CSS should be in its own file(s) in the ‘static’ folder.
 
