@@ -30,6 +30,5 @@ def calculator():
 
 @app.route('/calc', methods=['GET', 'POST'])
 def home():
-    #form = CalculatorForm()
-    #home={'description':'Welcome to this application. Please select Calculator to calculate two numbers.'}
+    home={'description':'Welcome to this application. Please select Calculator to calculate two numbers.'}
     return render_template('home.html', title='Home', home=home)
