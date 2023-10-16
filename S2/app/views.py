@@ -2,7 +2,7 @@ from flask import render_template, flash
 from app import app
 from .forms import CalculatorForm
 
-@app.route('/')
+@app.route('/sam')
 def index():
     user = {'name': 'Sam Wilson'}
     return render_template('index.html',
@@ -32,3 +32,19 @@ def calculator():
 def home():
     home={'description':'Welcome to this application. Please select Calculator to calculate two numbers.'}
     return render_template('home.html', title='Home', home=home)
+
+
+
+@app.route('/', methods=['GET', 'POST'])
+def home_page():
+    home={'description':'Welcome to this application. Please select Calculator to calculate two numbers.'}
+    return render_template('zhomepage.html', title='Homepage', home=home)
+
+@app.route('/Incomes_Expenditures')
+def incomes_expenditures():
+    return render_template('zie.html', title='Incomes | Expenditures')
+    
+@app.route('/Goals')
+def goals():
+    return render_template('zgoals.html', title='Goals')
+    
