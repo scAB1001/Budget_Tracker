@@ -1,8 +1,25 @@
 from app import db
 
-class Property(db.Model):
+class Income(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    address = db.Column(db.String(500), index=True, unique=True)
-    start_date = db.Column(db.DateTime)
-    duration = db.Column(db.Integer)
-    rent = db.Column(db.Float)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    amount = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f"Income('{self.name}', {self.amount})"
+
+class Expense(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    amount = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f"Expense('{self.name}', {self.amount})"
+
+class Goal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=True)
+    value = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f"Goal('{self.name}', {self.value})"

@@ -3,103 +3,147 @@
 <html>
   <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <!-- Bootstrap CSS -->
-    <div class="bootstrap-stylesheet">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-            crossorigin="anonymous" />
-    </div>
-    
-    <style>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <div class="style">
+      <!-- Bootstrap CSS -->
+      <div class="bootstrap-stylesheet">
+        <link
+          rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+          crossorigin="anonymous"
+        />
+        <link
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+          crossorigin="anonymous"
+        />
+      </div>
+
+      <!-- Bootstrap JavaScript -->
+      <div class="bootstrap-javascript">
+        <script
+          src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+          integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+          crossorigin="anonymous"
+        ></script>
+        <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+          integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+          crossorigin="anonymous"
+        ></script>
+        <script
+          src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+          integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+          crossorigin="anonymous"
+        ></script>
+      </div>
+
+      <!-- Regular Styling -->
+      <style>
         /* Override Bootstrap's .bg-primary class */
         .bg-primary {
-            position: absolute;
-            top: 14px;
-            right: 20px;
-            background-color: #1e74cb !important;
-            /* Dark blue color */
+          position: absolute;
+          top: 14px;
+          right: 20px;
+          background-color: #116ac3 !important;
+          /* Dark blue color */
         }
-    
+
+        body {
+          background-color: #e8cfed !important;
+        }
+
         /* Additional styles for focus and hover */
         .bg-primary:focus,
-        .bg-primary:hover,
-        button.bg-primary:focus,
-        /* Darker shade for focus and hover */
-        button.bg-primary:hover {
-            background-color: #1d5897 !important;
+          .bg-primary:hover,
+          button.bg-primary:focus,
+          /* Darker shade for focus and hover */
+          button.bg-primary:hover {
+          background-color: #124d8c !important;
         }
-    </style>
-    
+      </style>
+    </div>
+
     {% if title %}
     <title>{{ title }}</title>
     {% else %}
     <title>No title specified</title>
     {% endif %}
   </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar">
-                <div class="navbar-nav">
-                    <a class="nav-item nav-link" href="/">Homepage</a>
-                    <a class="nav-item nav-link" href="/calculator">Calculator</a>
-                    <a class="nav-item nav-link" href="/incomeExpenditures">Incomes | Expenditures</a>
-                    <a class="nav-item nav-link" href="/Goals">Goals</a>
-                </div>
-            </div>
-        </nav>
-  
-    <!--<ul id="menu">
-        <li><a>Page 1</a></li>
-        <li><a>Page 2</a></li>
-        <li><a>Page 3</a></li>
-        <li><a>Page 4</a></li>
-    </ul>
 
-    <nav class="navbar navbar-expand-sm navbar-light bg-light">
-      <a class="navbar-brand" href="#">Navbar</a>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <button
         class="navbar-toggler"
         type="button"
         data-toggle="collapse"
-        data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
+        data-target="#navbar"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
+      <div class="collapse navbar-collapse" id="navbar">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" href="/calculator">Calculator</a>
+          <a class="nav-item nav-link" href="/">Homepage</a>
+          <!--Income-->
+          <div class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="incomesDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Incomes
+            </a>
+            <div class="dropdown-menu" aria-labelledby="incomesDropdown">
+              <a class="dropdown-item" href="/incomes">View All</a>
+              <a class="dropdown-item" href="/new_income">New Income</a>
+            </div>
+          </div>
+          <!--Expense-->
+          <div class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="expensesDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Expenses
+            </a>
+            <div class="dropdown-menu" aria-labelledby="expensesDropdown">
+              <a class="dropdown-item" href="/expenses">View All</a>
+              <a class="dropdown-item" href="/new_expense">New Expense</a>
+            </div>
+          </div>
+          <!--Goal-->
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="goalsDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Goals
+            </a>
+            <div class="dropdown-menu" aria-labelledby="goalsDropdown">
+              <a class="dropdown-item" href="/goals">View All</a>
+              <a class="dropdown-item" href="/new_goal">New Goal</a>
+            </div>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/"
-              >Home <span class="sr-only">(current)</span></a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/calculator">Calculator</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/Incomes_Expenditures"
-              >Incomes | Expenditures</a
-            >
-          </li>
-          <li class="nav-item"><a class="nav-link" href="/Goals">Goals</a></li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
-    </nav>-->
+    </nav>
 
     <div>{% block content %}{% endblock %}</div>
   </body>
