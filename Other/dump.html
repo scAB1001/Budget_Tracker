@@ -9,60 +9,33 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <!-- Bootstrap CSS -->
-    <div class="bootstrap-stylesheet">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-            crossorigin="anonymous" />
-    </div>
-    
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+      crossorigin="anonymous"
+    />
+
     <style>
-        /* Override Bootstrap's .bg-primary class */
-        .bg-primary {
-            position: absolute;
-            top: 14px;
-            right: 20px;
-            background-color: #1e74cb !important;
-            /* Dark blue color */
-        }
-    
-        /* Additional styles for focus and hover */
-        .bg-primary:focus,
-        .bg-primary:hover,
-        button.bg-primary:focus,
-        /* Darker shade for focus and hover */
-        button.bg-primary:hover {
-            background-color: #1d5897 !important;
-        }
+      ul#menu li {
+        display: inline;
+      }
     </style>
-    
+
     {% if title %}
     <title>{{ title }}</title>
     {% else %}
     <title>No title specified</title>
     {% endif %}
   </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar">
-                <div class="navbar-nav">
-                    <a class="nav-item nav-link" href="/">Homepage</a>
-                    <a class="nav-item nav-link" href="/calculator">Calculator</a>
-                    <a class="nav-item nav-link" href="/incomeExpenditures">Incomes | Expenditures</a>
-                    <a class="nav-item nav-link" href="/Goals">Goals</a>
-                </div>
-            </div>
-        </nav>
-  
+
+  <body>
     <!--<ul id="menu">
         <li><a>Page 1</a></li>
         <li><a>Page 2</a></li>
         <li><a>Page 3</a></li>
         <li><a>Page 4</a></li>
-    </ul>
+    </ul>-->
 
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
       <a class="navbar-brand" href="#">Navbar</a>
@@ -99,7 +72,7 @@
           </li>
         </ul>
       </div>
-    </nav>-->
+    </nav>
 
     <div>{% block content %}{% endblock %}</div>
   </body>
