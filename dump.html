@@ -68,4 +68,20 @@
 
 </body>
 
+
+/* <form action="" method="post" name="calculator">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.number1 }}<br>
+    {% for error in form.number1.errors %}
+    [{{ error }}]
+    {% endfor %}
+  </p>
+  <p>{{ form.number2 }}</p>
+  {% for error in form.number2.errors %}
+  [{{ error }}]
+  {% endfor %}
+  <p><input type="submit" class="btn btn-primary" value="Calculate"></p>
+</form>
+
 </html>

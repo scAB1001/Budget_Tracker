@@ -1,29 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
+
+<h1>Calculator</h1>
+
+<p>{{msg.description}}</p>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.number1.label }} {{ form.number1 }}
+    </div>
+    <div class="form-group">
+        {{ form.operation.label }} {{ form.operation }}
+    </div>
+    <div class="form-group">
+        {{ form.number2.label }} {{ form.number2 }}
+    </div>
+    <button type="submit" class="btn btn-primary">Calculate</button>
+</form>
+
 {% with messages = get_flashed_messages() %}
 {% if messages %}
-<ul>
+<ul class="flashes">
     {% for message in messages %}
-    <li>{{ message }} </li>
+    <li>{{ message }}</li>
     {% endfor %}
 </ul>
 {% endif %}
 {% endwith %}
-<h1>Calculator</h1>
-{{msg.description}}
 
-<form action="" method="post" name="calculator">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.number1 }}<br>
-        {% for error in form.number1.errors %}
-        [{{ error }}]
-        {% endfor %}
-    </p>
-    <p>{{ form.number2 }}</p>
-    {% for error in form.number2.errors %}
-    [{{ error }}]
-    {% endfor %}
-    <p><input type="submit" class="btn btn-primary" value="Calculate"></p>
-</form>
 {% endblock %}

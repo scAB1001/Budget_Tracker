@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, StringField, FloatField
+from wtforms import SelectField, IntegerField, StringField, FloatField
 from wtforms.validators import DataRequired
 
 class CalculatorForm(FlaskForm):
+    operation = SelectField('Operation', choices=[('+', '+'), ('-', '-'), ('*', '*'), ('/', '/')], validators=[DataRequired()])
     number1 = IntegerField('number1', validators=[DataRequired()])
     number2 = IntegerField('number2', validators=[DataRequired()])
 
