@@ -3,4 +3,28 @@
 
 <h1>New Expense</h1>
 
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.name.label }} {{ form.name }}
+    </div>
+    <div class="form-group">
+        {{ form.category.label }} {{ form.category }}
+    </div>
+    <div class="form-group">
+        {{ form.amount.label }} {{ form.amount }}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class="flashes">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
 {% endblock %}

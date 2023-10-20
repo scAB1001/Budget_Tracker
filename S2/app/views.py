@@ -1,8 +1,10 @@
 from flask import render_template, flash, redirect, url_for
 from app import app, db
 from .forms import CalculatorForm, IncomeForm, ExpenseForm, GoalForm
-from .models import Calculations, Income, Expense, Goal
+from .models import Calculations, Incomes, Expenses, Goals
 
+from datetime import datetime
+TIMESTAMP = datetime.utcnow()
 
 def flash_msg(*args, **kwargs):
     """
@@ -24,6 +26,10 @@ def flash_msg(*args, **kwargs):
     # Display the flash message
     flash(message, category=category)
 
+def update_db(entry):
+    db.session.add(entry)
+    db.session.commit()
+
 @app.route('/calculator', methods=['GET', 'POST'])
 def calculator():
     msg={'description':'Welcome to this page. Please input two numbers to calculate.'}
@@ -44,22 +50,11 @@ def calculator():
 
         flash(f'Successfully received form data. {num1} {operation} {num2} = {result}')
 
-        # Save the calculation result to the database
-        from datetime import datetime  # makes the entry unique
-        expr = f'{num1} {operation} {num2} - {datetime.utcnow()}'
-        calculation = Calculations(expr=expr, result=result)
+        expr = f'{num1} {operation} {num2} - {TIMESTAMP}'
+        update_db(Calculations(expr=expr, result=result))
 
-        db.session.add(calculation)
-        db.session.commit()
 
     return render_template('calculator.html', title='Calculator', form=form, msg=msg)
-    """msg={'description':'Welcome to this page. Please input two numbers to calculate.'}
-    form = CalculatorForm()
-    if form.validate_on_submit():
-        msg = "Successfully received form data."
-        flash_msg(msg, form.number1.data, " + ", form.number2.data, " = ", form.number1.data + form.number2.data)
-        #flash('Successfully received form data. %s + %s  = %s'%(form.number1.data, form.number2.data, form.number1.data+form.number2.data))
-    return render_template('calculator.html', title='Calculator', form=form, msg=msg)"""
 
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
@@ -78,9 +73,21 @@ def new_income():
 def expenses():
     return render_template('expenses.html', title='Expenses')
 
-@app.route('/new_expense')
+@app.route('/new_expense', methods=['GET', 'POST'])
 def new_expense():
-    return render_template('new_expense.html', title='New Expense')    
+    form = ExpenseForm()
+    if form.validate_on_submit():
+        name = f'{form.name.data} - {TIMESTAMP}'
+        category = form.category.data
+        amount = form.amount.data
+
+        expense = Expenses(name=name, category=category, amount=amount)
+        update_db(expense)
+
+        flash(f'Expense added: {name} ({category}) - £{amount:.2f}', 'success')
+        #return redirect(url_for('new_expense'))
+
+    return render_template('new_expense.html', title='New Expense', form=form)
 
 @app.route('/goals')
 def goals():

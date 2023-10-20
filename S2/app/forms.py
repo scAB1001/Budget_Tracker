@@ -13,6 +13,15 @@ class IncomeForm(FlaskForm):
 
 class ExpenseForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
+    category = SelectField('Category', choices=[
+        ('Transportation', 'Transportation'),
+        ('Food & Groceries', 'Food & Groceries'),
+        ('Taxation', 'Taxation'),
+        ('Entertainment', 'Entertainment'),
+        ('Essentials', 'Essentials'),
+        ('Housing', 'Housing'),
+        ('Insurance', 'Insurance')
+    ], validators=[DataRequired()])
     amount = FloatField('Amount', validators=[DataRequired()])
     
 class GoalForm(FlaskForm):
