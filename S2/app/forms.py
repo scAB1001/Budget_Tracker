@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import SelectField, IntegerField, StringField, FloatField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, NumberRange
 
 class CalculatorForm(FlaskForm):
     operation = SelectField('Operation', choices=[('+', '+'), ('-', '-'), ('*', '*'), ('/', '/')], validators=[DataRequired()])
@@ -22,7 +22,8 @@ class ExpenseForm(FlaskForm):
         ('Housing', 'Housing'),
         ('Insurance', 'Insurance')
     ], validators=[DataRequired()])
-    amount = FloatField('Amount', validators=[DataRequired()])
+    # NumberRange doesn't help with error checking either
+    amount = FloatField('Amount', validators=[DataRequired(), NumberRange(min=0.0, message="Please enter a valid float.")])
     
 class GoalForm(FlaskForm):
     name = StringField('Name')

@@ -27,8 +27,22 @@ def flash_msg(*args, **kwargs):
     flash(message, category=category)
 
 def update_db(entry):
-    db.session.add(entry)
-    db.session.commit()
+    try:
+        db.session.add(entry)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()  # will this fuck with my flask db migrate/upgrade
+        flash(f"An error occurred while adding this entry. Please try again. Error: {e}", 'danger')
+
+def is_valid_float(value):
+    val = str(value)
+    dot_count = val.count('.')
+    if dot_count > 1:
+        return False
+    
+    val = val.replace('.', '')
+    return val.isdigit()
+
 
 @app.route('/calculator', methods=['GET', 'POST'])
 def calculator():
@@ -38,6 +52,7 @@ def calculator():
         num1 = form.number1.data
         num2 = form.number2.data
         operation = form.operation.data
+        expr = f'{num1} {operation} {num2} - {TIMESTAMP}'
 
         if operation == '+':
             result = num1 + num2
@@ -48,11 +63,8 @@ def calculator():
         elif operation == '/':
             result = num1 / num2
 
-        flash(f'Successfully received form data. {num1} {operation} {num2} = {result}')
-
-        expr = f'{num1} {operation} {num2} - {TIMESTAMP}'
         update_db(Calculations(expr=expr, result=result))
-
+        flash(f'Successfully received form data. {num1} {operation} {num2} = {result}')
 
     return render_template('calculator.html', title='Calculator', form=form, msg=msg)
 
@@ -71,21 +83,31 @@ def new_income():
 
 @app.route('/expenses')
 def expenses():
-    return render_template('expenses.html', title='Expenses')
+    # Fetch all expenses from the database
+    expenses = Expenses.query.all()
+    return render_template('expenses.html', title='Expenses', expenses=expenses)
 
 @app.route('/new_expense', methods=['GET', 'POST'])
 def new_expense():
     form = ExpenseForm()
+    # Add additional client-side validation here if needed
     if form.validate_on_submit():
+        # Removing trailing white space and tabs and multiple spaces between words
         name = f'{form.name.data} - {TIMESTAMP}'
         category = form.category.data
         amount = form.amount.data
 
-        expense = Expenses(name=name, category=category, amount=amount)
-        update_db(expense)
+        # Doesn't do
+        if not is_valid_float(amount):
+            flash("Amount must be numerical.", 'danger')
 
-        flash(f'Expense added: {name} ({category}) - £{amount:.2f}', 'success')
-        #return redirect(url_for('new_expense'))
+        if amount < 0:
+            flash("Amount cannot be negative.", 'danger')
+        else:
+            expense = Expenses(name=name, category=category, amount=amount)
+            update_db(expense)
+
+            flash(f'Expense added: {name} ({category}) - £{amount:.2f}', 'success')
 
     return render_template('new_expense.html', title='New Expense', form=form)
 
@@ -98,31 +120,4 @@ def new_goal():
     return render_template('new_goal.html', title='New Goal')
 
 #########################################################################################
-"""
-    @app.route('/incomes', methods=['GET', 'POST'])
-    def incomes():
-        form = IncomeForm()
-        if form.validate_on_submit():
-            # Add logic to handle form submission (e.g., add income to database)
-            flash('Income added successfully!', 'success')
-            return redirect(url_for('incomes'))
-        return render_template('income_list.html', title='All Incomes', form=form)
-
-    @app.route('/expenditures', methods=['GET', 'POST'])
-    def expenditures():
-        form = ExpenditureForm()
-        if form.validate_on_submit():
-            # Add logic to handle form submission (e.g., add expenditure to database)
-            flash('Expenditure added successfully!', 'success')
-            return redirect(url_for('expenditures'))
-        return render_template('expenditure_list.html', title='All Expenditures', form=form)
-
-    @app.route('/goals', methods=['GET', 'POST'])
-    def goals():
-        form = GoalForm()
-        if form.validate_on_submit():
-            # Add logic to handle form submission (e.g., add goal to database)
-            flash('Goal added successfully!', 'success')
-            return redirect(url_for('goals'))
-        return render_template('goal_list.html', title='All Goals', form=form)
-"""
+    
