@@ -3,7 +3,11 @@
 <html>
   <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta
+      charset="utf-8"
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <div class="style">
       <!-- Bootstrap CSS -->
@@ -131,20 +135,39 @@
           </div>
           <!--Goal-->
           <div class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="goalsDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="goalsDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
               Goals
             </a>
             <div class="dropdown-menu" aria-labelledby="goalsDropdown">
               <a class="dropdown-item" href="/goals">View All</a>
               <a class="dropdown-item" href="/new_goal">New Goal</a>
             </div>
-
           </div>
         </div>
       </div>
     </nav>
 
     <div>{% block content %}{% endblock %}</div>
+
+    {% block javascript %}
+    <script type="text/javascript">
+      function deleteExpense(expenseId) {
+        fetch("/delete-expense", {
+          method: "POST",
+          body: JSON.stringify({ expenseId: expenseId }),
+        }).then((_res) => {
+          window.location.href = "/expenses"; // Redirect to wherever you want after deletion
+        });
+      }
+    </script>
+    {% endblock %}
   </body>
 </html>

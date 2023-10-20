@@ -1,10 +1,9 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
 from .forms import CalculatorForm, IncomeForm, ExpenseForm, GoalForm
 from .models import Calculations, Incomes, Expenses, Goals
 
-from datetime import datetime
-TIMESTAMP = datetime.utcnow()
+import json
 
 def flash_msg(*args, **kwargs):
     """
@@ -52,7 +51,7 @@ def calculator():
         num1 = form.number1.data
         num2 = form.number2.data
         operation = form.operation.data
-        expr = f'{num1} {operation} {num2} - {TIMESTAMP}'
+        expr = f'{num1} {operation} {num2}'
 
         if operation == '+':
             result = num1 + num2
@@ -81,6 +80,7 @@ def incomes():
 def new_income():
     return render_template('new_income.html', title='New Income')    
 
+
 @app.route('/expenses')
 def expenses():
     # Fetch all expenses from the database
@@ -93,7 +93,7 @@ def new_expense():
     # Add additional client-side validation here if needed
     if form.validate_on_submit():
         # Removing trailing white space and tabs and multiple spaces between words
-        name = f'{form.name.data} - {TIMESTAMP}'
+        name = form.name.data
         category = form.category.data
         amount = form.amount.data
 
@@ -111,6 +111,19 @@ def new_expense():
 
     return render_template('new_expense.html', title='New Expense', form=form)
 
+@app.route('/delete-expense', methods=['POST'])
+def delete_expense():
+    expense = json.loads(request.data)
+    expenseId = expense['expenseId']
+    expense = Expenses.query.get(expenseId)
+    
+    if expense:
+        db.session.delete(expense)
+        db.session.commit()
+    
+    return jsonify({})
+
+
 @app.route('/goals')
 def goals():
     return render_template('goals.html', title='Goals')
@@ -120,4 +133,3 @@ def new_goal():
     return render_template('new_goal.html', title='New Goal')
 
 #########################################################################################
-    

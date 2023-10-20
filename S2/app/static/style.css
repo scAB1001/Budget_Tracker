@@ -1,0 +1,25 @@
+.hover-highlight:hover {
+    background-color: #af27f9;
+}
+
+/* Override Bootstrap's .bg-primary class */
+.bg-primary {
+    position: absolute;
+    top: 14px;
+    right: 20px;
+    background-color: #116ac3 !important;
+    /* Dark blue color */
+}
+
+body {
+    background-color: #e8cfed !important;
+}
+
+/* Additional styles for focus and hover */
+.bg-primary:focus,
+.bg-primary:hover,
+button.bg-primary:focus,
+/* Darker shade for focus and hover */
+button.bg-primary:hover {
+    background-color: #124d8c !important;
+}

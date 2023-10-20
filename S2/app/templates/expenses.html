@@ -2,14 +2,20 @@
 {% block content %}
 
 <h1>Expenses</h1>
-
+<style>
+.hover-highlight:hover {
+    background-color: #af27f9;
+}
+</style>
+<!--IF NO EXPENSES EXIST JUST SAY THAT-->
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
-            <tr>
+            <tr class="hover-highlight">
                 <th>Name</th>
                 <th>Category</th>
-                <th>Amount</th>
+                <th style="text-align:center;">Amount (£)</th>
+                <th style="text-align:center;">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -17,11 +23,20 @@
             <tr>
                 <td>{{ expense.name }}</td>
                 <td>{{ expense.category }}</td>
-                <td>{{ expense.amount }}</td>
+                <td style="text-align:center;">{{ expense.amount }}</td>
+                
+                <td>
+                    <button type="button" class="btn btn-danger rounded-pill"  style="text-align:center;" onClick="deleteExpense({{ expense.id }})">
+                        Delete Expense
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </td>
+            
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
 
 {% endblock %}
