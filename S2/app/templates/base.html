@@ -29,6 +29,9 @@
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
           crossorigin="anonymous"
         />
+        <!--Pencil Icon (Font Awesome)-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+
       </div>
 
       <!-- Bootstrap JavaScript -->
@@ -168,6 +171,13 @@
         });
       }
     </script>
+    
+    <script type="text/javascript">
+      function editExpense(expenseId) {
+        window.location.href = `/edit-expense/${expenseId}`;
+      }
+    </script>
     {% endblock %}
+
   </body>
 </html>

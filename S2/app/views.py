@@ -123,6 +123,23 @@ def delete_expense():
     
     return jsonify({})
 
+# Check about the '/<int:expense_id>'
+@app.route('/edit-expense/<int:expense_id>', methods=['GET', 'POST'])
+def edit_expense(expense_id):
+    expense = Expenses.query.get(expense_id)
+    form = ExpenseForm(obj=expense)
+
+    if form.validate_on_submit():
+        expense.name = form.name.data
+        expense.category = form.category.data
+        expense.amount = form.amount.data
+
+        db.session.commit()
+
+        flash(f'Expense updated: {expense.name} ({expense.category}) - £{expense.amount:.2f}', 'success')
+        return redirect(url_for('expenses'))
+
+    return render_template('edit_expense.html', title='Edit Expense', form=form, expense=expense)
 
 @app.route('/goals')
 def goals():
