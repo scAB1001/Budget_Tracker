@@ -1,14 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 
+<!--IF NO EXPENSES EXIST JUST SAY THAT - also use block content stuff-->
 <h1>Expenses</h1>
-<style>
-.hover-highlight:hover {
-    background-color: #af27f9;
-}
-</style>
-
-<!--IF NO EXPENSES EXIST JUST SAY THAT-->
 
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
@@ -37,12 +31,26 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>
-            
+                
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 
+<div class="flash messages">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+
+<script type="text/JavaScript" src="{{ url_for('static', filename='index.js') }}">
+</script>
 
 {% endblock %}

@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
 from .forms import CalculatorForm, IncomeForm, ExpenseForm, GoalForm
-from .models import Calculations, Incomes, Expenses, Goals
+from .models import Calculations, Incomes, Expenses, Goal
 
 import json
 
@@ -111,7 +111,7 @@ def new_expense():
 
     return render_template('new_expense.html', title='New Expense', form=form)
 
-@app.route('/delete-expense', methods=['POST'])
+@app.route('/delete_expense', methods=['POST'])
 def delete_expense():
     expense = json.loads(request.data)
     expenseId = expense['expenseId']
@@ -124,7 +124,7 @@ def delete_expense():
     return jsonify({})
 
 # Check about the '/<int:expense_id>'
-@app.route('/edit-expense/<int:expense_id>', methods=['GET', 'POST'])
+@app.route('/edit_expense/<int:expense_id>', methods=['GET', 'POST'])
 def edit_expense(expense_id):
     expense = Expenses.query.get(expense_id)
     form = ExpenseForm(obj=expense)
@@ -137,13 +137,16 @@ def edit_expense(expense_id):
         db.session.commit()
 
         flash(f'Expense updated: {expense.name} ({expense.category}) - £{expense.amount:.2f}', 'success')
+        # Check if I need to do this after ALL form submission/validation(s)
         return redirect(url_for('expenses'))
+    
+    #flash(f'Failed to update expense', 'danger')
 
     return render_template('edit_expense.html', title='Edit Expense', form=form, expense=expense)
 
-@app.route('/goals')
-def goals():
-    return render_template('goals.html', title='Goals')
+@app.route('/goal')
+def goal():
+    return render_template('goal.html', title='Goal')
 
 @app.route('/new_goal')
 def new_goal():

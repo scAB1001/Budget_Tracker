@@ -32,7 +32,7 @@ class Expenses(db.Model):
         return f"Expense('{self.name}', '{self.category}', {self.amount})"
 
 
-class Goals(db.Model):
+class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=True)
     value = db.Column(db.Float, nullable=False)

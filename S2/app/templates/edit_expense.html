@@ -18,14 +18,20 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<ul class="flashes">
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
+
+<div class="flash messages">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+
+<script type="text/JavaScript" src="{{ url_for('static', filename='index.js') }}">
+</script>
 
 {% endblock %}
