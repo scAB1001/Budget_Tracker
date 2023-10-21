@@ -1,10 +1,12 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
-from .forms import CalculatorForm, IncomeForm, ExpenseForm, GoalForm
-from .models import Calculations, Incomes, Expenses, Goal
+from .forms import IncomeForm, ExpenseForm, GoalForm
+from .models import Incomes, Expenses, Goal
 
 import json
+from collections import Counter
 
+# Misc
 def flash_msg(*args, **kwargs):
     """
     Display flash messages based on the provided arguments.
@@ -42,55 +44,127 @@ def is_valid_float(value):
     val = val.replace('.', '')
     return val.isdigit()
 
+# Routes
 
-@app.route('/calculator', methods=['GET', 'POST'])
-def calculator():
-    msg={'description':'Welcome to this page. Please input two numbers to calculate.'}
-    form = CalculatorForm()
-    if form.validate_on_submit():
-        num1 = form.number1.data
-        num2 = form.number2.data
-        operation = form.operation.data
-        expr = f'{num1} {operation} {num2}'
+"""
+    
+    Goal routes
 
-        if operation == '+':
-            result = num1 + num2
-        elif operation == '-':
-            result = num1 - num2
-        elif operation == '*':
-            result = num1 * num2
-        elif operation == '/':
-            result = num1 / num2
-
-        update_db(Calculations(expr=expr, result=result))
-        flash(f'Successfully received form data. {num1} {operation} {num2} = {result}')
-
-    return render_template('calculator.html', title='Calculator', form=form, msg=msg)
-
+"""
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
     home={'description':'Welcome to this application.\nPlease navigate to your desired dir.'}
     return render_template('homepage.html', title='Homepage', home=home)
 
+@app.route('/goal')
+def goal():
+    return render_template('goal.html', title='Goal')
+
+@app.route('/new_goal')
+def new_goal():
+    return render_template('new_goal.html', title='New Goal')
+
+
+"""
+    
+    Income routes
+
+"""
 @app.route('/incomes')
 def incomes():
-    return render_template('incomes.html', title='Incomes')
+    incomes = Incomes.query.all()
+    total_income = sum(income.amount for income in incomes)
+    max_earning = max(incomes, key=lambda income: income.amount)
+    
+    max_income = '%.2f' % max_earning.amount
+    max_income_name = max_earning.name
 
-@app.route('/new_income')
+    category_counts = Counter(income.category for income in incomes)
+    most_frequent_income = category_counts.most_common(1)[0][0]
+
+    return render_template('incomes.html', title='incomes', 
+        incomes=incomes, total_income=total_income,
+        max_income=max_income, max_income_name=max_income_name, 
+        most_frequent_income=most_frequent_income)
+
+@app.route('/new_income', methods=['GET', 'POST'])
 def new_income():
-    return render_template('new_income.html', title='New Income')    
+    form = IncomeForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        category = form.category.data
+        amount = form.amount.data
+
+        if not is_valid_float(amount):
+            flash("Amount must be numerical.", 'danger')
+
+        if amount < 0:
+            flash("Amount cannot be negative.", 'danger')
+        else:
+            income = Incomes(name=name, category=category, amount=amount)
+            update_db(income)
+
+            flash(f'Income added: {name} ({category}) - £{amount:.2f}', 'success')
+
+    return render_template('new_income.html', title='New Income', form=form)
+
+@app.route('/delete_income', methods=['POST'])
+def delete_income():
+    income = json.loads(request.data)
+    incomeId = income['incomeId']
+    income = Incomes.query.get(incomeId)
+    
+    if income:
+        db.session.delete(income)
+        db.session.commit()
+    
+    return jsonify({})
+
+@app.route('/edit_income/<int:income_id>', methods=['GET', 'POST'])
+def edit_income(income_id):
+    income = Incomes.query.get(income_id)
+    form = IncomeForm(obj=income)
+
+    if form.validate_on_submit():
+        income.name = form.name.data
+        income.category = form.category.data
+        income.amount = form.amount.data
+
+        db.session.commit()
+
+        flash(f'Income updated: {income.name} ({income.category}) - £{income.amount:.2f}', 'success')
+        return redirect(url_for('incomes'))
+    
+    return render_template('edit_income.html', title='Edit Income', form=form, income=income)
 
 
+"""
+    
+    Expense routes
+
+"""
 @app.route('/expenses')
 def expenses():
-    # Fetch all expenses from the database
     expenses = Expenses.query.all()
-    return render_template('expenses.html', title='Expenses', expenses=expenses)
+
+    total_spend = sum(expense.amount for expense in expenses)
+    # Store the largest expense dict by .amount, to access the .name
+    max_expense = max(expenses, key=lambda expense: expense.amount)
+    
+    max_spend = '%.2f' % max_expense.amount
+    max_spend_name = max_expense.name
+
+    category_counts = Counter(expense.category for expense in expenses)
+    most_frequent_spend = category_counts.most_common(1)[0][0]
+
+    return render_template('expenses.html', title='Expenses', 
+        expenses=expenses, total_spend=total_spend, 
+        max_spend=max_spend, max_spend_name=max_spend_name, 
+        most_frequent_spend=most_frequent_spend)
 
 @app.route('/new_expense', methods=['GET', 'POST'])
 def new_expense():
     form = ExpenseForm()
-    # Add additional client-side validation here if needed
     if form.validate_on_submit():
         # Removing trailing white space and tabs and multiple spaces between words
         name = form.name.data
@@ -123,7 +197,7 @@ def delete_expense():
     
     return jsonify({})
 
-# Check about the '/<int:expense_id>'
+# Explain '/<int:expense_id>'
 @app.route('/edit_expense/<int:expense_id>', methods=['GET', 'POST'])
 def edit_expense(expense_id):
     expense = Expenses.query.get(expense_id)
@@ -143,13 +217,3 @@ def edit_expense(expense_id):
     #flash(f'Failed to update expense', 'danger')
 
     return render_template('edit_expense.html', title='Edit Expense', form=form, expense=expense)
-
-@app.route('/goal')
-def goal():
-    return render_template('goal.html', title='Goal')
-
-@app.route('/new_goal')
-def new_goal():
-    return render_template('new_goal.html', title='New Goal')
-
-#########################################################################################
