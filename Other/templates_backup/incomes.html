@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!--IF NO INCOMES EXIST JUST SAY THAT - also use block content stuff-->
+<h1>Incomes</h1>
+
+<div id="incomesAccordion">
+
+    <!-- Collapsible Income Table -->
+    <div class="card">
+        <div class="card-header" id="incomesHeading" style="background-color: #ecc6f3;">
+            <h2 class="mb-0">
+                <button type="button" class="btn btn-primary rectangle" data-toggle="collapse"
+                    data-target="#incomesCollapse" aria-expanded="true" aria-controls="incomesCollapse">
+                    View Incomes
+                </button>
+            </h2>
+        </div>
+
+        <div id="incomesCollapse" class="collapse show" aria-labelledby="incomesHeading"
+            data-parent="#incomesAccordion" style="background-color: #ecc6f3;">
+            <div class="card-body">
+                <div class="table-responsive" style="background-color: #ecc6f3;">
+                    <table class="table table-striped table-bordered" style="background-color: #e8cfed;">
+                        <thead class="thead-dark">
+                            <tr class="hover-highlight">
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th style="text-align:center;">Amount (£)</th>
+                                <th style="text-align:center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for income in incomes %}
+                            <tr>
+                                <td>{{ income.name }}</td>
+                                <td>{{ income.category }}</td>
+                                <td style="text-align:center;">{{ income.amount }}</td>
+
+                                <td style="text-align:center;">
+                                    <button type="button" class="btn btn-warning rounded-pill"
+                                        onClick="editIncome({{ income.id }})">
+                                        Edit Income
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger rounded-pill"
+                                        onClick="deleteIncome({{ income.id }})">
+                                        Delete Income
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="card">
+        <div class="card-header" id="summaryHeading" style="background-color: #ecc6f3;">
+            <h2 class="mb-0">
+                <button type="button" class="btn btn-primary rectangle" data-toggle="collapse"
+                    data-target="#summaryCollapse" aria-expanded="true" aria-controls="summaryCollapse">
+                    View Summary Statistics
+                </button>
+            </h2>
+        </div>
+
+        <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#incomesAccordion"
+            style="background-color: #ecc6f3;">
+            <div class="card-body">
+                <p>Your total income: £{{ total_income }}</p>
+                <p>Your largest earning was... {{ max_income_name }} - £{{ max_income }}</p>
+                <p>You frequently earn in this area... {{ most_frequent_income }}</p>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="flash messages">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+
+<script type="text/JavaScript" src="{{ url_for('static', filename='index.js') }}">
+</script>
+
+{% endblock %}

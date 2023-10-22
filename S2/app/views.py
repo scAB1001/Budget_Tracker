@@ -45,7 +45,6 @@ def is_valid_float(value):
     return val.isdigit()
 
 # Routes
-
 """
     
     Goal routes
@@ -122,6 +121,35 @@ def edit_goal(goal_id):
     
     return render_template('edit_goal.html', title='Edit Goal', form=form, goal=goal)
 
+# Test page
+@app.route('/a')
+def progress_bar():
+    goal = Goals.query.first(); print(f'\n\n{goal}\n')
+    target = goal.amount
+    target_name = goal.name
+    
+    incomes = Incomes.query.all()
+    expenses = Expenses.query.all()
+    
+    total_income = sum(income.amount for income in incomes)
+    #print(f"\n\n\t total_income: {total_income:.2f}")
+    total_spend = sum(expense.amount for expense in expenses)
+    #print(f"\n\t total_spend: {total_spend:.2f}")
+
+    difference = total_income - total_spend
+    #print(f"\n\t difference: {difference}")
+    progress_value = round((difference/target), 2)
+    #print(f"\n\t progress_value: {progress_value:.2f} \n\n")
+
+    if difference < 0: 
+        progress_value = 0.00
+        flash(f"Target: {target_name}- £{target}\n You're £{difference} away...", "danger")
+    if progress_value >= 1:
+        from decimal import Decimal
+        progress_value = Decimal('1')
+        extra = difference - target
+        flash(f"Target: {target_name}- £{target} reached!\n You're £{extra} over budget!?", "success")
+    return render_template('progress_bar.html', title='Progress Bar', progress_value=progress_value)
 
 
 """
