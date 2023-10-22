@@ -23,3 +23,15 @@ button.bg-primary:focus,
 button.bg-primary:hover {
     background-color: #124d8c !important;
 }
+
+/* Add your custom styles for charts and layout here */
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.goal-info,
+.summary-stats {
+    margin: 20px 0;
+}

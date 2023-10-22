@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
 from .forms import IncomeForm, ExpenseForm, GoalForm
-from .models import Incomes, Expenses, Goal
+from .models import Incomes, Expenses, Goals
 
 import json
 from collections import Counter
@@ -58,11 +58,70 @@ def homepage():
 
 @app.route('/goal')
 def goal():
-    return render_template('goal.html', title='Goal')
+    """goal = Goals.query.all()
+    incomes = Incomes.query.all()
+    expenses = Expenses.query.all()
+    
+    target = goal.amount
+    total_income = sum(income.amount for income in incomes)
+    total_spend = sum(expense.amount for expense in expenses)
 
-@app.route('/new_goal')
+    difference = total_income - total_spend
+    if difference < 0:
+        progress_percentage = 0
+    else:
+        progress_percentage = difference/target"""
+    progress_percentage = 0
+    return render_template('goal.html', title='Goal', progress_percentage=progress_percentage)
+
+@app.route('/new_goal', methods=['GET', 'POST'])
 def new_goal():
-    return render_template('new_goal.html', title='New Goal')
+    form = GoalForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        amount = form.amount.data
+
+        if not is_valid_float(amount):
+            flash("Amount must be numerical.", 'danger')
+
+        if amount < 0:
+            flash("Amount cannot be negative.", 'danger')
+        else:
+            goal = Goals(name=name, amount=amount)
+            update_db(goal)
+
+            flash(f'Goal added: {name} - £{amount:.2f}', 'success')
+
+    return render_template('new_goal.html', title='New Goal', form=form)
+
+@app.route('/delete_goal', methods=['POST'])
+def delete_goal():
+    goal = json.loads(request.data)
+    goalId = goal['goalId']
+    goal = Goals.query.get(goalId)
+    
+    if goal:
+        db.session.delete(goal)
+        db.session.commit()
+    
+    return jsonify({})
+
+@app.route('/edit_goal/<int:goal_id>', methods=['GET', 'POST'])
+def edit_goal(goal_id):
+    goal = Goals.query.get(goal_id)
+    form = GoalForm(obj=goal)
+
+    if form.validate_on_submit():
+        goal.name = form.name.data
+        goal.amount = form.amount.data
+
+        db.session.commit()
+
+        flash(f'Goal updated: {goal.name} - £{goal.amount:.2f}', 'success')
+        return redirect(url_for('goal'))
+    
+    return render_template('edit_goal.html', title='Edit Goal', form=form, goal=goal)
+
 
 
 """
@@ -73,7 +132,7 @@ def new_goal():
 @app.route('/incomes')
 def incomes():
     incomes = Incomes.query.all()
-    total_income = sum(income.amount for income in incomes)
+    total_income = '%.2f' % sum(income.amount for income in incomes)
     max_earning = max(incomes, key=lambda income: income.amount)
     
     max_income = '%.2f' % max_earning.amount
@@ -146,8 +205,8 @@ def edit_income(income_id):
 @app.route('/expenses')
 def expenses():
     expenses = Expenses.query.all()
+    total_spend = '%.2f' % sum(expense.amount for expense in expenses)
 
-    total_spend = sum(expense.amount for expense in expenses)
     # Store the largest expense dict by .amount, to access the .name
     max_expense = max(expenses, key=lambda expense: expense.amount)
     
