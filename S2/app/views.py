@@ -57,21 +57,28 @@ def homepage():
 
 @app.route('/goal')
 def goal():
-    """goal = Goals.query.all()
-    incomes = Incomes.query.all()
-    expenses = Expenses.query.all()
+    goal = Goals.query.first()
+    target, target_name = goal.amount, goal.name
     
-    target = goal.amount
+    incomes, expenses = Incomes.query.all(), Expenses.query.all()
+    
     total_income = sum(income.amount for income in incomes)
     total_spend = sum(expense.amount for expense in expenses)
 
     difference = total_income - total_spend
-    if difference < 0:
-        progress_percentage = 0
-    else:
-        progress_percentage = difference/target"""
-    progress_percentage = 0
-    return render_template('goal.html', title='Goal', progress_percentage=progress_percentage)
+    progress_value = round((difference/target), 2)
+
+    # Set a default display value
+    progress_value = 0
+    if difference < 0: 
+        flash(f"You're £{difference} away...", "danger")
+    elif progress_value >= 1:
+        progress_value = 1
+        extra = difference - target
+        flash(f"Target reached!\n You're £{extra} over budget!?", "success")
+    return render_template('goal.html', title='Goal', 
+        progress_value=progress_value, 
+        target_name=target_name, target=target, goal=goal)
 
 @app.route('/new_goal', methods=['GET', 'POST'])
 def new_goal():
@@ -132,24 +139,24 @@ def progress_bar():
     expenses = Expenses.query.all()
     
     total_income = sum(income.amount for income in incomes)
-    #print(f"\n\n\t total_income: {total_income:.2f}")
+    #print(f"\n\t total_income: {total_income:.2f}")
     total_spend = sum(expense.amount for expense in expenses)
-    #print(f"\n\t total_spend: {total_spend:.2f}")
+    #print(f"\t total_spend: {total_spend:.2f}")
 
     difference = total_income - total_spend
-    #print(f"\n\t difference: {difference}")
+    #print(f"\t difference: {difference}")
     progress_value = round((difference/target), 2)
-    #print(f"\n\t progress_value: {progress_value:.2f} \n\n")
+    #print(f"\n\t progress_value: {progress_value:.2f} \n")
 
     if difference < 0: 
-        progress_value = 0.00
-        flash(f"Target: {target_name}- £{target}\n You're £{difference} away...", "danger")
+        progress_value = 0
+        flash(f"You're £{difference} away...", "danger")
     if progress_value >= 1:
-        from decimal import Decimal
-        progress_value = Decimal('1')
+        progress_value = 1
         extra = difference - target
-        flash(f"Target: {target_name}- £{target} reached!\n You're £{extra} over budget!?", "success")
-    return render_template('progress_bar.html', title='Progress Bar', progress_value=progress_value)
+        flash(f"Target reached!\n You're £{extra} over budget!?", "success")
+    return render_template('progress_bar.html', title='Progress Bar', 
+        progress_value=progress_value, target_name=target_name, target=target)
 
 
 """

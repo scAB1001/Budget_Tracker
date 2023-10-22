@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Circular Progress Bar | CodingNepal</title>
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -17,7 +16,9 @@
                 <div class="bar"></div>
                 <div class="box"><span></span></div>
             </div>
-            <div class="text">React JS</div>
+            <div class="text"> "{{target_name}}" - £{{target}}</div>
+            <div class="box"><span></span></div>
+            <div class="tick">&#10004;</div>
         </div>
     </div>
     <script>
@@ -29,12 +30,22 @@
         }
         $(".circle .bar").circleProgress(options).on('circle-animation-progress',
             function (event, progress, stepValue) {
-                $(this).parent().find("span").text(String(stepValue.toFixed(3).substr(2)) + "%");
+                $(this).parent().find("span").text(String(stepValue.toFixed(2)) + "%");
+
+                // Add check for 1.0 or greater
+                if (stepValue >= 1.0) {
+                    $(this).parent().find(".tick").show();
+                } else {
+                    $(this).parent().find(".tick").hide();
+                }
             });
+
+        // Assuming progress_percentage is a decimal value between 0 and 1
         $(".react .bar").circleProgress({
-            value: {{ progress_value }}
+            value: {{ progress_percentage }}
         });
     </script>
+
 </body>
 
 </html>

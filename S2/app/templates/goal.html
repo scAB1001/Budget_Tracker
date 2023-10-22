@@ -1,15 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Goals</h1>
-<div class="progress">
-    <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%;"
-        aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<!-- Add chart -->
-<canvas id="myChart" width="400" height="400"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-circle-progress/1.2.2/circle-progress.min.js"></script>
 
-<!-- Add wheel -->
-<div id="wheel" style="width: 300px; height: 300px;"></div>
+<body>
+<div class="wrapper">
+    <div class="card react">
+        <div class="circle">
+            <div class="bar"></div>
+            <div class="box"><span></span></div>
+        </div>
+        <div class="text"> "{{target_name}}" - £{{target}}</div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
+    Edit Goal
+    <i class="fas fa-pencil-alt"></i>
+</button>
+<button type="button" class="btn btn-danger rounded-pill" onClick="deleteGoal({{ goal.id }})">
+    Delete Goal
+    <span aria-hidden="true">&times;</span>
+</button>
+
 
 <div class="flash messages">
     {% with messages = get_flashed_messages() %}
@@ -22,7 +36,21 @@
     {% endif %}
     {% endwith %}
 </div>
-<script type="text/JavaScript" src="{{ url_for('static', filename='index.js') }}"></script>
+
+<script>
+    let options = {
+        startAngle: -1.55,
+        size: 180,
+        value: 0,
+        fill: { gradient: ['#00cd03', '#400279'] }
+    }
+    $(".circle .bar").circleProgress(options).on('circle-animation-progress',
+        function (event, progress, stepValue) {
+            $(this).parent().find("span").text(String(stepValue.toFixed(2).substr(2)) + "%");
+        });
+    $(".react .bar").circleProgress({
+        value: {{ progress_value }}
+        });
+</script>
+</body>
 {% endblock %}
-
-

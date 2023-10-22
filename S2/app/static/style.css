@@ -1,3 +1,8 @@
+body {
+    align-items: center;
+    background-color: #e8cfed !important;
+}
+
 .hover-highlight:hover {
     background-color: #af27f9;
 }
@@ -8,35 +13,15 @@
     top: 14px;
     right: 20px;
     background-color: #116ac3 !important;
-    /* Dark blue color */
 }
 
-body {
-    background-color: #e8cfed !important;
-}
-
-/* Additional styles for focus and hover */
-.bg-primary:focus,
-.bg-primary:hover,
-button.bg-primary:focus,
 /* Darker shade for focus and hover */
 button.bg-primary:hover {
     background-color: #124d8c !important;
 }
 
-/* Add your custom styles for charts and layout here */
-.chart-container {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
-}
 
-.goal-info,
-.summary-stats {
-    margin: 20px 0;
-}
-
-/*------------------------------------------------------------------------*/
+/* Goal wheel display */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&amp;display=swap');
 * {
     margin: 0;
@@ -45,15 +30,6 @@ button.bg-primary:hover {
     font-family: 'Poppins', sans-serif;
 }
 
-/*body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-    background: -webkit-linear-gradient(left, #a445b2, #fa4299);
-}
-*/
 .wrapper {
     width: 800px;
     display: flex;
