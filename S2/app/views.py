@@ -5,6 +5,7 @@ from .models import Incomes, Expenses, Goals
 
 import json
 from collections import Counter
+from time import sleep as s
 
 # Misc
 def flash_msg(*args, **kwargs):
@@ -53,31 +54,87 @@ def is_valid_float(value):
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
     home={'description':'Welcome to this application.\nPlease navigate to your desired dir.'}
-    return render_template('homepage.html', title='Homepage', home=home)
+    
+    incomes = Incomes.query.all()
+    if incomes != None:
+        total_income = '%.2f' % sum(income.amount for income in incomes)
+        max_earning = max(incomes, key=lambda income: income.amount)
+        
+        max_income = '%.2f' % max_earning.amount
+        max_income_name = max_earning.name
+
+        category_counts = Counter(income.category for income in incomes)
+        most_frequent_income = category_counts.most_common(1)[0][0]
+
+    ##
+    expenses = Expenses.query.all()
+    if expenses != None:
+        total_spend = '%.2f' % sum(expense.amount for expense in expenses)
+
+        # Store the largest expense dict by .amount, to access the .name
+        max_expense = max(expenses, key=lambda expense: expense.amount)
+        
+        max_spend = '%.2f' % max_expense.amount
+        max_spend_name = max_expense.name
+
+        category_counts = Counter(expense.category for expense in expenses)
+        most_frequent_spend = category_counts.most_common(1)[0][0]
+    
+    ##
+    goal = Goals.query.first()
+    if goal == None:
+        flash(f"You don't have a goal set!", "danger")
+        goal = "You have no goal!"
+    else:
+        target, target_name = goal.amount, goal.name
+    
+        incomes, expenses = Incomes.query.all(), Expenses.query.all() 
+        total_income = sum(income.amount for income in incomes)
+        total_spend = sum(expense.amount for expense in expenses)
+
+        difference = total_income - total_spend
+        progress_value = round((difference/target), 2)
+        if difference < 0: 
+            progress_value = 0
+        elif progress_value >= 1:
+            progress_value = 1
+            extra = difference - target
+
+    return render_template('homepage.html', title='Homepage', home=home,
+        incomes=incomes, expenses=expenses, goal=goal,
+        total_income=total_income, total_spend=total_spend,
+        max_income=max_income, max_income_name=max_income_name, 
+        most_frequent_income=most_frequent_income,
+        max_spend=max_spend, max_spend_name=max_spend_name, 
+        most_frequent_spend=most_frequent_spend, 
+        progress_value=progress_value*100
+    )
 
 @app.route('/goal')
 def goal():
     goal = Goals.query.first()
-    target, target_name = goal.amount, goal.name
+    if goal == None:
+        flash(f"You don't have a goal set!", "danger")
+        return new_goal()
+    else:
+        target, target_name = goal.amount, goal.name
     
-    incomes, expenses = Incomes.query.all(), Expenses.query.all()
-    
-    total_income = sum(income.amount for income in incomes)
-    total_spend = sum(expense.amount for expense in expenses)
+        incomes, expenses = Incomes.query.all(), Expenses.query.all() 
+        total_income = sum(income.amount for income in incomes)
+        total_spend = sum(expense.amount for expense in expenses)
 
-    difference = total_income - total_spend
-    progress_value = round((difference/target), 2)
+        difference = total_income - total_spend
+        progress_value = round((difference/target), 2)
 
-    # Set a default display value
-    progress_value = 0
-    if difference < 0: 
-        flash(f"You're £{difference} away...", "danger")
-    elif progress_value >= 1:
-        progress_value = 1
-        extra = difference - target
-        flash(f"Target reached!\n You're £{extra} over budget!?", "success")
+        # Set a default display value
+        if difference < 0: 
+            flash(f"You're £{difference} away...", "danger")
+        elif progress_value >= 1:
+            progress_value = 1
+            extra = difference - target
+            flash(f"Target reached!\n You're £{extra} over budget!?", "success")
     return render_template('goal.html', title='Goal', 
-        progress_value=progress_value, 
+        progress_value=progress_value*100, 
         target_name=target_name, target=target, goal=goal)
 
 @app.route('/new_goal', methods=['GET', 'POST'])
@@ -128,35 +185,30 @@ def edit_goal(goal_id):
     
     return render_template('edit_goal.html', title='Edit Goal', form=form, goal=goal)
 
+
 # Test page
 @app.route('/a')
 def progress_bar():
-    goal = Goals.query.first(); print(f'\n\n{goal}\n')
-    target = goal.amount
-    target_name = goal.name
-    
-    incomes = Incomes.query.all()
-    expenses = Expenses.query.all()
-    
+    goal = Goals.query.first()
+    target, target_name = goal.amount, goal.name
+   
+    incomes, expenses = Incomes.query.all(), Expenses.query.all() 
     total_income = sum(income.amount for income in incomes)
-    #print(f"\n\t total_income: {total_income:.2f}")
     total_spend = sum(expense.amount for expense in expenses)
-    #print(f"\t total_spend: {total_spend:.2f}")
 
     difference = total_income - total_spend
-    #print(f"\t difference: {difference}")
     progress_value = round((difference/target), 2)
-    #print(f"\n\t progress_value: {progress_value:.2f} \n")
+    print(progress_value)
 
+    # Set a default display value
     if difference < 0: 
-        progress_value = 0
         flash(f"You're £{difference} away...", "danger")
-    if progress_value >= 1:
+    elif progress_value >= 1:
         progress_value = 1
         extra = difference - target
         flash(f"Target reached!\n You're £{extra} over budget!?", "success")
-    return render_template('progress_bar.html', title='Progress Bar', 
-        progress_value=progress_value, target_name=target_name, target=target)
+    return render_template('progress_bar.html', title='Progress Bar', goal=goal, 
+        progress_value=progress_value*100, target_name=target_name, target=target)
 
 
 """

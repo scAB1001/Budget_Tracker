@@ -1,51 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% block content %}
+<h1>Progress Bar</h1>
+<link rel="stylesheet" href="style.css">
+<br>
 
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-circle-progress/1.2.2/circle-progress.min.js"></script>
-</head>
-
-<body>
-    <div class="wrapper">
-        <div class="card react">
-            <div class="circle">
-                <div class="bar"></div>
-                <div class="box"><span></span></div>
-            </div>
-            <div class="text"> "{{target_name}}" - £{{target}}</div>
-            <div class="box"><span></span></div>
-            <div class="tick">&#10004;</div>
-        </div>
+<div class="Summary" style="align-items: center;">
+    <!-- Progress bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="myProgressBar">You're {{ progress_value }}% of the way there!</div>
     </div>
-    <script>
-        let options = {
-            startAngle: -1.55,
-            size: 150,
-            value: 0.85,
-            fill: { gradient: ['#a445b2', '#fa4299'] }
-        }
-        $(".circle .bar").circleProgress(options).on('circle-animation-progress',
-            function (event, progress, stepValue) {
-                $(this).parent().find("span").text(String(stepValue.toFixed(2)) + "%");
 
-                // Add check for 1.0 or greater
-                if (stepValue >= 1.0) {
-                    $(this).parent().find(".tick").show();
-                } else {
-                    $(this).parent().find(".tick").hide();
-                }
-            });
+<!-- Summary -->
+    <p>"{{target_name}}"</p>
+    <button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
+        Edit Goal
+        <i class="fas fa-pencil-alt"></i>
+    </button>
+    <button type="button" class="btn btn-danger rounded-pill" onClick="deleteGoal({{ goal.id }})">
+        Delete Goal
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 
-        // Assuming progress_percentage is a decimal value between 0 and 1
-        $(".react .bar").circleProgress({
-            value: {{ progress_percentage }}
-        });
-    </script>
+<script>
+    var progress_value = {{ progress_value }};
+
+    function updateProgressBar() {
+        var progressBar = document.getElementById("myProgressBar");
+        progressBar.style.width = progress_value + "%";
+    }
+
+    window.onload = updateProgressBar;
+</script>
+
 
 </body>
-
-</html>
+{% endblock %}
