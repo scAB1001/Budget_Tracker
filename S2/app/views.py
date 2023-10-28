@@ -53,8 +53,6 @@ def is_valid_float(value):
 """
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
-    home={'description':'Welcome to this application.\nPlease navigate to your desired dir.'}
-    
     incomes = Incomes.query.all()
     if incomes != None:
         total_income = '%.2f' % sum(income.amount for income in incomes)
@@ -100,8 +98,9 @@ def homepage():
             progress_value = 1
             extra = difference - target
 
-    return render_template('homepage.html', title='Homepage', home=home,
-        incomes=incomes, expenses=expenses, goal=goal,
+    return render_template('homepage.html', title='Homepage',
+        incomes=incomes, expenses=expenses, 
+        target=target, target_name=target_name,
         total_income=total_income, total_spend=total_spend,
         max_income=max_income, max_income_name=max_income_name, 
         most_frequent_income=most_frequent_income,
@@ -312,7 +311,6 @@ def expenses():
 def new_expense():
     form = ExpenseForm()
     if form.validate_on_submit():
-        # Removing trailing white space and tabs and multiple spaces between words
         name = form.name.data
         category = form.category.data
         amount = form.amount.data

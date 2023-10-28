@@ -3,55 +3,55 @@
 
 <h1>Homepage</h1>
 
-<p>{{home.description}}</p>
-
-
-<div id="incomesAccordion">
-    <div class="card">
-        <div class="card-header" id="summaryHeading" style="background-color: #ecc6f3;">
-            <h2 class="mb-0">
-                <button type="button" class="btn btn-primary rectangle" data-toggle="collapse"
-                    data-target="#summaryCollapse" aria-expanded="true" aria-controls="summaryCollapse">
-                    View Income and Expense Statistics
-                </button>
-            </h2>
-        </div>
-        <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#incomesAccordion"
-        style="background-color: #ecc6f3;">
-        <h3>INCOMES</h3>
-            <div class="card-body">
-                <p>Your total income: £{{ total_income }}</p>
-                <p>Your largest earning was... {{ max_income_name }} - £{{ max_income }}</p>
-                <p>You frequently earn in this area... {{ most_frequent_income }}</p>
-
+<element class="home-body">
+    <div id="incomesAccordion">
+        <div class="card">
+            <div class="card-header" id="summaryHeading" style="background-color: #ecc6f3;">
+                <h2 class="mb-0">
+                    <button type="button" class="btn btn-primary rectangle" data-toggle="collapse"
+                        data-target="#summaryCollapse" aria-expanded="true" aria-controls="summaryCollapse">
+                        View Income and Expense Statistics
+                    </button>
+                </h2>
             </div>
-            <div id="expensesAccordion">
-        <h3>EXPENSES</h3>
-        <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#expensesAccordion"
+            <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#incomesAccordion"
             style="background-color: #ecc6f3;">
-            <div class="card-body">
-                <p>Your total expenditure: £{{ total_spend }}</p>
-                <p>You spent the largest amount at a time on... {{ max_spend_name }} - £{{ max_spend }}</p>
-                <p>You frequently paid in this area... {{ most_frequent_spend }}</p>
+            <h3>INCOMES</h3>
+                <div class="card-body">
+                    <p>Your total income: £{{ total_income }}</p>
+                    <p>Your largest earning was... {{ max_income_name }} - £{{ max_income }}</p>
+                    <p>You frequently earn in this area... {{ most_frequent_income }}</p>
 
+                </div>
+                <div id="expensesAccordion">
+            <h3>EXPENSES</h3>
+            <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#expensesAccordion"
+                style="background-color: #ecc6f3;">
+                <div class="card-body">
+                    <p>Your total expenditure: £{{ total_spend }}</p>
+                    <p>You spent the largest amount at a time on... {{ max_spend_name }} - £{{ max_spend }}</p>
+                    <p>You frequently paid in this area... {{ most_frequent_spend }}</p>
+
+                </div>
+            </div>
+        </div>
+            </div>
             </div>
         </div>
     </div>
-        </div>
-        </div>
-    </div>
-</div>
+</element>
 
-
-<p>The difference between your incomes and expenditures</p><br>
+<br><p>The difference between your incomes and expenditures</p>
 £{{total_income - total_spend}}
 
-<p>If they have a goal, their progress towards this goal</p><br>
-<p>"{{goal}}"</p>
-<div class="progress-container">
-    <div class="progress-bar" id="myProgressBar">You're {{ progress_value }}% of the way there!</div>
-</div>
+<p>If they have a goal, their progress towards this goal</p>
+<p>"{{target_name}}: {{target}}"</p><br>
 
+<div class="center">
+    <div class="progress-container">
+        <div class="progress-bar" id="myProgressBar">You're {{ progress_value }}% of the way there!</div>
+    </div>
+</div>
 <p>If there are no incomes/expenditures then an appropriate message should be shown instead.</p>
 
 <div class="flash messages">

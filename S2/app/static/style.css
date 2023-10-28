@@ -1,6 +1,17 @@
 body {
     align-items: center;
-    background-color: #e8cfed !important;
+    text-align: center;
+    background: rgb(2, 0, 36);
+    background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(55, 87, 171, 1) 54%, rgba(5, 142, 170, 1) 100%);
+    color: rgba(255, 255, 255, 0.652);
+    font-family: "Everson Mono";
+    font-size-adjust: 0.58;
+}
+
+.center {
+    align-items: center;
+    text-align: center;
+    padding-left: 540px;
 }
 
 .hover-highlight:hover {
@@ -24,12 +35,14 @@ button.bg-primary:hover {
 /* Goal  display */
 .progress-container {
     align-items: center;
-    width: 80%;
+    width: 60%;
     background-color: #ea7908c5;
+    border: 3px solid pink;
 }
 
 .progress-bar {
-    width: 0;
-    height: 30px;   
-    background-color: #1a49b7;
+    align-items: center;
+    width: 10;
+    height: 50px;   
+    background-color: #b71a61;
 }
