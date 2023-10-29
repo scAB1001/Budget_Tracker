@@ -9,7 +9,7 @@
     </div>
 
     <!-- Summary -->
-    <p>"{{target_name}} - £{{target}}"</p>
+    <p>"{{target_name}}" - £{{target}}</p>
     <button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
         Edit Goal
         <i class="fas fa-pencil-alt"></i>
@@ -30,16 +30,7 @@
     {% endif %}
     {% endwith %}
 </div>
-<script>
-    var progress_value = {{ progress_value }};
-
-    function updateProgressBar() {
-        var progressBar = document.getElementById("myProgressBar");
-        progressBar.style.width = progress_value + "%";
-    }
-
-    window.onload = updateProgressBar;
-</script>
+<script>updateProgressBar(progress_value)</script>
 
 </body>
 {% endblock %}

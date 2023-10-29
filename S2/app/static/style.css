@@ -1,17 +1,17 @@
 body {
     align-items: center;
     text-align: center;
-    background: rgb(2, 0, 36);
-    background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(55, 87, 171, 1) 54%, rgba(5, 142, 170, 1) 100%);
-    color: rgba(255, 255, 255, 0.652);
+    background: rgb(34, 193, 195);
+    background: rgb(34, 193, 195);
+        background: linear-gradient(0deg, rgba(34, 193, 195, 1) 16%, rgba(115, 45, 253, 1) 100%);
     font-family: "Everson Mono";
+    font-size: 125%;
     font-size-adjust: 0.58;
 }
 
 .center {
     align-items: center;
     text-align: center;
-    padding-left: 540px;
 }
 
 .hover-highlight:hover {
@@ -31,11 +31,10 @@ button.bg-primary:hover {
     background-color: #124d8c !important;
 }
 
-
 /* Goal  display */
 .progress-container {
     align-items: center;
-    width: 60%;
+    width: 100%;
     background-color: #ea7908c5;
     border: 3px solid pink;
 }

@@ -87,10 +87,10 @@ def homepage():
         target, target_name = goal.amount, goal.name
     
         incomes, expenses = Incomes.query.all(), Expenses.query.all() 
-        total_income = sum(income.amount for income in incomes)
-        total_spend = sum(expense.amount for expense in expenses)
+        total_income = '%.2f' % sum(income.amount for income in incomes)
+        total_spend = '%.2f' % sum(expense.amount for expense in expenses)
 
-        difference = total_income - total_spend
+        difference = float(total_income) - float(total_spend)        
         progress_value = round((difference/target), 2)
         if difference < 0: 
             progress_value = 0
@@ -101,7 +101,7 @@ def homepage():
     return render_template('homepage.html', title='Homepage',
         incomes=incomes, expenses=expenses, 
         target=target, target_name=target_name,
-        total_income=total_income, total_spend=total_spend,
+        total_income=float(total_income), total_spend=float(total_spend),
         max_income=max_income, max_income_name=max_income_name, 
         most_frequent_income=most_frequent_income,
         max_spend=max_spend, max_spend_name=max_spend_name, 

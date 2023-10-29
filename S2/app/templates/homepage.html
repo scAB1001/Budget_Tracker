@@ -5,7 +5,7 @@
 
 <element class="home-body">
     <div id="incomesAccordion">
-        <div class="card">
+        <div class="card" color="black">
             <div class="card-header" id="summaryHeading" style="background-color: #ecc6f3;">
                 <h2 class="mb-0">
                     <button type="button" class="btn btn-primary rectangle" data-toggle="collapse"
@@ -41,11 +41,10 @@
     </div>
 </element>
 
-<br><p>The difference between your incomes and expenditures</p>
-£{{total_income - total_spend}}
+<br><p>The difference between your incomes and expenditures: £{{total_income - total_spend}}</p>
 
 <p>If they have a goal, their progress towards this goal</p>
-<p>"{{target_name}}: {{target}}"</p><br>
+<p>"{{target_name}}: £{{target}}"</p><br>
 
 <div class="center">
     <div class="progress-container">
@@ -66,16 +65,5 @@
     {% endwith %}
 </div>
 
-<script>
-    var progress_value = {{ progress_value }};
-
-    function updateProgressBar() {
-        var progressBar = document.getElementById("myProgressBar");
-        progressBar.style.width = progress_value + "%";
-    }
-
-    window.onload = updateProgressBar;
-</script>
-
-
+<script>updateProgressBar(progress_value)</script>
 {% endblock %}  
