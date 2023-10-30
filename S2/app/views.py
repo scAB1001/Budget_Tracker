@@ -6,22 +6,22 @@ from .models import Incomes, Expenses, Goals
 import json
 from collections import Counter
 
-DANGER = 'danger'
-SUCCESS = 'success'
 
 # General
 """  
 
-    Helper methods
+    Helper variables and methods
 
 """
+DANGER, SUCCESS = 'danger', 'success'
+
 def update_db(entry):
     try:
         db.session.add(entry)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()  # will this fuck with my flask db migrate/upgrade
-        flash(f"An error occurred while adding this entry. Please try again. Error: {e}", DANGER)
+        db.session.commit()#;print("\nSuccessfully updated db\n")
+    except Exception:
+        db.session.rollback()
+        flash(f"An error occurred while adding this entry.", DANGER)
 
 def validate_userin(value, max_value=1000000):
     try:
@@ -61,9 +61,7 @@ def run_validation(form, model_class, has_category):
             category = ''
             entry = model_class(name=name, amount=amount)#; print(f'\nNO CATEGORY\n')
 
-    #print(f'\n{entry}, {name}, {category}, {amount}\n')
     return entry, name, category, amount
-
 
 def new_entry(form, model_class, has_category=True):
     if form.validate_on_submit():
@@ -82,24 +80,80 @@ def new_entry(form, model_class, has_category=True):
 def delete_entry(formId, model_class):
     entry = json.loads(request.data)
     entryId = entry[formId]
-    entry = Incomes.query.get(entryId)
+    entry = model_class.query.get(entryId)
 
     if entry:
         db.session.delete(entry)
         db.session.commit()
     return jsonify({})            
 
-# Validate | Redirect
-def edit_entry(entryId, model_class, formType, redirect_addr, has_category=True):
+def edit_entry(entryId, model_class, formType, has_category=True):
     entry = model_class.query.get(entryId)
     form = formType(obj=entry)
 
     if form.validate_on_submit():
-        entry, entry.name, entry.category, entry.amount = run_validation(form, model_class, has_category)
-        db.session.commit()
-        flash(f'Entry updated: {entry.name} ({entry.category}) - £{entry.amount:.2f}', SUCCESS)
-    return form, entry
+        
+        if entry is not None:  
+            tmp1 = validate_tablein(form.name.data)
+            if tmp1 is not False:
+                entry.name = tmp1
 
+            tmp3 = validate_userin(form.amount.data)
+            if tmp3 is not False:
+                entry.amount = tmp3
+
+            entry.name = tmp1  #form.name.data
+            entry.amount = tmp3  #form.amount.data
+            
+            if has_category:
+                entry.category = form.category.data
+                category = entry.category
+            else:
+                category = ''
+
+        db.session.commit()
+        flash(f'Entry updated: {entry.name} ({category}) - £{entry.amount:.2f}', SUCCESS)
+        return form, entry, True
+
+    return form, entry, False
+
+def summary_io_stats(model_class):
+    entries = model_class.query.all()
+
+    total = round(sum(entry.amount for entry in entries), 2)
+    # Store the largest entry dict by .amount, to access the .name
+    max_entry = max(entries, key=lambda entry: entry.amount)
+    
+    max_name = max_entry.name
+    max_value = round(max_entry.amount, 2)
+
+    category_counts = Counter(entry.category for entry in entries)
+    most_frequent = category_counts.most_common(1)[0][0]
+
+    return entries, total, max_name, max_value, most_frequent
+
+def summary_goal_stats():
+    goal = Goals.query.first()
+    if goal == None:
+        flash(f"You don't have a goal set!", "danger")
+        return new_goal()
+    else:
+        target_value, target_name = goal.amount, goal.name
+    
+        incomes, expenses = Incomes.query.all(), Expenses.query.all() 
+        total_income = sum(income.amount for income in incomes)
+        total_spend = sum(expense.amount for expense in expenses)
+
+        difference = total_income - total_spend
+        progress_value = round((difference/target_value), 2)
+
+        if difference < 0: 
+            flash(f"You're £{difference} away...", "danger")
+        elif progress_value >= 1:
+            progress_value = 1
+            extra = difference - target_value
+            flash(f"Target reached!\n You're £{extra} over budget!?", SUCCESS)
+        return goal, target_name, target_value, progress_value*100
 
 # Routes
     # Test page
@@ -196,66 +250,52 @@ def homepage():
 
 @app.route('/incomes')
 def incomes():
-    incomes = Incomes.query.all()
-    total_income = '%.2f' % sum(income.amount for income in incomes)
-    max_earning = max(incomes, key=lambda income: income.amount)
-    
-    max_income = '%.2f' % max_earning.amount
-    max_income_name = max_earning.name
+    """
+        incomes = Incomes.query.all()
+        total_income = '%.2f' % sum(income.amount for income in incomes)
+        max_earning = max(incomes, key=lambda income: income.amount)
+        
+        max_income = '%.2f' % max_earning.amount
+        max_income_name = max_earning.name
 
-    category_counts = Counter(income.category for income in incomes)
-    most_frequent_income = category_counts.most_common(1)[0][0]
-
-    return render_template('incomes.html', title='Incomes', 
-        incomes=incomes, total_income=total_income,
-        max_income=max_income, max_income_name=max_income_name, 
-        most_frequent_income=most_frequent_income)
+        category_counts = Counter(income.category for income in incomes)
+        most_frequent_income = category_counts.most_common(1)[0][0]
+    """
+    v1, v2, v3, v4, v5 = summary_io_stats(Incomes)
+    return render_template('incomes.html', title='Incomes', incomes=v1, 
+        total_income=v2, max_income_name=v3,
+        max_income=v4, most_frequent_income=v5)
 
 @app.route('/expenses')
 def expenses():
-    expenses = Expenses.query.all()
-    total_spend = '%.2f' % sum(expense.amount for expense in expenses)
+    """
+        expenses = Expenses.query.all()
+        print("OH: ", expenses[0].amount)
+        total_spend = '%.2f' % sum(expense.amount for expense in expenses)
 
-    # Store the largest expense dict by .amount, to access the .name
-    max_expense = max(expenses, key=lambda expense: expense.amount)
-    
-    max_spend = '%.2f' % max_expense.amount
-    max_spend_name = max_expense.name
+        # Store the largest expense dict by .amount, to access the .name
+        max_expense = max(expenses, key=lambda expense: expense.amount)
+        
+        max_spend = '%.2f' % max_expense.amount
+        max_spend_name = max_expense.name
 
-    category_counts = Counter(expense.category for expense in expenses)
-    most_frequent_spend = category_counts.most_common(1)[0][0]
+        category_counts = Counter(expense.category for expense in expenses)
+        most_frequent_spend = category_counts.most_common(1)[0][0]
 
-    return render_template('expenses.html', title='Expenses', 
-        expenses=expenses, total_spend=total_spend, 
-        max_spend=max_spend, max_spend_name=max_spend_name, 
-        most_frequent_spend=most_frequent_spend)
+        return render_template('incomes.html', title='Incomes', incomes=v1, 
+            total_income=v2, max_income_name=v3,
+            max_income=v4, most_frequent_income=v5)
+    """
+    v1, v2, v3, v4, v5 = summary_io_stats(Expenses)
+    return render_template('expenses.html', title='Expenses', expenses=v1, 
+        total_spend=v2, max_spend_name=v3,
+        max_spend=v4, most_frequent_spend=v5)
 
 @app.route('/goal')
 def goal():
-    goal = Goals.query.first()
-    if goal == None:
-        flash(f"You don't have a goal set!", "danger")
-        return new_goal()
-    else:
-        target, target_name = goal.amount, goal.name
-    
-        incomes, expenses = Incomes.query.all(), Expenses.query.all() 
-        total_income = sum(income.amount for income in incomes)
-        total_spend = sum(expense.amount for expense in expenses)
-
-        difference = total_income - total_spend
-        progress_value = round((difference/target), 2)
-
-        # Set a default display value
-        if difference < 0: 
-            flash(f"You're £{difference} away...", "danger")
-        elif progress_value >= 1:
-            progress_value = 1
-            extra = difference - target
-            flash(f"Target reached!\n You're £{extra} over budget!?", SUCCESS)
-    return render_template('goal.html', title='Goal', 
-        progress_value=progress_value*100, 
-        target_name=target_name, target=target, goal=goal)
+    v1, v2, v3, v4 = summary_goal_stats()
+    return render_template('goal.html', title='Goal', goal=v1,
+        target_name=v2, target=v3, progress_value=v4)
 
 
 
@@ -293,7 +333,6 @@ def new_goal():
 def delete_income():
     return delete_entry('incomeId', Incomes)
 
-# Broken
 @app.route('/delete_expense', methods=['POST'])
 def delete_expense():
     return delete_entry('expenseId', Expenses)
@@ -312,16 +351,22 @@ def delete_goal():
 # Explain '/<int:incomeId>'
 @app.route('/edit_income/<int:incomeId>', methods=['GET', 'POST'])
 def edit_income(incomeId):
-    form, income = edit_entry(incomeId, Incomes, IncomeForm, 'incomes')
+    form, income, success = edit_entry(incomeId, Incomes, IncomeForm)
+    if success:
+        return redirect(url_for('incomes'))
     return render_template('edit_income.html', title='Edit Income', form=form, income=income)
 
 @app.route('/edit_expense/<int:expenseId>', methods=['GET', 'POST'])
 def edit_expense(expenseId):
-    form, expense = edit_entry(expenseId, Expenses, ExpenseForm, 'expenses')
+    form, expense, success = edit_entry(expenseId, Expenses, ExpenseForm)
+    if success:
+        return redirect(url_for('expenses'))
     return render_template('edit_expense.html', title='Edit Expense', form=form, expense=expense)
 
 @app.route('/edit_goal/<int:goalId>', methods=['GET', 'POST'])
 def edit_goal(goalId):
-    form, goal = edit_entry(goalId, Goals, GoalForm, 'goals', False)
+    form, goal, success = edit_entry(goalId, Goals, GoalForm, False)
+    if success:
+        return redirect(url_for('goal'))
     return render_template('edit_goal.html', title='Edit Goal', form=form, goal=goal)
 
