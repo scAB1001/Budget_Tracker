@@ -31,27 +31,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for expense in expenses %}
+                            {% if expenses %}
+                                {% for expense in expenses %}
+                                <tr>
+                                    <td>{{ expense.name }}</td>
+                                    <td>{{ expense.category }}</td>
+                                    <td style="text-align:center;">{{ expense.amount }}</td>
+
+                                    <td style="text-align:center;">
+                                        <button type="button" class="btn btn-warning rounded-pill"
+                                            onClick="editExpense({{ expense.id }})">
+                                            Edit Expense
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger rounded-pill"
+                                            onClick="deleteExpense({{ expense.id }})">
+                                            Delete Expense
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+                            {% else %}
                             <tr>
-                                <td>{{ expense.name }}</td>
-                                <td>{{ expense.category }}</td>
-                                <td style="text-align:center;">{{ expense.amount }}</td>
-
-                                <td style="text-align:center;">
-                                    <button type="button" class="btn btn-warning rounded-pill"
-                                        onClick="editExpense({{ expense.id }})">
-                                        Edit Expense
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger rounded-pill"
-                                        onClick="deleteExpense({{ expense.id }})">
-                                        Delete Expense
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </td>
-
+                                <td colspan="4" style="text-align:center;"><h3>No data here!</h3></td>
                             </tr>
-                            {% endfor %}
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -59,26 +65,27 @@
         </div>
     </div>
 
-    <!-- Summary Statistics -->
+    {% if expenses %}
     <div class="card">
         <div class="card-header" id="summaryHeading" style="background-color: #ecc6f3;">
             <h2 class="mb-0">
                 <button type="button" class="btn btn-primary rectangle" data-toggle="collapse" data-target="#summaryCollapse"
-                    aria-expanded="true" aria-controls="summaryCollapse">
-                    View Summary Statistics
-                </button>
-            </h2>
+                aria-expanded="true" aria-controls="summaryCollapse">
+                View Summary Statistics
+            </button>
+        </h2>
         </div>
-
+        
         <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#expensesAccordion" style="background-color: #ecc6f3;">
             <div class="card-body">
                 <p>Your total expenditure: £{{ total_spend }}</p>
                 <p>You spent the largest amount at a time on... {{ max_spend_name }} - £{{ max_spend }}</p>
                 <p>You frequently paid in this area... {{ most_frequent_spend }}</p>
-
+                
             </div>
         </div>
     </div>
+    {% endif %}
 
 </div>
 

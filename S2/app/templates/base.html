@@ -49,8 +49,10 @@
             Goal
           </a>
           <div class="dropdown-menu" aria-labelledby="goalDropdown">
-            <a class="dropdown-item" href="/goal">View All</a>
-            <a class="dropdown-item" href="/new_goal">New Goal</a>
+            <a class="dropdown-item" href="/goal">View</a>
+            {% if goal_exists == False %}
+              <a class="dropdown-item" href="/new_goal">New Goal</a>
+            {% endif %}
           </div>
       </div>
     </div>

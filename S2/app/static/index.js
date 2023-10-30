@@ -34,14 +34,12 @@ function editGoal(goalId) {
   window.location.href = `/edit_goal/${goalId}`;
 }
 
-function show(state, eId) {
+function show(eId) {
   var x = document.getElementById(eId);
-  if (state != None) {
-    x.style.display = "block";
-  }
+  x.style.display = "block";
 }
 
 function updateProgressBar(value) {
-  var progressBar = document.getElementById("myProgressBar");
+  var progressBar = document.getElementById("ProgressBar");
   progressBar.style.width = value + "%";
 }
