@@ -118,19 +118,23 @@ def edit_entry(entryId, model_class, formType, has_category=True):
     return form, entry, False
 
 def summary_io_stats(model_class):
+    print(f'\n {model_class}: {type(model_class)} \n')
     entries = model_class.query.all()
+    if entries == None:
+        flash(f"You don't have any data!", "danger")
+        return False
+    else:
+        total = round(sum(entry.amount for entry in entries), 2)
+        # Store the largest entry dict by .amount, to access the .name
+        max_entry = max(entries, key=lambda entry: entry.amount)
+        
+        max_name = max_entry.name
+        max_value = round(max_entry.amount, 2)
 
-    total = round(sum(entry.amount for entry in entries), 2)
-    # Store the largest entry dict by .amount, to access the .name
-    max_entry = max(entries, key=lambda entry: entry.amount)
-    
-    max_name = max_entry.name
-    max_value = round(max_entry.amount, 2)
+        category_counts = Counter(entry.category for entry in entries)
+        most_frequent = category_counts.most_common(1)[0][0]
 
-    category_counts = Counter(entry.category for entry in entries)
-    most_frequent = category_counts.most_common(1)[0][0]
-
-    return entries, total, max_name, max_value, most_frequent
+        return entries, total, max_name, max_value, most_frequent
 
 def summary_goal_stats():
     goal = Goals.query.first()
@@ -147,7 +151,7 @@ def summary_goal_stats():
         difference = total_income - total_spend
         progress_value = round((difference/target_value), 2)
 
-        if difference < 0: 
+        if difference <= 0: 
             flash(f"You're £{difference} away...", "danger")
         elif progress_value >= 1:
             progress_value = 1
@@ -192,61 +196,81 @@ def progress_bar():
 # Address homepage and stat generation
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
-    incomes = Incomes.query.all()
-    if incomes != None:
-        total_income = '%.2f' % sum(income.amount for income in incomes)
-        max_earning = max(incomes, key=lambda income: income.amount)
-        
-        max_income = '%.2f' % max_earning.amount
-        max_income_name = max_earning.name
+    # Incomes as i
+    i1, i2, i3, i4, i5 = summary_io_stats(Incomes)
 
-        category_counts = Counter(income.category for income in incomes)
-        most_frequent_income = category_counts.most_common(1)[0][0]
+    # Expenses as e
+    e1, e2, e3, e4, e5 = summary_io_stats(Expenses)
 
-    ##
-    expenses = Expenses.query.all()
-    if expenses != None:
-        total_spend = '%.2f' % sum(expense.amount for expense in expenses)
-
-        # Store the largest expense dict by .amount, to access the .name
-        max_expense = max(expenses, key=lambda expense: expense.amount)
-        
-        max_spend = '%.2f' % max_expense.amount
-        max_spend_name = max_expense.name
-
-        category_counts = Counter(expense.category for expense in expenses)
-        most_frequent_spend = category_counts.most_common(1)[0][0]
-    
-    ##
-    goal = Goals.query.first()
-    if goal == None:
-        flash(f"You don't have a goal set!", "danger")
-        goal = "You have no goal!"
-    else:
-        target, target_name = goal.amount, goal.name
-    
-        incomes, expenses = Incomes.query.all(), Expenses.query.all() 
-        total_income = '%.2f' % sum(income.amount for income in incomes)
-        total_spend = '%.2f' % sum(expense.amount for expense in expenses)
-
-        difference = float(total_income) - float(total_spend)        
-        progress_value = round((difference/target), 2)
-        if difference < 0: 
-            progress_value = 0
-        elif progress_value >= 1:
-            progress_value = 1
-            extra = difference - target
+    # Goal as g
+    g1, g2, g3, g4 = summary_goal_stats()
 
     return render_template('homepage.html', title='Homepage',
-        incomes=incomes, expenses=expenses, 
-        target=target, target_name=target_name,
-        total_income=float(total_income), total_spend=float(total_spend),
-        max_income=max_income, max_income_name=max_income_name, 
-        most_frequent_income=most_frequent_income,
-        max_spend=max_spend, max_spend_name=max_spend_name, 
-        most_frequent_spend=most_frequent_spend, 
-        progress_value=progress_value*100
-    )
+            incomes=i1, expenses=e1,
+            
+            total_income=i2, total_spend=e2,
+            max_income_name=i3, max_spend_name=e4, target_name=g2,
+            max_income=i4, max_spend=e4, target=g3, 
+            
+            most_frequent_income=i5,
+            most_frequent_spend=e5, 
+            progress_value=g4)
+    """
+        incomes = Incomes.query.all()
+        if incomes != None:
+            total_income = '%.2f' % sum(income.amount for income in incomes)
+            max_earning = max(incomes, key=lambda income: income.amount)
+            
+            max_income = '%.2f' % max_earning.amount
+            max_income_name = max_earning.name
+
+            category_counts = Counter(income.category for income in incomes)
+            most_frequent_income = category_counts.most_common(1)[0][0]
+
+        expenses = Expenses.query.all()
+        if expenses != None:
+            total_spend = '%.2f' % sum(expense.amount for expense in expenses)
+
+            # Store the largest expense dict by .amount, to access the .name
+            max_expense = max(expenses, key=lambda expense: expense.amount)
+            
+            max_spend = '%.2f' % max_expense.amount
+            max_spend_name = max_expense.name
+
+            category_counts = Counter(expense.category for expense in expenses)
+            most_frequent_spend = category_counts.most_common(1)[0][0]
+        
+        goal = Goals.query.first()
+        if goal == None:
+            flash(f"You don't have a goal set!", "danger")
+            goal = "You have no goal!"
+        else:
+            target, target_name = goal.amount, goal.name
+        
+            incomes, expenses = Incomes.query.all(), Expenses.query.all() 
+            total_income = '%.2f' % sum(income.amount for income in incomes)
+            total_spend = '%.2f' % sum(expense.amount for expense in expenses)
+
+            difference = float(total_income) - float(total_spend)        
+            progress_value = round((difference/target), 2)
+            if difference < 0: 
+                progress_value = 0
+            elif progress_value >= 1:
+                progress_value = 1
+                extra = difference - target
+
+        return render_template('homepage.html', title='Homepage',
+            incomes=incomes, expenses=expenses, 
+            target=target, target_name=target_name,
+            total_income=float(total_income), total_spend=float(total_spend),
+            max_income=max_income, max_income_name=max_income_name, 
+            most_frequent_income=most_frequent_income,
+            max_spend=max_spend, max_spend_name=max_spend_name, 
+            most_frequent_spend=most_frequent_spend, 
+            progress_value=progress_value*100
+        )
+    """
+
 
 @app.route('/incomes')
 def incomes():
