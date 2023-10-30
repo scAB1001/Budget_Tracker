@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Progress Bar</h1>
-<link rel="stylesheet" href="style.css">
+<h1>TESTING</h1>
 <br>
 
 <div class="Summary" style="align-items: center;">
     <!-- Progress bar -->
-    <div class="progress-container">
+    <button onclick="show('progress-container')">Try it</button>
+    <div class="progress-container" id="progress-container" >
         <div class="progress-bar" id="myProgressBar">You're {{ progress_value }}% of the way there!</div>
     </div>
 
@@ -22,17 +22,6 @@
     </button>
 </div>
 
-<script>
-    var progress_value = {{ progress_value }};
+<script>updateProgressBar(80)</script>
 
-    function updateProgressBar() {
-        var progressBar = document.getElementById("myProgressBar");
-        progressBar.style.width = progress_value + "%";
-    }
-
-    window.onload = updateProgressBar;
-</script>
-
-
-</body>
 {% endblock %}

@@ -3,10 +3,15 @@ body {
     text-align: center;
     background: rgb(34, 193, 195);
     background: rgb(34, 193, 195);
-        background: linear-gradient(0deg, rgba(34, 193, 195, 1) 16%, rgba(115, 45, 253, 1) 100%);
+    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 16%, rgba(115, 45, 253, 1) 100%);
     font-family: "Everson Mono";
     font-size: 125%;
     font-size-adjust: 0.58;
+}
+
+/* Override Bootstrap's card-header class */
+.card-header {
+    background-color: #e093ee;;
 }
 
 .center {
@@ -14,6 +19,8 @@ body {
     text-align: center;
 }
 
+
+/* Override Bootstrap's .hover-highlight:hover class */
 .hover-highlight:hover {
     background-color: #af27f9;
 }
@@ -31,10 +38,12 @@ button.bg-primary:hover {
     background-color: #124d8c !important;
 }
 
-/* Goal  display */
+/* Goal progress display */
 .progress-container {
+    /*Start hidden*/
+    display: none;
     align-items: center;
-    width: 100%;
+    width: 80%;
     background-color: #ea7908c5;
     border: 3px solid pink;
 }

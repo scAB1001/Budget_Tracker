@@ -6,7 +6,7 @@
 <element class="home-body">
     <div id="incomesAccordion">
         <div class="card" color="black">
-            <div class="card-header" id="summaryHeading" style="background-color: #ecc6f3;">
+            <div class="card-header" id="summaryHeading">
                 <h2 class="mb-0">
                     <button type="button" class="btn btn-primary rectangle" data-toggle="collapse"
                         data-target="#summaryCollapse" aria-expanded="true" aria-controls="summaryCollapse">
@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <p>Your total income: £{{ total_income }}</p>
                     <p>Your largest earning was... {{ max_income_name }} - £{{ max_income }}</p>
-                    <p>You frequently earn in this area... {{ most_frequent_income }}</p>
+                    <p>You frequently earn in this area... "{{ most_frequent_income }}"</p>
 
                 </div>
                 <div id="expensesAccordion">

@@ -6,6 +6,7 @@ function deleteIncome(incomeId) {
     window.location.href = "/incomes";
   });
 }
+
 function deleteExpense(expenseId) {
   fetch("/delete_expense", {
     method: "POST",
@@ -24,26 +25,23 @@ function deleteGoal(goalId) {
 }
 
 function editIncome(incomeId) {
-    window.location.href = `/edit_income/${incomeId}`;
+  window.location.href = `/edit_income/${incomeId}`;
 }
 function editExpense(expenseId) {
-    window.location.href = `/edit_expense/${expenseId}`;
+  window.location.href = `/edit_expense/${expenseId}`;
 }
 function editGoal(goalId) {
-    window.location.href = `/edit_goal/${goalId}`;
+  window.location.href = `/edit_goal/${goalId}`;
 }
 
-function myFunction(eId) {
+function show(state, eId) {
   var x = document.getElementById(eId);
-  if (x.style.display === "none") {
+  if (state != None) {
     x.style.display = "block";
-  } else {
-    x.style.display = "none";
   }
 }
 
 function updateProgressBar(value) {
-    var progressBar = document.getElementById("myProgressBar");
-    progressBar.style.width = value + "%";
-    window.onload = updateProgressBar;
+  var progressBar = document.getElementById("myProgressBar");
+  progressBar.style.width = value + "%";
 }
