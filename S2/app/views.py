@@ -18,7 +18,7 @@ DANGER, SUCCESS = 'danger', 'success'
 def update_db(entry):
     try:
         db.session.add(entry)
-        db.session.commit()#;print("\nSuccessfully updated db\n")
+        db.session.commit()
     except Exception:
         db.session.rollback()
         flash(f"An error occurred while adding this entry.", DANGER)
@@ -27,10 +27,10 @@ def validate_userin(value, max_value=1000000):
     try:
         value = float(value)
         if value < 0 or value > max_value:
-            flash("Amount must be between 0 and 1,000,000.", DANGER)#; print(f"\nERR: max_value\n")
+            flash("Amount must be between 0 and 1,000,000.", DANGER)
             return False
     except ValueError:
-        flash("Input must be a number.", DANGER)#; print(f"\nERR: float conversion\n")
+        flash("Input must be a number.", DANGER)
         return False
 
     return value
@@ -38,10 +38,10 @@ def validate_userin(value, max_value=1000000):
 def validate_tablein(value, max_length=100):
     if isinstance(value, str):
         if len(value) > max_length:
-            flash("Input string is too long.", DANGER); print(f"\nERR: string length\n")
+            flash("Input string is too long.", DANGER)
             return False
     elif isinstance(value, int):
-        value = float(value); print(f"\nERR: integer conversion\n")
+        value = float(value)
     
     return value
 
@@ -59,7 +59,7 @@ def run_validation(form, model_class, has_category):
             entry = model_class(name=name, category=category, amount=amount)
         else:
             category = ''
-            entry = model_class(name=name, amount=amount)#; print(f'\nNO CATEGORY\n')
+            entry = model_class(name=name, amount=amount)
 
     return entry, name, category, amount
 
@@ -71,7 +71,7 @@ def new_entry(form, model_class, has_category=True):
             return 2
 
         success_message = f'Entry added: "{name}" ({category}) - £{amount:.2f}'
-        update_db(entry)#; print(0)
+        update_db(entry)
         flash(success_message, SUCCESS)
         return True
 
@@ -142,14 +142,13 @@ def summary_goal_stats():
         return 0, 0, 0, 0
     else:
         target_value, target_name = goal.amount, goal.name
-        print(target_value)
     
         incomes, expenses = Incomes.query.all(), Expenses.query.all() 
         total_income = sum(income.amount for income in incomes)
         total_spend = sum(expense.amount for expense in expenses)
 
-        difference = total_income - total_spend; print(difference)
-        progress_value = round((difference/target_value), 2); print(progress_value)
+        difference = total_income - total_spend
+        progress_value = round((difference/target_value), 2)
 
         if difference <= 0: 
             # Negative progress
@@ -166,11 +165,12 @@ def goal_exists():
     return True
 
 
+
 # Routes
-    # Test page
+    # Test pages
 @app.route('/a')
 def progress_bar():
-    goal = Goals.query.first()#; print(f'\n{goal}: is of type{type(goal)}')
+    goal = Goals.query.first()
     if goal == None:
         goal = {"HyundaiFrX_10":16250}
     
@@ -181,9 +181,7 @@ def progress_bar():
 
     difference = total_income - total_spend
     progress_value = round((difference/target), 2)
-    #print(progress_value, '\n')
-
-    # Set a default display value
+    
     if difference < 0: 
         pass
     elif progress_value >= 1:
@@ -196,6 +194,10 @@ def progress_bar():
         target=target,
         goal_exists=goal_exists())
 
+@app.route('/x')
+def testing():
+    return render_template('x.html', title='Testing')
+
 
 
 """
@@ -203,7 +205,6 @@ def progress_bar():
     View entries
 
 """
-# Address homepage and stat generation
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
     # Incomes as i
@@ -227,7 +228,6 @@ def homepage():
             
             most_frequent_income=i5, most_frequent_spend=e5, 
             goal_exists=goal_exists(), progress_value=g4)
-
 
 @app.route('/incomes')
 def incomes():

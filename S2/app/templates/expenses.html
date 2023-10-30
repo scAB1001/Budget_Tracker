@@ -1,19 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 
-<!--IF NO EXPENSES EXIST JUST SAY THAT - also use block content stuff-->
 <h1>Expenses</h1>
 
 <div id="expensesAccordion">
-
-    <!-- Collapsible Expense Table -->
     <div class="card">
         <div class="card-header" id="expensesHeading" style="background-color: #ecc6f3;">
             <h2 class="mb-0">
-                <button type="button" class="btn btn-primary rectangle" data-toggle="collapse" data-target="#expensesCollapse"
-                    aria-expanded="true" aria-controls="expensesCollapse">
+                <button class="btnShift" data-toggle="collapse" data-target="#expensesCollapse"
+                    aria-expanded="true" aria-controls="expensesCollapse"><span>
                     View Expenses
-                </button>
+                </span></button>
             </h2>
         </div>
 
@@ -69,10 +66,10 @@
     <div class="card">
         <div class="card-header" id="summaryHeading" style="background-color: #ecc6f3;">
             <h2 class="mb-0">
-                <button type="button" class="btn btn-primary rectangle" data-toggle="collapse" data-target="#summaryCollapse"
-                aria-expanded="true" aria-controls="summaryCollapse">
+                <button class="btnShift" data-toggle="collapse" data-target="#summaryCollapse"
+                aria-expanded="true" aria-controls="summaryCollapse"><span>
                 View Summary Statistics
-            </button>
+            </span></button>
         </h2>
         </div>
         

@@ -44,6 +44,13 @@ function hide(eId) {
   x.style.display = "none";
 }
 
+function indicateScroll(eId) {
+  var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  var scrolled = (winScroll / height) * 100;
+  document.getElementById(eId).style.width = scrolled + "%";
+}
+
 function updateProgressBar(value) {
   var progressBar = document.getElementById("ProgressBar");
   progressBar.style.width = value + "%";
