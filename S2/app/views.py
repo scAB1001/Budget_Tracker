@@ -139,7 +139,6 @@ def summary_io_stats(model_class):
 def summary_goal_stats():
     goal = Goals.query.first()
     if goal == None:
-        flash(f"You don't have a goal set!", DANGER)
         return 0, 0, 0, 0
     else:
         target_value, target_name = goal.amount, goal.name
@@ -228,61 +227,6 @@ def homepage():
             
             most_frequent_income=i5, most_frequent_spend=e5, 
             goal_exists=goal_exists(), progress_value=g4)
-    """
-        incomes = Incomes.query.all()
-        if incomes != None:
-            total_income = '%.2f' % sum(income.amount for income in incomes)
-            max_earning = max(incomes, key=lambda income: income.amount)
-            
-            max_income = '%.2f' % max_earning.amount
-            max_income_name = max_earning.name
-
-            category_counts = Counter(income.category for income in incomes)
-            most_frequent_income = category_counts.most_common(1)[0][0]
-
-        expenses = Expenses.query.all()
-        if expenses != None:
-            total_spend = '%.2f' % sum(expense.amount for expense in expenses)
-
-            # Store the largest expense dict by .amount, to access the .name
-            max_expense = max(expenses, key=lambda expense: expense.amount)
-            
-            max_spend = '%.2f' % max_expense.amount
-            max_spend_name = max_expense.name
-
-            category_counts = Counter(expense.category for expense in expenses)
-            most_frequent_spend = category_counts.most_common(1)[0][0]
-        
-        goal = Goals.query.first()
-        if goal == None:
-            flash(f"You don't have a goal set!", DANGER)
-            goal = "You have no goal!"
-        else:
-            target, target_name = goal.amount, goal.name
-        
-            incomes, expenses = Incomes.query.all(), Expenses.query.all() 
-            total_income = '%.2f' % sum(income.amount for income in incomes)
-            total_spend = '%.2f' % sum(expense.amount for expense in expenses)
-
-            difference = float(total_income) - float(total_spend)        
-            progress_value = round((difference/target), 2)
-            if difference < 0: 
-                progress_value = 0
-            elif progress_value >= 1:
-                progress_value = 1
-                extra = difference - target
-
-        return render_template('homepage.html', title='Homepage',
-            incomes=incomes, expenses=expenses, 
-            target=target, target_name=target_name,
-            total_income=float(total_income), total_spend=float(total_spend),
-            max_income=max_income, max_income_name=max_income_name, 
-            most_frequent_income=most_frequent_income,
-            max_spend=max_spend, max_spend_name=max_spend_name, 
-            most_frequent_spend=most_frequent_spend, 
-            progress_value=progress_value*100
-        )
-    """
 
 
 @app.route('/incomes')
@@ -314,19 +258,25 @@ def goal():
 """
 @app.route('/new_income', methods=['GET', 'POST'])
 def new_income():
+    title = 'New Income'
     form = IncomeForm()
+
     if new_entry(form, Incomes):
         return redirect(url_for('incomes'))
-    return render_template('new_income.html', title='New Income', 
-        form=form, goal_exists=goal_exists())
+
+    return render_template('modify_entry.html', title=title, form=form, 
+        goal_exists=goal_exists(), action=title, has_category=True)
 
 @app.route('/new_expense', methods=['GET', 'POST'])
 def new_expense():
+    title = 'New Expense'
     form = ExpenseForm()
+
     if new_entry(form, Expenses):
         return redirect(url_for('expenses'))
-    return render_template('new_expense.html', title='New Expense', 
-        form=form, goal_exists=goal_exists())
+
+    return render_template('modify_entry.html', title=title, form=form, 
+        goal_exists=goal_exists(), action=title, has_category=True)
 
 @app.route('/new_goal', methods=['GET', 'POST'])
 def new_goal():
@@ -334,11 +284,13 @@ def new_goal():
         flash("A goal already exists. You cannot add a new one.", 'danger')
         return redirect(url_for('goal'))
 
+    title = 'New Goal'
     form = GoalForm()
     if new_entry(form, Goals, False):
         return redirect(url_for('goal'))
 
-    return render_template('new_goal.html', title='New Goal', form=form)
+    return render_template('modify_entry.html', title=title, form=form, 
+        action=title, has_category=False)
 
 
 
@@ -369,25 +321,37 @@ def delete_goal():
 # Explain '/<int:incomeId>'
 @app.route('/edit_income/<int:incomeId>', methods=['GET', 'POST'])
 def edit_income(incomeId):
+    title = 'Edit Income'
     form, income, success = edit_entry(incomeId, Incomes, IncomeForm)
+
     if success:
         return redirect(url_for('incomes'))
-    return render_template('edit_income.html', title='Edit Income', 
-        form=form, income=income, goal_exists=goal_exists())
+
+    return render_template('modify_entry.html', title=title, form=form, 
+        income=income, goal_exists=goal_exists(),
+        action=title, has_category=True)
 
 @app.route('/edit_expense/<int:expenseId>', methods=['GET', 'POST'])
 def edit_expense(expenseId):
+    title = 'Edit Expense'
     form, expense, success = edit_entry(expenseId, Expenses, ExpenseForm)
+
     if success:
         return redirect(url_for('expenses'))
-    return render_template('edit_expense.html', title='Edit Expense', 
-        form=form, expense=expense, goal_exists=goal_exists())
+
+    return render_template('modify_entry.html', title=title, form=form, 
+        expense=expense, goal_exists=goal_exists(),
+        action=title, has_category=True)
 
 @app.route('/edit_goal/<int:goalId>', methods=['GET', 'POST'])
 def edit_goal(goalId):
+    title = 'Edit Goal'
     form, goal, success = edit_entry(goalId, Goals, GoalForm, False)
+
     if success:
         return redirect(url_for('goal'))
-    return render_template('edit_goal.html', title='Edit Goal', 
-        form=form, goal=goal, goal_exists=goal_exists())
+
+    return render_template('modify_entry.html', title=title, form=form, 
+        goal=goal, goal_exists=goal_exists(),
+        action=title, has_category=False)
 

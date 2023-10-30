@@ -2,8 +2,8 @@ body {
     align-items: center;
     text-align: center;
     background: rgb(34, 193, 195);
-    background: rgb(34, 193, 195);
     background: linear-gradient(0deg, rgba(34, 193, 195, 1) 16%, rgba(115, 45, 253, 1) 100%);
+    /* Monospace font */
     font-family: "Everson Mono";
     font-size: 125%;
     font-size-adjust: 0.58;
@@ -38,10 +38,12 @@ button.bg-primary:hover {
     background-color: #124d8c !important;
 }
 
+
 /* Goal progress display */
 .progress-container {
-    /*Start hidden*/
-    display: none;
+    /*Start hidden 
+    display: none;*/
+    
     align-items: center;
     width: 80%;
     background-color: #ea7908c5;
@@ -53,4 +55,18 @@ button.bg-primary:hover {
     width: 10;
     height: 50px;   
     background-color: #b71a61;
+}
+
+#myProgress {
+    width: 100%;
+    background-color: #ddd;
+}
+
+#myBar {
+    width: 10%;
+    height: 30px;
+    background-color: #04AA6D;
+    text-align: center;
+    line-height: 30px;
+    color: white;
 }

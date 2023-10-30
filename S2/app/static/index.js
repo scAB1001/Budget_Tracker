@@ -39,6 +39,11 @@ function show(eId) {
   x.style.display = "block";
 }
 
+function hide(eId) {
+  var x = document.getElementById(eId);
+  x.style.display = "none";
+}
+
 function updateProgressBar(value) {
   var progressBar = document.getElementById("ProgressBar");
   progressBar.style.width = value + "%";

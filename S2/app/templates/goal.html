@@ -1,45 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Goals</h1>
+<h1>Goal</h1>
+
 <body>
+    <div class="Summary" style="align-items: center;">
+        {% if goal_exists %}
+            <div class="progress-container" id="ProgressContainer">
+                <script>show("ProgressContainer")</script>
+                <div class="progress-bar" id="ProgressBar">You're {{ progress_value }}% of the way there!</div>
+                <script>updateProgressBar(progress_value)</script>
+            </div>
 
-<div class="Summary" style="align-items: center;">
-    {% if goal_exists %}
-        <div class="progress-container" id="ProgressContainer">
-            <script>show("ProgressContainer")</script>
-            <div class="progress-bar" id="ProgressBar">You're {{ progress_value }}% of the way there!</div>
-            <script>updateProgressBar(progress_value)</script>
-        </div>
+            <p>"{{target_name}}" - £{{target}}</p>
+            <button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
+                Edit Goal
+                <i class="fas fa-pencil-alt"></i>
+            </button>
+            <button type="button" class="btn btn-danger rounded-pill" onClick="deleteGoal({{ goal.id }})">
+                Delete Goal
+                <span aria-hidden="true">&times;</span>
+            </button>
+        {% else %}
+        <script>hide("ProgressContainer")</script>
+        <tr>
+            <td colspan="4" style="text-align:center;">
+                <h3>You don't have a goal!</h3>
+            </td>
+        </tr>
+        {% endif %}
+    </div>
 
-        <p>"{{target_name}}" - £{{target}}</p>
-        <button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
-            Edit Goal
-            <i class="fas fa-pencil-alt"></i>
-        </button>
-        <button type="button" class="btn btn-danger rounded-pill" onClick="deleteGoal({{ goal.id }})">
-            Delete Goal
-            <span aria-hidden="true">&times;</span>
-        </button>
-    {% else %}
-    <tr>
-        <td colspan="4" style="text-align:center;">
-            <h3>You don't have a goal!</h3>
-        </td>
-    </tr>
-    {% endif %}
-</div>
-
-<div class="flash messages">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul class="flashes">
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-</div>
-
+    <div class="flash messages">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
 </body>
 {% endblock %}

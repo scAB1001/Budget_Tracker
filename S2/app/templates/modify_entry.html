@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Edit Income</h1>
+<h1>{{action}}</h1>
 
 <div>
     <form method="POST">
@@ -9,9 +9,11 @@
         <div class="form-group">
             {{ form.name.label }} {{ form.name }}
         </div>
+        {% if has_category %}
         <div class="form-group">
             {{ form.category.label }} {{ form.category }}
         </div>
+        {% endif %}
         <div class="form-group">
             {{ form.amount.label }} {{ form.amount }}
         </div>
@@ -30,8 +32,5 @@
     {% endif %}
     {% endwith %}
 </div>
-
-<script type="text/JavaScript" src="{{ url_for('static', filename='index.js') }}">
-</script>
 
 {% endblock %}

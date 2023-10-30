@@ -30,7 +30,6 @@ class ExpenseForm(FlaskForm):
         ('Insurance',               'Insurance'),
         ('Other',                   'Other')
     ], validators=[DataRequired()])
-    # NumberRange doesn't help with error checking either
     amount = FloatField('Amount', validators=[
         DataRequired(), 
         NumberRange(min=0.0, message="Please enter a valid float.")])
