@@ -168,35 +168,23 @@ def goal_exists():
 
 # Routes
     # Test pages
-@app.route('/a')
-def progress_bar():
-    goal = Goals.query.first()
-    if goal == None:
-        goal = {"HyundaiFrX_10":16250}
-    
-    target, target_name = goal.amount, goal.name
-    incomes, expenses = Incomes.query.all(), Expenses.query.all() 
-    total_income = sum(income.amount for income in incomes)
-    total_spend = sum(expense.amount for expense in expenses)
-
-    difference = total_income - total_spend
-    progress_value = round((difference/target), 2)
-    
-    if difference < 0: 
-        pass
-    elif progress_value >= 1:
-        progress_value = 1
-        extra = difference - target
-    return render_template('progress_bar.html', title='Progress Bar', 
-        goal=goal, 
-        progress_value=progress_value*100, 
-        target_name=target_name, 
-        target=target,
-        goal_exists=goal_exists())
-
 @app.route('/x')
 def testing():
-    return render_template('x.html', title='Testing')
+    goal = Goals.query.first()
+    progress_value = 0
+
+    if goal is not None:
+        target, target_name = goal.amount, goal.name
+
+        incomes, expenses = Incomes.query.all(), Expenses.query.all() 
+        total_income = sum(income.amount for income in incomes)
+        total_spend = sum(expense.amount for expense in expenses)
+
+        difference = total_income - total_spend
+        progress_value = round((difference/target), 2)*100; print(progress_value)
+    
+
+    return render_template('x.html', title='Testing', progress_value=int(progress_value))
 
 
 
@@ -258,8 +246,7 @@ def goal():
 """
 @app.route('/new_income', methods=['GET', 'POST'])
 def new_income():
-    title = 'New Income'
-    form = IncomeForm()
+    title, form = 'New Income', IncomeForm()
 
     if new_entry(form, Incomes):
         return redirect(url_for('incomes'))
@@ -269,8 +256,7 @@ def new_income():
 
 @app.route('/new_expense', methods=['GET', 'POST'])
 def new_expense():
-    title = 'New Expense'
-    form = ExpenseForm()
+    title, form = 'New Expense', ExpenseForm()
 
     if new_entry(form, Expenses):
         return redirect(url_for('expenses'))
@@ -284,8 +270,7 @@ def new_goal():
         flash("A goal already exists. You cannot add a new one.", 'danger')
         return redirect(url_for('goal'))
 
-    title = 'New Goal'
-    form = GoalForm()
+    title, form = 'New Goal', GoalForm()
     if new_entry(form, Goals, False):
         return redirect(url_for('goal'))
 

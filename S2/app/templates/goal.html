@@ -1,34 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Goal</h1>
 
 <body>
-    <div class="Summary" style="align-items: center;">
-        {% if goal_exists %}
-            <div class="progress-container" id="ProgressContainer">
-                <script>show("ProgressContainer")</script>
-                <div class="progress-bar" id="ProgressBar">You're {{ progress_value }}% of the way there!</div>
-                <script>updateProgressBar(progress_value)</script>
+    {% if goal_exists %}
+    <div class="flip-card" id="flipCard">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <script>show("flipCard")</script><br>
+                <br><br><h1>Flip To See Your Goal</h1>
             </div>
-
-            <p>"{{target_name}}" - £{{target}}</p>
-            <button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
-                Edit Goal
-                <i class="fas fa-pencil-alt"></i>
-            </button>
-            <button type="button" class="btn btn-danger rounded-pill" onClick="deleteGoal({{ goal.id }})">
-                Delete Goal
-                <span aria-hidden="true">&times;</span>
-            </button>
-        {% else %}
-        <script>hide("ProgressContainer")</script>
-        <tr>
-            <td colspan="4" style="text-align:center;">
-                <h3>You don't have a goal!</h3>
-            </td>
-        </tr>
-        {% endif %}
+            <div class="flip-card-back">
+                <h1>{{target_name}}</h1><br>
+                <br><br><h4>£{{target}}</h4>
+            </div>
+        </div>
     </div>
+    
+    <div class="progress-container" id="barBox">
+            <div id="bar"></div>
+        </div>
+        <script>show("barBox")</script>
+    </div><p></p>
+    <button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
+        Edit Goal
+        <i class="fas fa-pencil-alt"></i>
+    </button>
+    <button type="button" class="btn btn-danger rounded-pill" onClick="deleteGoal({{ goal.id }})">
+        Delete Goal
+        <span aria-hidden="true">&times;</span>
+    </button><br><br><br><br><br>
+    {% else %}
+    <script>hide("flipCard")</script>
+    <script>hide("barBox")</script>
+    <tr>
+        <td colspan="4" style="text-align:center;">
+            <h3>You don't have a goal!</h3>
+            <br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br>
+        </td>
+    </tr>
+    {% endif %}
 
     <div class="flash messages">
         {% with messages = get_flashed_messages() %}
@@ -41,5 +53,6 @@
         {% endif %}
         {% endwith %}
     </div>
+    <script>window.onload = function () { updateProgress('bar', {{ progress_value }}) };</script>
 </body>
 {% endblock %}

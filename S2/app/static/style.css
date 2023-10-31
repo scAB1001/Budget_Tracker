@@ -29,6 +29,7 @@ body {
     text-align: center;
 }
 
+
 /* Shift Button */
 .btnShift {
     border-radius: 4px;
@@ -48,6 +49,7 @@ body {
     transition: 0.5s;
 }
 
+/* Deal with animation of button */
 .btnShift span:after {
     content: '\00bb';
     position: absolute;
@@ -65,15 +67,7 @@ body {
     opacity: 1;
     right: 0;
 }
-/*
-.scroll-indicator {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background-color: #219cee;
-}*/
+
 
 /* Override Bootstrap's .hover-highlight:hover class */
 .hover-highlight:hover {
@@ -88,37 +82,9 @@ body {
     background-color: #116ac3 !important;
 }
 
-/* Goal progress display */
-.progress-container {
-    align-items: center;
-    width: 80%;
-    background-color: #ea7908c5;
-    border: 3px solid pink;
-}
-
-.progress-bar {
-    align-items: center;
-    width: 10;
-    height: 50px;   
-    background-color: #b71a61;
-}
-
-#myProgress {
-    width: 100%;
-    background-color: #ddd;
-}
-
-#myBar {
-    width: 10%;
-    height: 30px;
-    background-color: #04AA6D;
-    text-align: center;
-    line-height: 30px;
-    color: white;
-}
 
 /*Scroll indicator*/
-.headerz {
+.position {
     position: absolute;
     left: 40;
     margin: 0px auto 0 auto;
@@ -138,8 +104,70 @@ body {
     opacity: 0.7
 }
 
-/*
+/* Goal progress display */
+#barBox {
+    width: 100%;
+    background-color: #ddddddbb;
+}
 
-*/
+#bar {
+    width: 10%;
+    height: 50px;
+    background-color: #c48217 ;
+    text-align: center;
+    line-height: 50px;
+    color: white;
+}
 
 
+/* Card flip */
+.flip-card {
+    padding: 10px 0;
+    margin: 10px auto 0 auto;
+    
+    background-color: transparent;
+    width: 440px;
+    height: 520px;
+    perspective: 1000px;
+    /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back */
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+/* Horizontal flip after mouse hover */
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    padding: 45px;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* Style the front side */
+.flip-card-front {
+    padding: 200;
+    align-items: center;
+    background-color: rgb(189, 84, 238);
+    color: black;
+}
+
+/* Style the back */
+.flip-card-back {
+    background-color: rgb(29, 138, 248);
+    color: white;
+    transform: rotateY(180deg);
+}

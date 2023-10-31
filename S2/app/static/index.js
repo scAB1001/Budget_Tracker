@@ -6,7 +6,6 @@ function deleteIncome(incomeId) {
     window.location.href = "/incomes";
   });
 }
-
 function deleteExpense(expenseId) {
   fetch("/delete_expense", {
     method: "POST",
@@ -44,6 +43,28 @@ function hide(eId) {
   x.style.display = "none";
 }
 
+function updateProgress(eId, value) {
+  var i = 0;
+  if (i == 0) {
+    i = 1;
+    var elem = document.getElementById(eId);
+    var width = 10;
+    var id = setInterval(frame, 10);
+    
+    function frame() {
+      if (width >= value) {
+        clearInterval(id);
+        i = 0;
+      } else {
+        width++;
+        elem.style.width = width + "%";
+        elem.innerHTML = "You're " + width + "% of the way there!";
+      }
+    }
+
+  }
+}
+
 function indicateScroll(eId) {
   var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
   var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -51,7 +72,3 @@ function indicateScroll(eId) {
   document.getElementById(eId).style.width = scrolled + "%";
 }
 
-function updateProgressBar(value) {
-  var progressBar = document.getElementById("ProgressBar");
-  progressBar.style.width = value + "%";
-}

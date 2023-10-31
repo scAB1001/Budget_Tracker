@@ -2,11 +2,14 @@
 {% block content %}
 <body>
     <div class="scroll?">
-        <div class="headerz">
-            <div class="scroll-container1">
-                <div class="scroll-bar1" id="scrollBar"></div>
-            </div>
+        <p>Here</p>
+        <div id="load">
+            <div id="bar">0%</div>
         </div>
+        <p></p>
+        <button type="button" class="btn btn-success rectangle" onClick="move('bar', {{ progress_value }})">
+            X-button
+        <span aria-hidden="true">&times;</span></button>
 
         <div class="body-content">
             <p>Scroll Down to See The Effect</p>
@@ -37,6 +40,7 @@
     </div>
 
     
+    <script>window.onload = function () { move('bar', {{ progress_value }}) };</script>
     <script>window.onscroll = function () { indicateScroll("scrollBar") };</script>
 </body>
 {% endblock %}
