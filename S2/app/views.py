@@ -25,6 +25,68 @@ def update_db(entry):
         db.session.rollback()
         flash(f"An error occurred while adding this entry.", DANGER)
 
+# Format numbers to display as nice £x,xxx.xx
+def money_format(x):
+    from math import log10
+    """
+        Example cases
+        >>> money_format(1000001.949)   >>  '1,000,001.95'
+        >>> money_format(10000.9)       >>  '10,000.90'
+        >>> money_format(1000)          >>  '1,000.00'
+        >>> money_format(999)           >>  '999.00'
+    """
+    if x < 10:
+        return f'{x:.2f}'
+
+    # Split x (2 d.p.) into parts before and after the decimal point
+    p1, p2 = f'{x:.2f}'.split('.')
+
+    # Find the multiples of 3 of the base 10's exponent 
+    mult3 = log10(int(p1)) // 3
+
+    # Reverse the string to insert commas easily
+    revP1, limit = list(p1[::-1]), int(mult3*3)
+    
+    # Initialised to keep track of growing length
+    count = 0
+    # Loop from 10^3s, to 10^(n+1), comma every 3 orders of magnitude
+    for i in range(3, limit + 1, 3):
+        revP1.insert(i + count, ",")
+        count += 1
+
+    return f"{''.join(revP1)[::-1]}.{p2}"
+
+# Generates a list of n dictionaries to act as a temp db model 
+def gen_list_dict(n, has_category):
+    outer = []
+
+    inner = {'name': 0, 'amount': 0}
+    if has_category:
+        inner = {'name': 0, 'category': 0, 'amount': 0}
+    
+    # Iteratively append a deep copy of inner to access and update unique keys/values
+    for i in range(n):
+        outer.append(inner.copy())
+
+    return outer
+
+# Create a shallow copy of the model db and redefine 'amount'
+def redefined_amount(model_class, has_category=True):
+    # Get all table data from entries, store count
+    entries = model_class.query.all()
+    num_entries = len(entries)
+
+    # Generate a hollow list of dicts mimicking the model_class
+    tmp = gen_list_dict(num_entries, has_category)
+    
+    # Re-populate the dict values with actual amounts but formatted
+    for i in range(num_entries):
+        tmp[i]['name'] = entries[i].name
+        tmp[i]['category'] = entries[i].category
+        tmp[i]['amount'] = money_format(entries[i].amount)
+    
+    return tmp
+
 # Further validate user input for 'amount'
 def validate_userin(value, max_value=1000000):
     try:
@@ -151,16 +213,19 @@ def summary_io_stats(model_class):
         return 0, 0, 0, 0, 0
     
     else:
-        total = round(sum(entry.amount for entry in entries), 2)
+        total = money_format(sum(entry.amount for entry in entries))
         # Store the largest entry dict by .amount, to access the .name
         max_entry = max(entries, key=lambda entry: entry.amount)
         
         max_name = max_entry.name
-        max_value = round(max_entry.amount, 2)
+        max_value = money_format(max_entry.amount)
 
         # Finds the mode of category type
         category_counts = Counter(entry.category for entry in entries)
         most_frequent = category_counts.most_common(1)[0][0]
+        
+        # Changes amount key:value formatting
+        entries = redefined_amount(model_class)
 
         return entries, total, max_name, max_value, most_frequent
 
@@ -176,17 +241,20 @@ def summary_goal_stats():
         total_income = sum(income.amount for income in incomes)
         total_spend = sum(expense.amount for expense in expenses)
 
-        difference = total_income - total_spend
+        difference = abs(total_income - total_spend)
         progress_value = round((difference/target_value), 2)
 
         # Deal with values over 100%
         if progress_value >= 1:
             progress_value = 1
-            extra = round((difference - target_value), 2)
+            extra = money_format((difference - target_value))
             flash(f"Target reached! You're £{extra} over budget!", SUCCESS)
 
-        return goal, target_name, target_value, progress_value*100
+        target_value, difference = money_format(target_value), money_format(difference)
 
+        return goal, target_name, target_value, progress_value*100, difference
+
+# Check for an existing goal in the Goal db model
 def goal_exists():
     """
         Passed into all templates so that the option
@@ -203,27 +271,6 @@ def goal_exists():
 
 
 # Routes
-    # Test pages
-@app.route('/x', methods=['GET', 'POST'])
-def testing():
-    goal = Goals.query.first()
-    progress_value = 0
-
-    if goal is not None:
-        target, target_name = goal.amount, goal.name
-
-        incomes, expenses = Incomes.query.all(), Expenses.query.all() 
-        total_income = sum(income.amount for income in incomes)
-        total_spend = sum(expense.amount for expense in expenses)
-
-        difference = total_income - total_spend
-        progress_value = round((difference/target), 2)*100; print(progress_value)
-    
-    form = IncomeForm()
-
-    return render_template('x.html', title='Testing', progress_value=int(progress_value))
-
-
 """
     
     View entries
@@ -236,6 +283,7 @@ def homepage():
         Call stat methods, store return values to feed template.
 
     """
+    redefined_amount(Incomes)
     # Incomes as i
     i1, i2, i3, i4, i5 = summary_io_stats(Incomes)
 
@@ -243,15 +291,12 @@ def homepage():
     e1, e2, e3, e4, e5 = summary_io_stats(Expenses)
 
     # Goal as g
-    g1, g2, g3, g4 = summary_goal_stats()
-
-    # Other as o
-    o1 = round(abs(i2-e2), 2)
+    g1, g2, g3, g4, g5 = summary_goal_stats()
 
     return render_template('homepage.html', title='Homepage',
             incomes=i1, expenses=e1, goals=g1,
             
-            total_income=i2, total_spend=e2, difference=o1,
+            total_income=i2, total_spend=e2, difference=g5,
             max_income_name=i3, max_spend_name=e3, target_name=g2,
             max_income=i4, max_spend=e4, target=g3, 
             
@@ -276,7 +321,8 @@ def expenses():
 
 @app.route('/goal')
 def goal():
-    v1, v2, v3, v4 = summary_goal_stats()
+    # V5 is the difference between total income and expenses
+    v1, v2, v3, v4, v5 = summary_goal_stats()
     
     return render_template('goal.html', title='Goal', goal=v1,
         target_name=v2, target=v3, progress_value=v4, goal_exists=goal_exists())
