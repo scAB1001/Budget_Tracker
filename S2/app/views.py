@@ -102,8 +102,8 @@ def edit_entry(entryId, model_class, formType, has_category=True):
             if tmp3 is not False:
                 entry.amount = tmp3
 
-            entry.name = tmp1  #form.name.data
-            entry.amount = tmp3  #form.amount.data
+            entry.name = tmp1
+            entry.amount = tmp3
             
             if has_category:
                 entry.category = form.category.data
@@ -157,6 +157,7 @@ def summary_goal_stats():
             progress_value = 1
             extra = difference - target_value
             flash(f"Target reached!\n You're £{extra} over budget!?", SUCCESS)
+            
         return goal, target_name, target_value, progress_value*100
 
 def goal_exists():
@@ -185,7 +186,6 @@ def testing():
     
 
     return render_template('x.html', title='Testing', progress_value=int(progress_value))
-
 
 
 """

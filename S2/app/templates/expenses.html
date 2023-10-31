@@ -2,7 +2,17 @@
 {% block content %}
 
 <h1>Expenses</h1>
-
+<div class="flash messages">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
 <div id="expensesAccordion">
     <div class="card">
         <div class="card-header" id="expensesHeading" style="background-color: #ecc6f3;">
@@ -85,17 +95,4 @@
     {% endif %}
 
 </div>
-
-<div class="flash messages">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul class="flashes">
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-</div>
-
 {% endblock %}

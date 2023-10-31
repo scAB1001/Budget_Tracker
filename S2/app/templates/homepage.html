@@ -2,7 +2,17 @@
 {% block content %}
 
 <h1>Homepage</h1>
-
+<div class="flash messages">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
 <element class="home-body">
     <div id="incomesAccordion">
         <div class="card" color="black">
@@ -57,28 +67,18 @@
 
 
 {% if goal_exists %}
-<br><p><h3>"{{target_name}}: £{{target}}"</h3></p>
-<div class="center">
-    <div class="progress-container">
-        <div class="progress-bar" id="myProgressBar">You're {{ progress_value }}% of the way there!</div>
-    </div>
+<br><div class="dashed">
+    <p><h3>"{{target_name}}: £{{target}}"</h3></p>
+</div><br>
+
+<div class="progress-container" id="barBox">
+    <div id="bar"></div>
 </div>
+<script>show("barBox")</script>
 {% else %}
+<script>hide("barBox")</script>
 <p>You don't have a goal!</p>
 {% endif %}
 
-
-<div class="flash messages">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul class="flashes">
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-</div>
-
-<script>updateProgressBar(progress_value)</script>
+<script>window.onload = function () { updateProgress('bar', {{ progress_value }}) };</script>
 {% endblock %}  

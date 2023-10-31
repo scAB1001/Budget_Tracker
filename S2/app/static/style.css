@@ -5,7 +5,7 @@ body {
     background: linear-gradient(0deg, rgba(34, 193, 195, 1) 16%, rgba(115, 45, 253, 1) 100%);
     /* Monospace font */
     font-family: "Everson Mono";
-    font-size: 125%;
+    font-size: 150%;
     font-size-adjust: 0.58;
 }
 
@@ -13,6 +13,14 @@ body {
     padding: 10px 0;
     margin: 18px auto 0 auto;
     width: 80%;
+}
+
+.dashed {
+    padding: 0px 0px;
+    border: 6px dotted #a2047de9;
+    width: 40%;
+    border-radius: 2px;
+    margin: 0 auto;
 }
 
 /* Override Bootstrap's card and card-header class */
