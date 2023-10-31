@@ -13,8 +13,10 @@ from collections import Counter
     Helper variables and methods
 
 """
+# Flash message flags
 DANGER, SUCCESS = 'danger', 'success'
 
+# Attempts to stage and apply a commit to the db, else rollback the attempt
 def update_db(entry):
     try:
         db.session.add(entry)
@@ -23,29 +25,36 @@ def update_db(entry):
         db.session.rollback()
         flash(f"An error occurred while adding this entry.", DANGER)
 
+# Further validate user input for 'amount'
 def validate_userin(value, max_value=1000000):
     try:
         value = float(value)
         if value < 0 or value > max_value:
-            flash("Amount must be between 0 and 1,000,000.", DANGER)
             return False
     except ValueError:
-        flash("Input must be a number.", DANGER)
         return False
 
     return value
 
+# Further validate user input for 'name'
 def validate_tablein(value, max_length=100):
     if isinstance(value, str):
         if len(value) > max_length:
-            flash("Input string is too long.", DANGER)
             return False
-    elif isinstance(value, int):
-        value = float(value)
-    
     return value
 
+# Abstract method to run both name and amount validations
 def run_validation(form, model_class, has_category):
+    """
+        Allows the user to pass in any form or db model.
+        The Income and Expense form/db are the same so
+            logic is the same.
+        The Goal form/db is unique as it has no category field.
+            This is checked by a boolean value in args.
+
+        Values are set at 0 by default if validation fails.
+        The appropriate values needed to create the entry are returned.
+    """
     entry, name, category = 0, 0, 0
     amount = validate_userin(form.amount.data)
 
@@ -63,6 +72,7 @@ def run_validation(form, model_class, has_category):
 
     return entry, name, category, amount
 
+# Abstract method to make changes from the form to the db
 def new_entry(form, model_class, has_category=True):
     if form.validate_on_submit():
         entry, name, category, amount = run_validation(form, model_class, has_category)
@@ -73,21 +83,37 @@ def new_entry(form, model_class, has_category=True):
         success_message = f'Entry added: "{name}" ({category}) - £{amount:.2f}'
         update_db(entry)
         flash(success_message, SUCCESS)
-        return True
+        return True  
 
+    # If unsuccessful
     return False
 
+# Abstract method to delete any form entry from any associated db model
 def delete_entry(formId, model_class):
+    """
+
+        Interacts with json method do delete an entry
+    
+    """
     entry = json.loads(request.data)
+    # Store formId specific entry
     entryId = entry[formId]
+    # Store entryId specific db row data
     entry = model_class.query.get(entryId)
 
+    # If it exists, delete from the database and return json method call.
     if entry:
         db.session.delete(entry)
         db.session.commit()
     return jsonify({})            
 
+# Abstract method to call upon an from entry in the db and modify it.
 def edit_entry(entryId, model_class, formType, has_category=True):
+    """
+
+        Interacts with json method do edit an entry
+    
+    """
     entry = model_class.query.get(entryId)
     form = formType(obj=entry)
 
@@ -117,6 +143,7 @@ def edit_entry(entryId, model_class, formType, has_category=True):
 
     return form, entry, False
 
+# Abstract method to generate db tbl stats for classes with category
 def summary_io_stats(model_class):
     entries = model_class.query.all()
     if entries == []:
@@ -131,11 +158,13 @@ def summary_io_stats(model_class):
         max_name = max_entry.name
         max_value = round(max_entry.amount, 2)
 
+        # Finds the mode of category type
         category_counts = Counter(entry.category for entry in entries)
         most_frequent = category_counts.most_common(1)[0][0]
 
         return entries, total, max_name, max_value, most_frequent
 
+# Specific method for generating the Goal tbl's stats
 def summary_goal_stats():
     goal = Goals.query.first()
     if goal == None:
@@ -150,10 +179,8 @@ def summary_goal_stats():
         difference = total_income - total_spend
         progress_value = round((difference/target_value), 2)
 
-        if difference <= 0: 
-            # Negative progress
-            pass
-        elif progress_value >= 1:
+        # Deal with values over 100%
+        if progress_value >= 1:
             progress_value = 1
             extra = round((difference - target_value), 2)
             flash(f"Target reached! You're £{extra} over budget!", SUCCESS)
@@ -161,6 +188,14 @@ def summary_goal_stats():
         return goal, target_name, target_value, progress_value*100
 
 def goal_exists():
+    """
+        Passed into all templates so that the option
+            to add a second (new) goal is hidden and
+            the page cannot be navigated to.
+
+        Also acts as a condition to check for goal
+            data display (toggles hidden/shown).
+    """
     if Goals.query.first() == None:
         return False
     return True
@@ -196,6 +231,11 @@ def testing():
 """
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
+    """
+
+        Call stat methods, store return values to feed template.
+
+    """
     # Incomes as i
     i1, i2, i3, i4, i5 = summary_io_stats(Incomes)
 
@@ -221,6 +261,7 @@ def homepage():
 @app.route('/incomes')
 def incomes():
     v1, v2, v3, v4, v5 = summary_io_stats(Incomes)
+    
     return render_template('incomes.html', title='Incomes', incomes=v1, 
         total_income=v2, max_income_name=v3,
         max_income=v4, most_frequent_income=v5, goal_exists=goal_exists())
@@ -228,6 +269,7 @@ def incomes():
 @app.route('/expenses')
 def expenses():
     v1, v2, v3, v4, v5 = summary_io_stats(Expenses)
+    
     return render_template('expenses.html', title='Expenses', expenses=v1, 
         total_spend=v2, max_spend_name=v3,
         max_spend=v4, most_frequent_spend=v5, goal_exists=goal_exists())
@@ -235,6 +277,7 @@ def expenses():
 @app.route('/goal')
 def goal():
     v1, v2, v3, v4 = summary_goal_stats()
+    
     return render_template('goal.html', title='Goal', goal=v1,
         target_name=v2, target=v3, progress_value=v4, goal_exists=goal_exists())
 
@@ -247,6 +290,16 @@ def goal():
 """
 @app.route('/new_income', methods=['GET', 'POST'])
 def new_income():
+    """
+        Get and Post request actions are enabled.
+
+        Generate a new entry and if successful,
+            nav to view page for that form type.
+
+        action:     template variable
+        Is passed the title as 'new X' forms are
+            abstract and need a page heading. 
+    """
     title, form = 'New Income', IncomeForm()
 
     if new_entry(form, Incomes):
@@ -287,6 +340,10 @@ def new_goal():
 """
 @app.route('/delete_income', methods=['POST'])
 def delete_income():
+    """
+        Calls abstract method with entryId and db model
+            and returns jsonify{{}} result.
+    """
     return delete_entry('incomeId', Incomes)
 
 @app.route('/delete_expense', methods=['POST'])
@@ -304,9 +361,14 @@ def delete_goal():
     Edit entries
 
 """
-# Explain '/<int:incomeId>'
 @app.route('/edit_income/<int:incomeId>', methods=['GET', 'POST'])
 def edit_income(incomeId):
+    """
+
+        Interacts with json method do edit an entry-
+            which needs the unique entryId 
+    
+    """
     title = 'Edit Income'
     form, income, success = edit_entry(incomeId, Incomes, IncomeForm)
 

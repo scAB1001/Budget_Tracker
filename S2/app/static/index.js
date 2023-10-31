@@ -23,6 +23,7 @@ function deleteGoal(goalId) {
   });
 }
 
+/* Edit an entry, nav to specific entryId */
 function editIncome(incomeId) {
   window.location.href = `/edit_income/${incomeId}`;
 }
@@ -43,6 +44,7 @@ function hide(eId) {
   x.style.display = "none";
 }
 
+/* W3 schools progress bar animation */
 function updateProgress(eId, value) {
   var i = 0;
   if (i == 0) {
@@ -65,6 +67,7 @@ function updateProgress(eId, value) {
   }
 }
 
+/* W3 schools scroll indicator animation */
 function indicateScroll(eId) {
   var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
   var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
