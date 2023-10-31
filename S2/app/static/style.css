@@ -5,7 +5,7 @@ body {
     background: linear-gradient(0deg, rgba(34, 193, 195, 1) 16%, rgba(115, 45, 253, 1) 100%);
     /* Monospace font */
     font-family: "Everson Mono";
-    font-size: 150%;
+    font-size: 125%;
     font-size-adjust: 0.58;
 }
 
@@ -24,12 +24,32 @@ body {
 }
 
 /* Override Bootstrap's card and card-header class */
+.home-card {
+    margin: 0px auto 0 auto;
+    background-color: #eee893;
+    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.2), 0 24px 80px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 25px;
+    padding: 20px;
+    width: 94%;
+    height: 250px;
+}
+
+.goal-card {
+    margin: 0px auto 0 auto;
+    background-color: #eee893;
+    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.2), 0 24px 80px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 25px;
+    padding: 20px;
+    width: 90%;
+    height: 150px;
+}
+
 .card {
     box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.2), 0 24px 80px 0 rgba(0, 0, 0, 0.19);
 }
 
 .card-header {
-    background-color: #e093ee;;
+    background-color: #e093ee;
 }
 
 .center {
@@ -38,13 +58,14 @@ body {
 }
 
 
+/* W3 Schools Based */
 /* Shift Button */
 .btnShift {
     border-radius: 4px;
     background-color: #0081eb;
     border: none;
     color: #FFFFFF;
-    font-size: 18px;
+    font-size: 16px;
     padding: 8px;
     width: 180px;
     transition: all 0.6s;
@@ -91,6 +112,7 @@ body {
 }
 
 
+/* W3 Schools Based */
 /*Scroll indicator*/
 .position {
     position: absolute;
@@ -115,7 +137,7 @@ body {
 /* Goal progress display */
 #barBox {
     width: 100%;
-    background-color: #ddddddbb;
+    background-color: #b6aeaebb;
 }
 
 #bar {
@@ -124,7 +146,7 @@ body {
     background-color: #c48217 ;
     text-align: center;
     line-height: 50px;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 
@@ -150,6 +172,7 @@ body {
     transform-style: preserve-3d;
 }
 
+/* W3 Schools Based */
 /* Horizontal flip after mouse hover */
 .flip-card:hover .flip-card-inner {
     transform: rotateY(180deg);
@@ -169,13 +192,15 @@ body {
 .flip-card-front {
     padding: 200;
     align-items: center;
-    background-color: rgb(189, 84, 238);
+    background: rgb(131, 58, 180);
+    background: linear-gradient(0deg, rgba(131, 58, 180, 1) 0%, rgba(253, 59, 29, 1) 100%);
     color: black;
 }
 
 /* Style the back */
 .flip-card-back {
-    background-color: rgb(29, 138, 248);
+    background: rgb(244, 41, 130);
+    background: radial-gradient(circle, rgba(244, 41, 130, 1) 0%, rgba(232, 163, 82, 1) 69%);
     color: white;
     transform: rotateY(180deg);
 }

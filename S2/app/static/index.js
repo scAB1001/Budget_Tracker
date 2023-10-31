@@ -48,8 +48,8 @@ function updateProgress(eId, value) {
   if (i == 0) {
     i = 1;
     var elem = document.getElementById(eId);
-    var width = 10;
-    var id = setInterval(frame, 10);
+    var width = 0;
+    var id = setInterval(frame, 12);
     
     function frame() {
       if (width >= value) {

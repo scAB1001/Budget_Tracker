@@ -26,20 +26,21 @@
             </div>
         </div>
     </div>
-    
-    <div class="progress-container" id="barBox">
-            <div id="bar"></div>
+    <div class="goal-card">
+        <div class="progress-container" id="barBox">
+                <div id="bar"></div>
         </div>
-        <script>show("barBox")</script>
-    </div><p></p>
-    <button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
-        Edit Goal
-        <i class="fas fa-pencil-alt"></i>
-    </button>
-    <button type="button" class="btn btn-danger rounded-pill" onClick="deleteGoal({{ goal.id }})">
-        Delete Goal
-        <span aria-hidden="true">&times;</span>
-    </button><br><br><br><br><br>
+            <script>show("barBox")</script><p></p>
+            <button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
+                Edit Goal
+                <i class="fas fa-pencil-alt"></i>
+            </button>
+            <button type="button" class="btn btn-danger rounded-pill" onClick="deleteGoal({{ goal.id }})">
+                Delete Goal
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div><br><br><br><br><br>
     {% else %}
     <script>hide("flipCard")</script>
     <script>hide("barBox")</script>
@@ -52,7 +53,6 @@
         </td>
     </tr>
     {% endif %}
-
     
     <script>window.onload = function () { updateProgress('bar', {{ progress_value }}) };</script>
 </body>

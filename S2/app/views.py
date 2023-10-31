@@ -155,9 +155,9 @@ def summary_goal_stats():
             pass
         elif progress_value >= 1:
             progress_value = 1
-            extra = difference - target_value
-            flash(f"Target reached!\n You're £{extra} over budget!?", SUCCESS)
-            
+            extra = round((difference - target_value), 2)
+            flash(f"Target reached! You're £{extra} over budget!", SUCCESS)
+
         return goal, target_name, target_value, progress_value*100
 
 def goal_exists():
@@ -169,7 +169,7 @@ def goal_exists():
 
 # Routes
     # Test pages
-@app.route('/x')
+@app.route('/x', methods=['GET', 'POST'])
 def testing():
     goal = Goals.query.first()
     progress_value = 0
@@ -184,6 +184,7 @@ def testing():
         difference = total_income - total_spend
         progress_value = round((difference/target), 2)*100; print(progress_value)
     
+    form = IncomeForm()
 
     return render_template('x.html', title='Testing', progress_value=int(progress_value))
 

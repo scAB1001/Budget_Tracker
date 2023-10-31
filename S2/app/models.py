@@ -5,8 +5,8 @@ DT = datetime.utcnow()
 
 class Incomes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
-    category = db.Column(db.String(25), nullable=False)
+    name = db.Column(db.String(20), nullable=False)
+    category = db.Column(db.String(20), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=DT)
 
@@ -15,8 +15,8 @@ class Incomes(db.Model):
 
 class Expenses(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
-    category = db.Column(db.String(25), nullable=False)
+    name = db.Column(db.String(20), nullable=False)
+    category = db.Column(db.String(20), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=DT)
 
@@ -25,7 +25,7 @@ class Expenses(db.Model):
 
 class Goals(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=True)
+    name = db.Column(db.String(20), nullable=True)
     amount = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=DT)
 

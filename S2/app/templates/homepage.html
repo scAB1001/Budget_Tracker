@@ -26,8 +26,7 @@
             </div>
             <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#incomesAccordion"
             style="background-color: #ecc6f3;">
-                <h3>INCOMES</h3>
-                
+                <h3><u>INCOMES</u></h3>
                 <div class="card-body">
                 {% if incomes %}
                     <p>Your total income: £{{ total_income }}</p>
@@ -39,7 +38,7 @@
                 </div>
 
                 <div id="expensesAccordion">
-                    <h3>EXPENSES</h3>
+                    <h3><u>EXPENSES</u></h3>
                     <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#expensesAccordion"
                         style="background-color: #ecc6f3;">
                         <div class="card-body">
@@ -55,7 +54,7 @@
                 </div>
                 {% if incomes %}
                     {% if expenses %}
-                    <p>---------------------------------------------------------------------</p>
+                    ---------------------------------------------------------------------
                     <p>The difference between your incomes and expenditures: £{{difference}}</p>
                     {% endif %}
                 {% else %}
@@ -63,22 +62,22 @@
                 {% endif %}
             </div>
     </div>
-</element>
+</element><br>
 
+<div class="home-card">
+    {% if goal_exists %}
+    <br><div class="dashed">
+        <p><h3>"{{target_name}}": £{{target}}</h3></p>
+    </div><br>
 
-{% if goal_exists %}
-<br><div class="dashed">
-    <p><h3>"{{target_name}}: £{{target}}"</h3></p>
-</div><br>
-
-<div class="progress-container" id="barBox">
-    <div id="bar"></div>
+    <div class="progress-container" id="barBox">
+        <div id="bar"></div>
+    </div>
+    <script>show("barBox")</script>
+    {% else %}
+    <script>hide("barBox")</script>
+    <p>You don't have a goal!</p>
+    {% endif %}
 </div>
-<script>show("barBox")</script>
-{% else %}
-<script>hide("barBox")</script>
-<p>You don't have a goal!</p>
-{% endif %}
-
 <script>window.onload = function () { updateProgress('bar', {{ progress_value }}) };</script>
 {% endblock %}  

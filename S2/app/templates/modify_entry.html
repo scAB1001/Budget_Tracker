@@ -8,6 +8,9 @@
         {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.name.label }} {{ form.name }}
+            {% if form.name.errors %}
+            <div class="error">{{ form.name.errors[0] }}</div>
+            {% endif %}
         </div>
         {% if has_category %}
         <div class="form-group">
@@ -16,10 +19,14 @@
         {% endif %}
         <div class="form-group">
             {{ form.amount.label }} {{ form.amount }}
+            {% if form.amount.errors %}
+            <div class="error">{{ form.amount.errors[0] }}</div>
+            {% endif %}
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+
 
 <div class="flash messages">
     {% with messages = get_flashed_messages() %}
