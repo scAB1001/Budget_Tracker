@@ -44,16 +44,22 @@
             class="table table-striped table-bordered"
             style="background-color: #e8cfed"
           >
+            {% if entries %}
             <thead class="thead-dark">
               <tr class="hover-highlight">
                 <th>Name</th>
                 <th>Category</th>
                 <th style="text-align: center">Amount (£)</th>
-                <th style="text-align: center">Action</th>
+                <th style="text-align: center">Action
+                  <button type="button" class="btn btn-danger rounded-pill" onClick="deleteAllEntries('{{ entry_type }}')">
+                    Delete All
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody>
-              {% if entries %} {% for id, entry in entries.items() %}
+              {% for id, entry in entries.items() %}
               <tr>
                 <td>{{ entry['name'] }}</td>
                 <td>{{ entry['category'] }}</td>
@@ -84,8 +90,8 @@
                   <h3>No data here!</h3>
                 </td>
               </tr>
-              {% endif %}
             </tbody>
+            {% endif %}
           </table>
         </div>
       </div>
@@ -121,12 +127,10 @@
       <div class="card-body">
         <p>Your total {{ entry_type }}: £{{ total }}</p>
         <p>
-          Your largest {{ entry_type|capitalize }} was... "{{ max_name }}"
-          - £{{ max_value }}
+          Your largest {{ entry_type|capitalize }} was... "{{ max_name }}" - £{{
+          max_value }}
         </p>
-        <p>
-          You frequent in this area... {{ most_frequent }}
-        </p>
+        <p>You frequent in this area... {{ most_frequent }}</p>
       </div>
     </div>
   </div>

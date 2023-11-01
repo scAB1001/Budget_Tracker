@@ -1,3 +1,11 @@
+/* Delete all entries by sending a POST req, nav to entry type */
+function deleteAllEntries(entry_type) {
+  fetch(`/delete_all_${entry_type}s`, {
+    method: "POST",
+  }).then((_res) => {
+    window.location.href = `/${entry_type}s`;
+  });
+}
 
 /* Delete an entry by sending a POST req of the id, nav to entry type */
 function deleteEntry(entry_type, entryId) {
@@ -31,7 +39,7 @@ function updateProgress(eId, value) {
   if (i == 0) {
     i = 1;
     var elem = document.getElementById(eId);
-    var width = 0;
+    var width = -1;
     var id = setInterval(frame, 12);
     
     function frame() {
@@ -41,7 +49,7 @@ function updateProgress(eId, value) {
       } else {
         width++;
         elem.style.width = width + "%";
-        elem.innerHTML = "You're " + width + "% of the way there!";
+        elem.innerHTML = width + "%";
       }
     }
 

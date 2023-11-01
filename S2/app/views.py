@@ -112,11 +112,11 @@ def run_validation(form, model_class, has_category):
     entry, name, category = 0, 0, 0
     amount = validate_userin(form.amount.data)
 
-    if amount is not False:
+    if amount != False:
         amount = validate_tablein(amount)
         name = validate_tablein(form.name.data)
 
-    if amount is not False and name is not False:
+    if amount != False and name != False:
         if has_category:
             category = form.category.data
             entry = model_class(name=name, category=category, amount=amount)
@@ -142,7 +142,14 @@ def new_entry(form, model_class, has_category=True):
     # If unsuccessful
     return False
 
-# Abstract method to delete any form entry from any associated db model
+# Abstract method to delete all form entries from any db model
+def delete_all_entries(model_class):
+    if model_class.query.first() != None:
+        model_class.query.delete() 
+        db.session.commit()
+    return jsonify({})
+
+# Abstract method to delete any form entry from any db model
 def delete_entry(formId, model_class):
     """
 
@@ -173,13 +180,13 @@ def edit_entry(entryId, model_class, formType, has_category=True):
 
     if form.validate_on_submit():
         
-        if entry is not None:  
+        if entry != None:  
             tmp1 = validate_tablein(form.name.data)
-            if tmp1 is not False:
+            if tmp1 != False:
                 entry.name = tmp1
 
             tmp3 = validate_userin(form.amount.data)
-            if tmp3 is not False:
+            if tmp3 != False:
                 entry.amount = tmp3
 
             entry.name = tmp1
@@ -233,17 +240,21 @@ def summary_goal_stats():
         total_income = sum(income.amount for income in incomes)
         total_spend = sum(expense.amount for expense in expenses)
 
-        difference = abs(total_income - total_spend)
+        difference = total_income - total_spend
         progress_value = round((difference/target_value), 2)
 
+        # Deal with values under 0%
+        if  progress_value < 0:
+            progress_value = 0
+
         # Deal with values over 100%
-        if progress_value >= 1:
+        elif progress_value >= 1:
             progress_value = 1
             extra = money_format((difference - target_value))
             flash(f"Target reached! You're £{extra} over budget!", SUCCESS)
 
-        target_value, difference = money_format(target_value), money_format(difference)
-
+        target_value, difference = money_format(target_value), money_format(abs(difference))
+        
         return goal, target_name, target_value, progress_value*100, difference
 
 # Check for an existing goal in the Goal db model
@@ -261,7 +272,17 @@ def goal_exists():
         return False
     return True
 
+# Check for an existing income in the Incomes db model
+def incomes_exist():
+    if Incomes.query.first() == None:
+        return False
+    return True
 
+# Check for an existing expense in the Expenses db model
+def expenses_exist():
+    if Expenses.query.first() == None:
+        return False
+    return True
 
 # Routes
 """
@@ -384,20 +405,54 @@ def new_goal():
     Delete entries
 
 """
+# All entries
+@app.route('/delete_all_incomes', methods=['POST'])
+def delete_all_incomes():
+    """
+        Calls abstract method with db model
+            and return jsonify{{}} result.
+    """
+    if incomes_exist():
+        flash("There are no incomes to delete.", 'danger')
+        return redirect(url_for('incomes'))
+
+    return delete_all_entries(Incomes)
+
+@app.route('/delete_all_expenses', methods=['POST'])
+def delete_all_expenses():
+    if expenses_exist():
+        flash("There are no expenses to delete.", 'danger')
+        return redirect(url_for('expenses'))
+
+    return delete_all_entries(Expenses)
+
+# Specific entries
 @app.route('/delete_income', methods=['POST'])
 def delete_income():
     """
         Calls abstract method with entryId and db model
             and return jsonify{{}} result.
     """
+    if incomes_exist():
+        flash("There are no incomes to delete.", 'danger')
+        return redirect(url_for('incomes'))
+
     return delete_entry('entryId', Incomes)
 
 @app.route('/delete_expense', methods=['POST'])
 def delete_expense():
+    if expenses_exist():
+        flash("There are no expenses to delete.", 'danger')
+        return redirect(url_for('expenses'))
+
     return delete_entry('entryId', Expenses)
 
 @app.route('/delete_goal', methods=['POST'])
 def delete_goal():
+    if goal_exists():
+        flash("A goal already exists. You cannot add a new one.", 'danger')
+        return redirect(url_for('goal'))
+
     return delete_entry('entryId', Goals)
 
 

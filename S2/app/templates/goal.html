@@ -32,6 +32,7 @@
                 <div id="bar"></div>
         </div>
             <script>show("barBox")</script><p></p>
+            <p>You're {{ progress_value }}% of the way there!   
             <button type="button" class="btn btn-warning rounded-pill" onClick="editEntry('{{ entry_type }}', {{ goal.id }})">
                 Edit Goal
                 <i class="fas fa-pencil-alt"></i>
@@ -39,7 +40,7 @@
             <button type="button" class="btn btn-danger rounded-pill" onClick="deleteEntry('{{ entry_type }}', {{ goal.id }})">
                 Delete Goal
                 <span aria-hidden="true">&times;</span>
-            </button>
+            </button></p>
         </div>
     </div><br><br><br><br><br>
     {% else %}
@@ -51,7 +52,6 @@
         </td>
     </tr>
     {% endif %}
-    
     
     <script>window.onload = function () { updateProgress('bar', {{ progress_value }}) };</script>
 </body>

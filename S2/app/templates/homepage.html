@@ -26,7 +26,7 @@
             </div>
             <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#incomesAccordion"
             style="background-color: #ecc6f3;">
-                <h3><b>INCOMES</b></h3>
+                <br><h3><b>INCOMES</b></h3>
                 <div class="card-body">
                 {% if incomes %}
                     <p>Your total income: £{{ total_income }}</p>
@@ -35,8 +35,8 @@
                 {% else %}
                     <p>You don't have any expenses!</p>
                 {% endif %}
+                ------
                 </div>
-
                 <div id="expensesAccordion">
                     <h3><b>EXPENSES</b></h3>
                     <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#expensesAccordion"
@@ -49,17 +49,17 @@
                         {% else %}
                             <p>You don't have any expenses!</p>
                         {% endif %}
+                        {% if incomes %}
+                            {% if expenses %}
+                            ---------------------------------------------------------------------
+                            <p>The difference between your incomes and expenditures: £{{difference}}</p>
+                            {% endif %}
+                        {% else %}
+                        <p>You don't have any incomes or expenses!</p>
+                        {% endif %}
                         </div>
                     </div>
                 </div>
-                {% if incomes %}
-                    {% if expenses %}
-                    ---------------------------------------------------------------------
-                    <p>The difference between your incomes and expenditures: £{{difference}}</p>
-                    {% endif %}
-                {% else %}
-                <p>You don't have any incomes or expenses!</p>
-                {% endif %}
             </div>
     </div>
 </element><br>
@@ -73,6 +73,7 @@
     <div class="progress-container" id="barBox">
         <div id="bar"></div>
     </div>
+    <p>You're {{ progress_value }}% of the way there!</p>
     <script>show("barBox")</script>
     {% else %}
     <script>hide("barBox")</script>
