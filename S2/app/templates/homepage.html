@@ -24,25 +24,26 @@
                     </span></button></button>
                 </h2>
             </div>
-            <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#incomesAccordion"
+            <div id="summaryCollapse" class="collapse show" aria-labelledby="summaryHeading" data-parent="#incomesAccordion"
             style="background-color: #ecc6f3;">
+            {% if incomes or expenses %}
+                {% if incomes %}
                 <br><h3><b>INCOMES</b></h3>
                 <div class="card-body">
-                {% if incomes %}
                     <p>Your total income: £{{ total_income }}</p>
                     <p>Your largest earning was... {{ max_income_name }} - £{{ max_income }}</p>
                     <p>You frequently earn in this area... "{{ most_frequent_income }}"</p>
                 {% else %}
-                    <p>You don't have any expenses!</p>
+                    <p>You don't have any incomes!</p>
                 {% endif %}
                 ------
                 </div>
                 <div id="expensesAccordion">
+                    {% if expenses %}
+                    <div id="summaryCollapse" class="collapse show" aria-labelledby="summaryHeading" data-parent="#expensesAccordion"
+                    style="background-color: #ecc6f3;">
                     <h3><b>EXPENSES</b></h3>
-                    <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#expensesAccordion"
-                        style="background-color: #ecc6f3;">
                         <div class="card-body">
-                        {% if expenses %}
                             <p>Your total expenditure: £{{ total_spend }}</p>
                             <p>You spent the largest amount at a time on... "{{ max_spend_name }}" - £{{ max_spend }}</p>
                             <p>You frequently paid in this area... {{ most_frequent_spend }}</p>
@@ -54,12 +55,14 @@
                             ---------------------------------------------------------------------
                             <p>The difference between your incomes and expenditures: £{{difference}}</p>
                             {% endif %}
-                        {% else %}
-                        <p>You don't have any incomes or expenses!</p>
-                        {% endif %}
+                            {% endif %}
+                            
                         </div>
                     </div>
                 </div>
+                {% else %}
+                    <p>You don't have any incomes or expenses!</p>
+                {% endif %}
             </div>
     </div>
 </element><br>

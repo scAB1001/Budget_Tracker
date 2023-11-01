@@ -208,7 +208,6 @@ def edit_entry(entryId, model_class, formType, has_category=True):
 def summary_io_stats(model_class):
     entries = model_class.query.all()
     if entries == []:
-        flash(f"You don't have any data!", DANGER)
         return 0, 0, 0, 0, 0
     
     else:
@@ -258,31 +257,21 @@ def summary_goal_stats():
         return goal, target_name, target_value, progress_value*100, difference
 
 # Check for an existing goal in the Goal db model
-def goal_exists():
+def tbl_exists(model_class):
     """
         Passed into all templates (from base),
             so that the option to add a second (new) goal
             is hidden and the page cannot be navigated to.
 
-        Also acts as a condition to check for goal
+        Also as a condition to check for goal/income/expense
             data display (toggles hidden/shown).
 
     """
-    if Goals.query.first() == None:
-        return False
-    return True
+    if model_class == Goals:
+        return model_class.query.first() != None
+        
+    return model_class.query.all() != None
 
-# Check for an existing income in the Incomes db model
-def incomes_exist():
-    if Incomes.query.first() == None:
-        return False
-    return True
-
-# Check for an existing expense in the Expenses db model
-def expenses_exist():
-    if Expenses.query.first() == None:
-        return False
-    return True
 
 # Routes
 """
@@ -314,7 +303,7 @@ def homepage():
         max_income=i4, max_spend=e4, target=g3, 
         
         most_frequent_income=i5, most_frequent_spend=e5, 
-        goal_exists=goal_exists(), progress_value=g4)
+        goal_exists=tbl_exists(Goals), progress_value=g4)
 
 @app.route('/incomes')
 def incomes():
@@ -324,7 +313,7 @@ def incomes():
         entry_type='income', entries=v1,
         total=v2, max_name=v3,
         max_value=v4, most_frequent=v5, 
-        goal_exists=goal_exists())
+        goal_exists=tbl_exists(Goals))
 
 @app.route('/expenses')
 def expenses():
@@ -334,17 +323,17 @@ def expenses():
         entry_type='expense', entries=v1, 
         total=v2, max_name=v3,
         max_value=v4, most_frequent=v5, 
-        goal_exists=goal_exists())
+        goal_exists=tbl_exists(Goals))
 
 @app.route('/goals')
-def goal():
+def goals():
     # V5 is the difference between total income and expenses
     v1, v2, v3, v4, v5 = summary_goal_stats()
     
-    return render_template('goal.html', title='Goal', 
+    return render_template('goals.html', title='Goal', 
         entry_type='goal', goal=v1,
         target_name=v2, target=v3, progress_value=v4, 
-        goal_exists=goal_exists())
+        goal_exists=tbl_exists(Goals))
 
 
 
@@ -371,7 +360,7 @@ def new_income():
         return redirect(url_for('incomes'))
 
     return render_template('modify_entry.html', title=title, 
-        form=form, goal_exists=goal_exists(), 
+        form=form, goal_exists=tbl_exists(Goals), 
         action=title, has_category=True)
 
 @app.route('/new_expense', methods=['GET', 'POST'])
@@ -382,18 +371,18 @@ def new_expense():
         return redirect(url_for('expenses'))
 
     return render_template('modify_entry.html', title=title, 
-        form=form, goal_exists=goal_exists(), 
+        form=form, goal_exists=tbl_exists(Goals), 
         action=title, has_category=True)
 
 @app.route('/new_goal', methods=['GET', 'POST'])
 def new_goal():
-    if goal_exists():
+    if tbl_exists(Goals):
         flash("A goal already exists. You cannot add a new one.", 'danger')
-        return redirect(url_for('goal'))
+        return redirect(url_for('goals'))
 
     title, form = 'New Goal', GoalForm()
     if new_entry(form, Goals, False):
-        return redirect(url_for('goal'))
+        return redirect(url_for('goals'))
 
     return render_template('modify_entry.html', title=title, 
         form=form, action=title, has_category=False)
@@ -412,7 +401,7 @@ def delete_all_incomes():
         Calls abstract method with db model
             and return jsonify{{}} result.
     """
-    if incomes_exist():
+    if not tbl_exists(Incomes):
         flash("There are no incomes to delete.", 'danger')
         return redirect(url_for('incomes'))
 
@@ -420,7 +409,7 @@ def delete_all_incomes():
 
 @app.route('/delete_all_expenses', methods=['POST'])
 def delete_all_expenses():
-    if expenses_exist():
+    if not tbl_exists(Expenses):
         flash("There are no expenses to delete.", 'danger')
         return redirect(url_for('expenses'))
 
@@ -433,7 +422,7 @@ def delete_income():
         Calls abstract method with entryId and db model
             and return jsonify{{}} result.
     """
-    if incomes_exist():
+    if not tbl_exists(Incomes):
         flash("There are no incomes to delete.", 'danger')
         return redirect(url_for('incomes'))
 
@@ -441,7 +430,7 @@ def delete_income():
 
 @app.route('/delete_expense', methods=['POST'])
 def delete_expense():
-    if expenses_exist():
+    if not tbl_exists(Expenses):
         flash("There are no expenses to delete.", 'danger')
         return redirect(url_for('expenses'))
 
@@ -449,9 +438,9 @@ def delete_expense():
 
 @app.route('/delete_goal', methods=['POST'])
 def delete_goal():
-    if goal_exists():
-        flash("A goal already exists. You cannot add a new one.", 'danger')
-        return redirect(url_for('goal'))
+    if not tbl_exists(Goals):
+        flash("There are no goals to delete.", 'danger')
+        return redirect(url_for('goals'))
 
     return delete_entry('entryId', Goals)
 
@@ -477,7 +466,7 @@ def edit_income(incomeId):
         return redirect(url_for('incomes'))
 
     return render_template('modify_entry.html', title=title, 
-        form=form, income=income, goal_exists=goal_exists(),
+        form=form, income=income, goal_exists=tbl_exists(Goals),
         action=title, has_category=True)
 
 @app.route('/edit_expense/<int:expenseId>', methods=['GET', 'POST'])
@@ -489,7 +478,7 @@ def edit_expense(expenseId):
         return redirect(url_for('expenses'))
 
     return render_template('modify_entry.html', title=title, 
-        form=form, expense=expense, goal_exists=goal_exists(),
+        form=form, expense=expense, goal_exists=tbl_exists(Goals),
         action=title, has_category=True)
 
 @app.route('/edit_goal/<int:goalId>', methods=['GET', 'POST'])
@@ -498,9 +487,9 @@ def edit_goal(goalId):
     form, goal, success = edit_entry(goalId, Goals, GoalForm, False)
 
     if success:
-        return redirect(url_for('goal'))
+        return redirect(url_for('goals'))
 
     return render_template('modify_entry.html', title=title, 
-        form=form, goal=goal, goal_exists=goal_exists(),
+        form=form, goal=goal, goal_exists=tbl_exists(Goals),
         action=title, has_category=False)
 
