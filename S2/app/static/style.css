@@ -50,6 +50,10 @@ body {
     height: 150px;
 }
 
+h1 {
+    color:white;
+}
+
 .card {
     box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.2), 0 24px 80px 0 rgba(0, 0, 0, 0.19);
 }
