@@ -254,9 +254,9 @@ def summary_goal_stats():
 
         target_value, difference = money_format(target_value), money_format(abs(difference))
         
-        return goal, target_name, target_value, progress_value*100, difference
+        return goal, target_name, target_value, int(progress_value*100), difference
 
-# Check for an existing goal in the Goal db model
+# Check for existing data in any db model
 def tbl_exists(model_class):
     """
         Passed into all templates (from base),
@@ -269,7 +269,7 @@ def tbl_exists(model_class):
     """
     if model_class == Goals:
         return model_class.query.first() != None
-        
+
     return model_class.query.all() != None
 
 

@@ -35,6 +35,9 @@ function hide(eId) {
 
 /* W3 schools progress bar animation */
 function updateProgress(eId, value) {
+  if (value > 100) {
+    value = 100
+  }
   var i = 0;
   if (i == 0) {
     i = 1;
