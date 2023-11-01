@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 
-<h1>Incomes</h1>
+<h1>{{ entry_type|capitalize }}s</h1>
 <div class="flash messages">
   {% with messages = get_flashed_messages() %} {% if messages %}
   <ul class="flashes">
@@ -11,31 +11,31 @@
   {% endif %} {% endwith %}
 </div>
 
-<div id="incomesAccordion">
+<div id="entriesAccordion">
   <div class="card">
     <div
       class="card-header"
-      id="incomesHeading"
+      id="entriesHeading"
       style="background-color: #ecc6f3"
     >
       <h2 class="mb-0">
         <button
           class="btnShift"
           data-toggle="collapse"
-          data-target="#incomesCollapse"
+          data-target="#entriesCollapse"
           aria-expanded="true"
-          aria-controls="incomesCollapse"
+          aria-controls="entriesCollapse"
         >
-          <span> View Incomes </span>
+          <span> View {{ entry_type|capitalize }}s </span>
         </button>
       </h2>
     </div>
 
     <div
-      id="incomesCollapse"
+      id="entriesCollapse"
       class="collapse show"
-      aria-labelledby="incomesHeading"
-      data-parent="#incomesAccordion"
+      aria-labelledby="entriesHeading"
+      data-parent="#entriesAccordion"
       style="background-color: #ecc6f3"
     >
       <div class="card-body">
@@ -53,27 +53,27 @@
               </tr>
             </thead>
             <tbody>
-              {% if incomes %} {% for id, income in incomes.items() %}
+              {% if entries %} {% for id, entry in entries.items() %}
               <tr>
-                <td>{{ income['name'] }}</td>
-                <td>{{ income['category'] }}</td>
-                <td style="text-align: center">{{ income['amount'] }}</td>
+                <td>{{ entry['name'] }}</td>
+                <td>{{ entry['category'] }}</td>
+                <td style="text-align: center">{{ entry['amount'] }}</td>
 
                 <td style="text-align: center">
                   <button
                     type="button"
                     class="btn btn-warning rounded-pill"
-                    onClick="editIncome({{ id }})"
+                    onClick="editEntry('{{ entry_type }}', {{ id }})"
                   >
-                    Edit Income
+                    Edit {{ entry_type|capitalize }}
                     <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button
                     type="button"
                     class="btn btn-danger rounded-pill"
-                    onClick="deleteIncome({{ id }})"
+                    onClick="deleteEntry('{{ entry_type }}', {{ id }})"
                   >
-                    Delete Income
+                    Delete {{ entry_type|capitalize }}
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </td>
@@ -91,8 +91,7 @@
       </div>
     </div>
   </div>
-
-  {% if incomes %}
+  {% if entries %}
   <div class="card">
     <div
       class="card-header"
@@ -116,16 +115,18 @@
       id="summaryCollapse"
       class="collapse"
       aria-labelledby="summaryHeading"
-      data-parent="#incomesAccordion"
+      data-parent="#entriesAccordion"
       style="background-color: #ecc6f3"
     >
       <div class="card-body">
-        <p>Your total income: £{{ total_income }}</p>
+        <p>Your total {{ entry_type }}: £{{ total }}</p>
         <p>
-          Your largest earning was... "{{ max_income_name }}" - £{{ max_income
-          }}
+          Your largest {{ entry_type|capitalize }} was... "{{ max_name }}"
+          - £{{ max_value }}
         </p>
-        <p>You frequently earn in this area... {{ most_frequent_income }}</p>
+        <p>
+          You frequent in this area... {{ most_frequent }}
+        </p>
       </div>
     </div>
   </div>

@@ -53,39 +53,31 @@ def money_format(x):
     for i in range(3, limit + 1, 3):
         revP1.insert(i + count, ",")
         count += 1
-
-    return f"{''.join(revP1)[::-1]}.{p2}"
-
-# Generates a list of n dictionaries to act as a temp db model 
-def gen_list_dict(n, has_category):
-    outer = []
-
-    inner = {'name': 0, 'amount': 0}
-    if has_category:
-        inner = {'name': 0, 'category': 0, 'amount': 0}
     
-    # Iteratively append a deep copy of inner to access and update unique keys/values
-    for i in range(n):
-        outer.append(inner.copy())
+    result = f"{''.join(revP1)[::-1]}.{p2}"
+    return result
 
-    return outer
-
-# Create a shallow copy of the model db and redefine 'amount'
-def redefined_amount(model_class, has_category=True):
+# Create a copy of the model db and redefine 'amount'
+def gen_model_copy(model_class, has_category=True):
     # Get all table data from entries, store count
     entries = model_class.query.all()
     num_entries = len(entries)
-
-    # Generate a hollow list of dicts mimicking the model_class
-    tmp = gen_list_dict(num_entries, has_category)
     
-    # Re-populate the dict values with actual amounts but formatted
+    outer, inner = {}, {'name': 0, 'amount': 0}
+    
+    if has_category:
+        inner = {'name': 0, 'category': 0, 'amount': 0}
+    
+    # Iteratively add a deep copy of inner, update real-time values
     for i in range(num_entries):
-        tmp[i]['name'] = entries[i].name
-        tmp[i]['category'] = entries[i].category
-        tmp[i]['amount'] = money_format(entries[i].amount)
-    
-    return tmp
+        id = entries[i].id
+        outer[id] = inner.copy()
+
+        outer[id]['name'] = entries[i].name
+        outer[id]['category'] = entries[i].category
+        outer[id]['amount'] = money_format(entries[i].amount)
+
+    return outer
 
 # Further validate user input for 'amount'
 def validate_userin(value, max_value=1000000):
@@ -225,7 +217,7 @@ def summary_io_stats(model_class):
         most_frequent = category_counts.most_common(1)[0][0]
         
         # Changes amount key:value formatting
-        entries = redefined_amount(model_class)
+        entries = gen_model_copy(model_class)
 
         return entries, total, max_name, max_value, most_frequent
 
@@ -233,7 +225,7 @@ def summary_io_stats(model_class):
 def summary_goal_stats():
     goal = Goals.query.first()
     if goal == None:
-        return 0, 0, 0, 0
+        return 0, 0, 0, 0, 0
     else:
         target_value, target_name = goal.amount, goal.name
     
@@ -257,12 +249,13 @@ def summary_goal_stats():
 # Check for an existing goal in the Goal db model
 def goal_exists():
     """
-        Passed into all templates so that the option
-            to add a second (new) goal is hidden and
-            the page cannot be navigated to.
+        Passed into all templates (from base),
+            so that the option to add a second (new) goal
+            is hidden and the page cannot be navigated to.
 
         Also acts as a condition to check for goal
             data display (toggles hidden/shown).
+
     """
     if Goals.query.first() == None:
         return False
@@ -283,7 +276,6 @@ def homepage():
         Call stat methods, store return values to feed template.
 
     """
-    redefined_amount(Incomes)
     # Incomes as i
     i1, i2, i3, i4, i5 = summary_io_stats(Incomes)
 
@@ -294,38 +286,44 @@ def homepage():
     g1, g2, g3, g4, g5 = summary_goal_stats()
 
     return render_template('homepage.html', title='Homepage',
-            incomes=i1, expenses=e1, goals=g1,
-            
-            total_income=i2, total_spend=e2, difference=g5,
-            max_income_name=i3, max_spend_name=e3, target_name=g2,
-            max_income=i4, max_spend=e4, target=g3, 
-            
-            most_frequent_income=i5, most_frequent_spend=e5, 
-            goal_exists=goal_exists(), progress_value=g4)
+        incomes=i1, expenses=e1, goals=g1,
+        
+        total_income=i2, total_spend=e2, difference=g5,
+        max_income_name=i3, max_spend_name=e3, target_name=g2,
+        max_income=i4, max_spend=e4, target=g3, 
+        
+        most_frequent_income=i5, most_frequent_spend=e5, 
+        goal_exists=goal_exists(), progress_value=g4)
 
 @app.route('/incomes')
 def incomes():
     v1, v2, v3, v4, v5 = summary_io_stats(Incomes)
     
-    return render_template('incomes.html', title='Incomes', incomes=v1, 
-        total_income=v2, max_income_name=v3,
-        max_income=v4, most_frequent_income=v5, goal_exists=goal_exists())
+    return render_template('view_entries.html', title='Incomes', 
+        entry_type='income', entries=v1,
+        total=v2, max_name=v3,
+        max_value=v4, most_frequent=v5, 
+        goal_exists=goal_exists())
 
 @app.route('/expenses')
 def expenses():
     v1, v2, v3, v4, v5 = summary_io_stats(Expenses)
     
-    return render_template('expenses.html', title='Expenses', expenses=v1, 
-        total_spend=v2, max_spend_name=v3,
-        max_spend=v4, most_frequent_spend=v5, goal_exists=goal_exists())
+    return render_template('view_entries.html', title='Expenses', 
+        entry_type='expense', entries=v1, 
+        total=v2, max_name=v3,
+        max_value=v4, most_frequent=v5, 
+        goal_exists=goal_exists())
 
-@app.route('/goal')
+@app.route('/goals')
 def goal():
     # V5 is the difference between total income and expenses
     v1, v2, v3, v4, v5 = summary_goal_stats()
     
-    return render_template('goal.html', title='Goal', goal=v1,
-        target_name=v2, target=v3, progress_value=v4, goal_exists=goal_exists())
+    return render_template('goal.html', title='Goal', 
+        entry_type='goal', goal=v1,
+        target_name=v2, target=v3, progress_value=v4, 
+        goal_exists=goal_exists())
 
 
 
@@ -351,8 +349,9 @@ def new_income():
     if new_entry(form, Incomes):
         return redirect(url_for('incomes'))
 
-    return render_template('modify_entry.html', title=title, form=form, 
-        goal_exists=goal_exists(), action=title, has_category=True)
+    return render_template('modify_entry.html', title=title, 
+        form=form, goal_exists=goal_exists(), 
+        action=title, has_category=True)
 
 @app.route('/new_expense', methods=['GET', 'POST'])
 def new_expense():
@@ -361,8 +360,9 @@ def new_expense():
     if new_entry(form, Expenses):
         return redirect(url_for('expenses'))
 
-    return render_template('modify_entry.html', title=title, form=form, 
-        goal_exists=goal_exists(), action=title, has_category=True)
+    return render_template('modify_entry.html', title=title, 
+        form=form, goal_exists=goal_exists(), 
+        action=title, has_category=True)
 
 @app.route('/new_goal', methods=['GET', 'POST'])
 def new_goal():
@@ -374,8 +374,8 @@ def new_goal():
     if new_entry(form, Goals, False):
         return redirect(url_for('goal'))
 
-    return render_template('modify_entry.html', title=title, form=form, 
-        action=title, has_category=False)
+    return render_template('modify_entry.html', title=title, 
+        form=form, action=title, has_category=False)
 
 
 
@@ -388,17 +388,17 @@ def new_goal():
 def delete_income():
     """
         Calls abstract method with entryId and db model
-            and returns jsonify{{}} result.
+            and return jsonify{{}} result.
     """
-    return delete_entry('incomeId', Incomes)
+    return delete_entry('entryId', Incomes)
 
 @app.route('/delete_expense', methods=['POST'])
 def delete_expense():
-    return delete_entry('expenseId', Expenses)
+    return delete_entry('entryId', Expenses)
 
 @app.route('/delete_goal', methods=['POST'])
 def delete_goal():
-    return delete_entry('goalId', Goals)
+    return delete_entry('entryId', Goals)
 
 
 
@@ -421,8 +421,8 @@ def edit_income(incomeId):
     if success:
         return redirect(url_for('incomes'))
 
-    return render_template('modify_entry.html', title=title, form=form, 
-        income=income, goal_exists=goal_exists(),
+    return render_template('modify_entry.html', title=title, 
+        form=form, income=income, goal_exists=goal_exists(),
         action=title, has_category=True)
 
 @app.route('/edit_expense/<int:expenseId>', methods=['GET', 'POST'])
@@ -433,8 +433,8 @@ def edit_expense(expenseId):
     if success:
         return redirect(url_for('expenses'))
 
-    return render_template('modify_entry.html', title=title, form=form, 
-        expense=expense, goal_exists=goal_exists(),
+    return render_template('modify_entry.html', title=title, 
+        form=form, expense=expense, goal_exists=goal_exists(),
         action=title, has_category=True)
 
 @app.route('/edit_goal/<int:goalId>', methods=['GET', 'POST'])
@@ -445,7 +445,7 @@ def edit_goal(goalId):
     if success:
         return redirect(url_for('goal'))
 
-    return render_template('modify_entry.html', title=title, form=form, 
-        goal=goal, goal_exists=goal_exists(),
+    return render_template('modify_entry.html', title=title, 
+        form=form, goal=goal, goal_exists=goal_exists(),
         action=title, has_category=False)
 

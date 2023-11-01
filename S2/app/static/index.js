@@ -1,39 +1,20 @@
-function deleteIncome(incomeId) {
-  fetch("/delete_income", {
+
+/* Delete an entry by sending a POST req of the id, nav to entry type */
+function deleteEntry(entry_type, entryId) {
+  fetch(`/delete_${entry_type}`, {
     method: "POST",
-    body: JSON.stringify({ incomeId: incomeId }),
+    body: JSON.stringify({ entryId: entryId }),
   }).then((_res) => {
-    window.location.href = "/incomes";
-  });
-}
-function deleteExpense(expenseId) {
-  fetch("/delete_expense", {
-    method: "POST",
-    body: JSON.stringify({ expenseId: expenseId }),
-  }).then((_res) => {
-    window.location.href = "/expenses";
-  });
-}
-function deleteGoal(goalId) {
-  fetch("/delete_goal", {
-    method: "POST",
-    body: JSON.stringify({ goalId: goalId }),
-  }).then((_res) => {
-    window.location.href = "/goal";
+    window.location.href = `/${entry_type}s`;
   });
 }
 
 /* Edit an entry, nav to specific entryId */
-function editIncome(incomeId) {
-  window.location.href = `/edit_income/${incomeId}`;
-}
-function editExpense(expenseId) {
-  window.location.href = `/edit_expense/${expenseId}`;
-}
-function editGoal(goalId) {
-  window.location.href = `/edit_goal/${goalId}`;
+function editEntry(entry_type, entryId) {
+  window.location.href = `/edit_${entry_type}/${entryId}`;
 }
 
+/* Toggle show/hide elements */
 function show(eId) {
   var x = document.getElementById(eId);
   x.style.display = "block";

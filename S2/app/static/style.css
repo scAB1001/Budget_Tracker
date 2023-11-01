@@ -1,8 +1,14 @@
 body {
     align-items: center;
     text-align: center;
+
+    /* Background */
     background: rgb(34, 193, 195);
     background: linear-gradient(0deg, rgba(34, 193, 195, 1) 16%, rgba(115, 45, 253, 1) 100%);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
     /* Monospace font */
     font-family: "Everson Mono";
     font-size: 125%;

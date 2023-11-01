@@ -32,11 +32,11 @@
                 <div id="bar"></div>
         </div>
             <script>show("barBox")</script><p></p>
-            <button type="button" class="btn btn-warning rounded-pill" onClick="editGoal({{ goal.id }})">
+            <button type="button" class="btn btn-warning rounded-pill" onClick="editEntry('{{ entry_type }}', {{ goal.id }})">
                 Edit Goal
                 <i class="fas fa-pencil-alt"></i>
             </button>
-            <button type="button" class="btn btn-danger rounded-pill" onClick="deleteGoal({{ goal.id }})">
+            <button type="button" class="btn btn-danger rounded-pill" onClick="deleteEntry('{{ entry_type }}', {{ goal.id }})">
                 Delete Goal
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -48,9 +48,6 @@
     <tr>
         <td colspan="4" style="text-align:center;">
             <h3>You don't have a goal!</h3>
-            <br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br>
         </td>
     </tr>
     {% endif %}
