@@ -10,10 +10,17 @@
 <body>
   <header class="top-bar">
     <nav class="settings-nav">
+      {% if user.is_authenticated %}
       <ul>
+        <li><a href="/logout" title="Logout"><img src="{{ url_for('static', filename='images/logout.png') }}" alt="Logout icon" class="nav-icon"></a>Logout</li>
         <li><a href="settings" title="Settings"><img src="{{ url_for('static', filename='images/cog.png') }}" alt="Settings icon" class="nav-icon"></a>Settings</li>
         <li><a href="history" title="History"><img src="{{ url_for('static', filename='images/history.png') }}" alt="History icon" class="nav-icon"></a>History</li>
       </ul>
+      {% else %}
+      <div class="marquee">
+        <h2 class="marquee-content">Login to Use AutoSwipe</h2>
+      </div>
+      {% endif %}
     </nav>
   </header>
 
@@ -23,8 +30,10 @@
     <nav class="main-nav">
       <ul>
         <li><a href="/" class="icon-home" title="Home"><img src="{{ url_for('static', filename='images/home.png') }}" alt="Home icon" class="nav-icon"></a>Home</li>
+        {% if user.is_authenticated %}
         <li><a href="explore" class="icon-explore" title="Explore"><img src="{{ url_for('static', filename='images/search.png') }}" alt="Explore icon" class="nav-icon"></a>Explore</li>
         <li><a href="saved" class="icon-saved" title="Saved"><img src="{{ url_for('static', filename='images/heart.png') }}" alt="Liked icon" class="nav-icon"></a>Liked</li>
+        {% endif %}
       </ul>
     </nav>
   </footer>

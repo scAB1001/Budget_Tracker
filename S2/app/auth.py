@@ -2,11 +2,11 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from .models import User
+from .forms import LoginForm, RegistrationForm
 from . import db
 
 auth = Blueprint('auth', __name__)
 DANGER, SUCCESS = 'error', 'success'
-EMAIL, PASS = 'email', 'password'
 
 # Helper method to migrate old password hash to a new method
 def migrate_password(user, password):
@@ -61,14 +61,16 @@ def handle_registration(email, first_name, password1, password2):
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        email = request.form.get(EMAIL)
-        password = request.form.get(PASS)
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
 
         if handle_login(email, password):
-            return redirect(url_for('views.home'))
+            #next_page = request.args.get('next', None); redirect(next_page) if next_page else
+            return redirect(url_for('views.explore'))
 
-    return render_template("login.html", user=current_user)
+    return render_template("login.html", form=form, user=current_user, title='Login')
 
 
 @auth.route('/logout')
@@ -80,13 +82,14 @@ def logout():
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'POST':
-        email = request.form.get(EMAIL)
-        first_name = request.form.get('firstName')
-        password1 = request.form.get('password1')
-        password2 = request.form.get('password2')
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        first_name = form.first_name.data
+        password1 = form.password.data
+        password2 = form.confirm_password.data
 
         if handle_registration(email, first_name, password1, password2):
             return redirect(url_for('views.home'))
 
-    return render_template("signup.html", user=current_user)
+    return render_template("signup.html", form=form, user=current_user, title='Signup')

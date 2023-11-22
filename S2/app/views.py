@@ -3,6 +3,8 @@ from flask_login import login_required, current_user
 from app import app, db
 from .forms import LoginForm, RegistrationForm
 from .models import User
+from flask_login import current_user
+
 
 import json
 from collections import Counter
@@ -31,7 +33,7 @@ def update_db(entry):
 
 click_count = 30
 should_increment = True
-@app.route('/toggle_count', methods=['POST'])
+@views.route('/toggle_count', methods=['POST'])
 def toggle_count():
     global click_count, should_increment
     if should_increment:
@@ -49,28 +51,38 @@ def toggle_count():
     View entries
 
 """
-@app.route('/')
+@views.route('/')
 def home():
-    return render_template('home.html', title='Home')
+    users = User.query.all()
+    for user in users:
+        print(user)
+    return render_template('home.html', title='Home', user=current_user)
 
-@app.route('/explore')
+
+@views.route('/explore')
 @login_required
 def explore():
     if request.method == 'POST': 
         print("POST")
-    return render_template('explore.html', title='Explore')
+    return render_template('explore.html', title='Explore', user=current_user)
 
 
-@app.route('/settings')
+@views.route('/saved')
 @login_required
-def settings():
-    return render_template('settings.html', title='Settings')
+def saved():
+    return render_template('saved.html', title='Saved', user=current_user)
 
 
-@app.route('/history')
+@views.route('/history')
 @login_required
 def history():
-    return render_template('history.html', title='History')
+    return render_template('history.html', title='History', user=current_user)
+
+
+@views.route('/settings')
+@login_required
+def settings():
+    return render_template('settings.html', title='Settings', user=current_user)
 
 
 @views.route('/delete_account', methods=['POST'])

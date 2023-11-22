@@ -44,6 +44,7 @@ body {
     max-width: 1024px;
     width: 100%;
     height: 5.5%;
+    /* Ensure it is sent to front */
     z-index: 1000;
     /* For nav bar roundness */
     border-radius: 20px;
@@ -53,17 +54,23 @@ body {
 }
 
 .top-bar {
+    position: fixed;
     top: 0;
+    width: 100%;
     /* Only round the bottom corners of the top bar */
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    z-index: 1000;
 }
 
 .bottom-bar {
+    position: fixed;
     bottom: 0;
+    width: 100%;
     /* Only round the top corners of the bottom bar */
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    z-index: 1000;
 }
 
 .settings-nav ul,
@@ -264,4 +271,32 @@ body {
 
 .guide-steps h3 {
     margin-bottom: 0.5rem;
+}
+
+.marquee {
+    overflow: hidden;
+    position: relative;
+    background-color: #333;
+    /* Set to desired background color */
+    color: white;
+    /* Set to desired text color */
+    white-space: nowrap;
+    z-index: 2000;
+}
+
+.marquee-content {
+    display: inline-block;
+    position: absolute;
+    animation: marquee-animation 10s linear infinite;
+    z-index: 2000;
+}
+
+@keyframes marquee-animation {
+    0% {
+        left: 100%;
+    }
+
+    100% {
+        left: -100%;
+    }
 }
