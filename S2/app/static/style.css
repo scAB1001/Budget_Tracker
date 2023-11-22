@@ -168,9 +168,9 @@ body {
 .nav-icon {
     width: 48px;
     height: 48px;
+    /* This ensures that the aspect ratio is maintained without the image being stretched */
     /* You can also set object-fit property if needed */
     object-fit: contain;
-    /* This ensures that the aspect ratio is maintained without the image being stretched */
 }
 
 .cta {
@@ -209,6 +209,7 @@ body {
     background: inherit;
     /* Takes the gradient background from the body */
     backdrop-filter: blur(15px);
+    filter: blur(8px);
 }
 
 .content::before {
