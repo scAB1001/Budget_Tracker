@@ -179,7 +179,7 @@ body {
 }
 
 .cta-button {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.9);
     color: #fd267d;
     padding: 0.75rem 1.5rem;
     border-radius: 20px;
@@ -209,7 +209,6 @@ body {
     background: inherit;
     /* Takes the gradient background from the body */
     backdrop-filter: blur(15px);
-    filter: blur(8px);
 }
 
 .content::before {

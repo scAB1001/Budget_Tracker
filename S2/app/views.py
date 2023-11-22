@@ -220,6 +220,19 @@ def tbl_exists(model_class):
 
     return model_class.query.all() != None
 
+click_count = 30
+should_increment = True
+@app.route('/toggle_count', methods=['POST'])
+def toggle_count():
+    global click_count, should_increment
+    if should_increment:
+        click_count += 1
+    else:
+        click_count -= 1
+    # Toggle the state
+    should_increment = not should_increment
+    #print(f"Current click count: {click_count}")
+    return jsonify(click_count=click_count)
 
 # Routes
 """
@@ -239,7 +252,8 @@ def login():
 
 @app.route('/signup')
 def signup():
-    return render_template('signup.html', title='Signup')
+    return render_template('signup.html', title='Signup', click_count=click_count)
+
 
 
 @app.route('/explore')

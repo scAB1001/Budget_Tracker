@@ -66,4 +66,3 @@ function indicateScroll(eId) {
   var scrolled = (winScroll / height) * 100;
   document.getElementById(eId).style.width = scrolled + "%";
 }
-

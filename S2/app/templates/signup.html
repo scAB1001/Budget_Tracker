@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+    <script src="{{ url_for('static', filename='ajax_js.js') }}"></script>
+</head>
+<div class="login">
+    <section class="intro">
+        <h1>Login</h1>
+        <p>Don't have an account? Make one.</p>
+    </section>
+
+    <!-- User Guide Section -->
+    <br><br><section class="user-guide">
+        <h2>Login to Use AutoSwipe</h2>
+        <ol class="guide-steps">
+            <li>
+                <h3>Create an Account</h3>
+                <p>Sign up for a new account to get started. It's quick and easy!</p>
+            </li>
+            <li>
+                <h3>Log In</h3>
+                <p>Already have an account? Login to get started.</p>
+            </li>
+        </ol>
+    </section>
+
+    <div>
+        <h3>Button Time</h3>
+        <button id="click-me">Click me!</button>
+        <p>You have clicked the button <span id="click-count">{{ click_count }}</span> times.</p>
+    </div>
+    
+</div>
+{% endblock %}
