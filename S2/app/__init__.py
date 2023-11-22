@@ -1,5 +1,6 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 from flask_migrate import Migrate
 
 app = Flask(__name__)
@@ -16,5 +17,26 @@ def add_cache_control(response):
     return response
 
 from app import views, models
+
+# Register blueprints for different parts of the app
+
+
+def register_blueprints(app):
+    from .views import views
+    from .auth import auth
+    app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(auth, url_prefix='/')
+
+    
+# Configure the login manager for user authentication
+def configure_login_manager(app):
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(id):
+        from .models import User
+        return User.query.get(int(id))
 
 from flask_sqlalchemy import SQLAlchemy
