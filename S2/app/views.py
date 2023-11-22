@@ -279,31 +279,9 @@ def tbl_exists(model_class):
     View entries
 
 """
-@app.route('/', methods=['GET', 'POST'])
-def homepage():
-    """
-
-        Call stat methods, store return values to feed template.
-
-    """
-    # Incomes as i
-    i1, i2, i3, i4, i5 = summary_io_stats(Incomes)
-
-    # Expenses as e
-    e1, e2, e3, e4, e5 = summary_io_stats(Expenses)
-
-    # Goal as g
-    g1, g2, g3, g4, g5 = summary_goal_stats()
-
-    return render_template('homepage.html', title='Homepage',
-        incomes=i1, expenses=e1, goals=g1,
-        
-        total_income=i2, total_spend=e2, difference=g5,
-        max_income_name=i3, max_spend_name=e3, target_name=g2,
-        max_income=i4, max_spend=e4, target=g3, 
-        
-        most_frequent_income=i5, most_frequent_spend=e5, 
-        goal_exists=tbl_exists(Goals), progress_value=g4)
+@app.route('/')
+def home():
+    return render_template('home.html', title='Home',)
 
 @app.route('/incomes')
 def incomes():

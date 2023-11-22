@@ -1,10 +1,8 @@
-body {
+.hello {
     align-items: center;
     text-align: center;
 
     /* Background */
-    background: rgb(34, 193, 195);
-    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 16%, rgba(115, 45, 253, 1) 100%);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -15,202 +13,224 @@ body {
     font-size-adjust: 0.58;
 }
 
-.body-content {
-    padding: 10px 0;
-    margin: 18px auto 0 auto;
-    width: 80%;
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.dashed {
-    padding: 0px 0px;
-    border: 6px dotted #a2047de9;
-    width: 40%;
-    border-radius: 2px;
-    margin: 0 auto;
-}
-
-/* Override Bootstrap's card and card-header class */
-.home-card {
-    margin: 0px auto 0 auto;
-    background-color: #eee893;
-    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.2), 0 24px 80px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 25px;
-    padding: 20px;
-    width: 94%;
-    height: 250px;
-}
-
-.goal-card {
-    margin: 0px auto 0 auto;
-    background-color: #eee893;
-    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.2), 0 24px 80px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 25px;
-    padding: 20px;
-    width: 90%;
-    height: 150px;
-}
-
-h1 {
-    color:white;
-}
-
-.card {
-    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.2), 0 24px 80px 0 rgba(0, 0, 0, 0.19);
-}
-
-.card-header {
-    background-color: #e093ee;
-}
-
-.center {
+body {
+    font-family: 'Everson Mono', sans-serif;
+    background: linear-gradient(to right, #ff7854, #fd267d);
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* Centers the flex children horizontally */
     align-items: center;
-    text-align: center;
+    /* Aligns the flex children to the start vertically */
+    justify-content: flex-start;
 }
 
-
-/* W3 Schools Based */
-/* Shift Button */
-.btnShift {
-    border-radius: 4px;
-    background-color: #0081eb;
-    border: none;
-    color: #FFFFFF;
-    font-size: 16px;
-    padding: 8px;
-    width: 180px;
-    transition: all 0.6s;
-    margin: 5px;
-}
-
-.btnShift span {
-    display: inline-block;
-    position: relative;
-    transition: 0.5s;
-}
-
-/* Deal with animation of button */
-.btnShift span:after {
-    content: '\00bb';
+.top-bar,
+.bottom-bar {
+    background: rgba(255, 255, 255, 0.575);
+    backdrop-filter: blur(10px);
     position: absolute;
-    opacity: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Should match the max-width of .content */
+    max-width: 1024px;
+    width: 100%;
+    height: 6%;
+    z-index: 1000;
+    /* For nav bar roundness */
+    border-radius: 20px;
+    border-style: solid;
+    border-color: #6a6969;
+}
+
+.top-bar {
     top: 0;
-    right: -20px;
-    transition: 0.6s;
+    /* Only round the bottom corners of the top bar */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
-.btnShift:hover span {
-    padding-right: 25px;
+.bottom-bar {
+    bottom: 0;
+    /* Only round the top corners of the bottom bar */
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
-.btnShift:hover span:after {
-    opacity: 1;
-    right: 0;
-}
-
-
-/* Override Bootstrap's .hover-highlight:hover class */
-.hover-highlight:hover {
-    background-color: #af27f9;
-}
-
-/* Override Bootstrap's .bg-primary class */
-.bg-primary {
-    position: absolute;
-    top: 14px;
-    right: 20px;
-    background-color: #116ac3 !important;
-}
-
-
-/* W3 Schools Based */
-/*Scroll indicator*/
-.position {
-    position: absolute;
-    left: 40;
-    margin: 0px auto 0 auto;
-    width: 90%;
-}
-
-.scroll-container1 {
-    width: 100%;
-    height: 2px;
-    background: #ccc;
-}
-
-.scroll-bar1 {
-    height: 8px;
-    background: #cc1515;
-    width: 60%;
-    opacity: 0.7
-}
-
-/* Goal progress display */
-#barBox {
-    width: 100%;
-    background-color: #b6aeaebb;
-}
-
-#bar {
-    width: 10%;
-    height: 50px;
-    background-color: #c48217 ;
-    text-align: center;
-    line-height: 50px;
-    color: rgb(0, 0, 0);
-}
-
-
-/* Card flip */
-.flip-card {
-    padding: 10px 0;
-    margin: 10px auto 0 auto;
-    
-    background-color: transparent;
-    width: 440px;
-    height: 520px;
-    perspective: 1000px;
-    /* Remove this if you don't want the 3D effect */
-}
-
-/* This container is needed to position the front and back */
-.flip-card-inner {
-    position: relative;
-    width: 100%;
+.settings-nav ul,
+.main-nav ul {
+    list-style-type: none;
+    display: flex;
+    /* This will spread the nav items */
+    justify-content: space-between;
+    padding: 0 1rem;
+    padding-top: 0.5rem;
+    /* This ensures that the nav fills the height of the bar */
     height: 100%;
-    text-align: center;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-}
-
-/* W3 Schools Based */
-/* Horizontal flip after mouse hover */
-.flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-}
-
-.flip-card-front,
-.flip-card-back {
-    position: absolute;
-    padding: 45px;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
-
-/* Style the front side */
-.flip-card-front {
-    padding: 200;
+    /* Vertically centers the nav items */
     align-items: center;
-    background: rgb(131, 58, 180);
-    background: linear-gradient(0deg, rgba(131, 58, 180, 1) 0%, rgba(253, 59, 29, 1) 100%);
+    text-align: left;
     color: black;
 }
 
-/* Style the back */
-.flip-card-back {
-    background: rgb(244, 41, 130);
-    background: radial-gradient(circle, rgba(244, 41, 130, 1) 0%, rgba(232, 163, 82, 1) 69%);
-    color: white;
-    transform: rotateY(180deg);
+.settings-nav li,
+.main-nav li {
+    padding: 0 1rem;
+    margin: 0;
+}
+
+.settings-nav a,
+.main-nav a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.settings-nav img,
+.main-nav img {
+    height: 24px;
+    width: auto;
+}
+
+/* Content styles */
+.content {
+    width: 100%;
+    /* Set the max-width to the desired width of the central strip */
+    max-width: 1024px;
+    margin: 0 auto;
+    position: relative;
+    /* Needed for absolute positioning of header and footer */
+    flex-grow: 1;
+    /* Adjust based on top/bottom bar height */
+    padding-top: 50px;
+    padding-bottom: 50px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+}
+
+/* Add any additional styles for your specific sections/pages here */
+.homepage {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 20px 20px;
+}
+
+.intro {
+    color: #fff;
+    margin-bottom: 2rem;
+}
+
+.intro h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.intro p {
+    font-size: 1.25rem;
+    color: #ddd;
+}
+
+.features {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+}
+
+.feature {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: 8px;
+    width: 30%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.feature h2 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.feature p {
+    color: #666;
+}
+
+.nav-icon {
+    width: 48px;
+    height: 48px;
+    /* You can also set object-fit property if needed */
+    object-fit: contain;
+    /* This ensures that the aspect ratio is maintained without the image being stretched */
+}
+
+.cta {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.cta-button {
+    background-color: #fff;
+    color: #fd267d;
+    padding: 0.75rem 1.5rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.cta-button:hover,
+.cta-button:focus {
+    transform: scale(1.05);
+    background-color: #ff7854;
+    color: #fff;
+}
+
+/* Blurred sidebars */
+/* Adds pseudo-elements to create the blurred side effect */
+.content::before,
+.content::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    width: calc((100% - 1024px) / 2);
+    /* Adjust the width calculation based on max-width of .content */
+    height: 100%;
+    background: inherit;
+    /* Takes the gradient background from the body */
+    backdrop-filter: blur(15px);
+}
+
+.content::before {
+    left: 0;
+}
+
+.content::after {
+    right: 0;
+}
+
+/* Add media queries for responsiveness */
+@media (max-width: 1024px) {
+
+    .content,
+    .top-bar,
+    .bottom-bar {
+        width: 100%;
+        max-width: none;
+    }
+
+    .content::before,
+    .content::after {
+        display: none;
+        /* Removes the blurred sidebars on smaller screens */
+    }
 }
