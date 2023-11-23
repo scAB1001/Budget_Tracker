@@ -26,7 +26,6 @@ class User(BaseModel, UserMixin):
     email = db.Column(db.String(30), unique=True)
     password = db.Column(db.String(20))
     first_name = db.Column(db.String(20))
-    # tblName = db.relationship('tblName')
 
     def __repr__(self):
         return f"ID:{self.id}\t{self.first_name}, {self.email}, {self.password}"
@@ -66,7 +65,7 @@ class UserInteraction(BaseModel):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
-    swipe_type = db.Column(db.String(50))
+    swipe_type = db.Column(db.String(5))
     timestamp = db.Column(db.DateTime(timezone=True), default=DT)
 
     def __repr__(self):
