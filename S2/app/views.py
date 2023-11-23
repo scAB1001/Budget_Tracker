@@ -1,10 +1,15 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
-from app import app, db
+from .models import User, Car, Lease, UserInteraction
 from .forms import LoginForm, RegistrationForm
-from .models import User
+from app import app, db, admin
 from flask_login import current_user
+from flask_admin.contrib.sqla import ModelView
 
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Car, db.session))
+admin.add_view(ModelView(Lease, db.session))
+admin.add_view(ModelView(UserInteraction, db.session))
 
 import json
 from collections import Counter

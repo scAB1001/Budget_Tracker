@@ -2,12 +2,15 @@ from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_admin import Admin
 
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
 migrate = Migrate(app, db, render_as_batch=True)
+admin = Admin(app, template_mode='bootstrap4')
+
 
 # For debugging
 # Set the cache control header to not store the imported static files in cache (I dislike 304s)
@@ -15,6 +18,7 @@ migrate = Migrate(app, db, render_as_batch=True)
 def add_cache_control(response):
     response.headers['Cache-Control'] = 'no-store'
     return response
+
 
 from app import views, models
 

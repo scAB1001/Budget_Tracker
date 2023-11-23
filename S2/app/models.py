@@ -28,7 +28,7 @@ class User(BaseModel, UserMixin):
     first_name = db.Column(db.String(20))
 
     def __repr__(self):
-        return f"ID:{self.id}\t{self.first_name}, {self.email}, {self.password}"
+        return f"ID:{self.id}  {self.first_name}, {self.email}, {self.password}"
 
 
 class Car(BaseModel):
@@ -45,7 +45,7 @@ class Car(BaseModel):
     interactions = db.relationship('UserInteraction', backref='car', lazy=True)
 
     def __repr__(self):
-        return f"<Car {self.model} {self.make} {self.year}>"
+        return f"Car [{self.model}, {self.make}, {self.year}]"
 
 
 class Lease(BaseModel):
@@ -57,7 +57,7 @@ class Lease(BaseModel):
     mileage_limit = db.Column(db.Integer)
 
     def __repr__(self):
-        return f"<Lease {self.user_id} {self.car_id} {self.term_length}>"
+        return f"Lease [{self.user_id}, {self.car_id}, {self.term_length}]"
 
 
 class UserInteraction(BaseModel):
@@ -69,4 +69,4 @@ class UserInteraction(BaseModel):
     timestamp = db.Column(db.DateTime(timezone=True), default=DT)
 
     def __repr__(self):
-        return f"<UserInteraction {self.user_id} {self.car_id} {self.swipe_type}>"
+        return f"UserInteraction [{self.user_id}, {self.car_id}, {self.swipe_type}]"
