@@ -160,6 +160,12 @@ def home():
     return render_template('home.html', title='Home', user=current_user)
 
 
+@views.route('/test')
+def test():
+
+    return render_template('test.html', title='Test', user=current_user)
+
+
 @views.route('/explore')
 @login_required
 def explore():
