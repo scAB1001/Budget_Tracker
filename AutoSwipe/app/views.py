@@ -13,6 +13,7 @@ admin.add_view(ModelView(UserInteraction, db.session))
 
 import json
 from collections import Counter
+from datetime import datetime
 
 # Flash message flags
 DANGER, SUCCESS = 'danger', 'success'
@@ -50,6 +51,72 @@ def toggle_count():
     #print(f"Current click count: {click_count}")
     return jsonify(click_count=click_count)
 
+def pre_populate_db():
+    # Create Users
+    users = [
+        User(email='user1@example.com', password='password1', first_name='User1'),
+        User(email='user2@example.com', password='password2', first_name='User2'),
+        User(email='user3@example.com', password='password3', first_name='User3'),
+        User(email='user4@example.com', password='password4', first_name='User4'),
+        User(email='user5@example.com', password='password5', first_name='User5'),
+    ]
+
+    # Create Cars
+    cars = [
+        Car(model='Model S', make='Tesla', year=2020, body_type='Sedan', monthly_payment=700.00, horsepower=670),
+        Car(model='Mustang', make='Ford', year=2019, body_type='Coupe', monthly_payment=500.00, horsepower=450),
+        # Add more cars as needed
+    ]
+
+    # Add users and cars to the session
+    db.session.add_all(users)
+    db.session.add_all(cars)
+
+    # Commit the users and cars to the database
+    db.session.commit()
+
+    # Create Leases and User Interactions
+    for user in users:
+        for car in cars:
+            lease = Lease(user_id=user.id, car_id=car.id, term_length=36, mileage_limit=12000)
+            interaction = UserInteraction(user_id=user.id, car_id=car.id, swipe_type='like', timestamp=datetime.now())
+            db.session.add(lease)
+            db.session.add(interaction)
+
+    # Commit the leases and interactions to the database
+    db.session.commit()
+
+
+def display_user_data():
+    # Retrieve all users
+    users = User.query.all()
+
+    for user in users:
+        print(f"User: {user.first_name}, Email: {user.email}")
+        
+        # Print all leases for this user
+        for lease in user.leases:
+            car = Car.query.get(lease.car_id)
+            print(f"\tLeased Car: {car.model}, Year: {car.year}, Lease Term: {lease.term_length} months")
+
+        # Print all interactions for this user
+        for interaction in user.interactions:
+            car = Car.query.get(interaction.car_id)
+            print(f"\tInteraction: {interaction.swipe_type} on {car.model}, Year: {car.year}")
+
+
+def isolate_users():
+    users = User.query.all()
+    print("Users:")
+    for user in users:
+        print(f"  {user}")
+
+    if str(current_user)[0] != 'I':
+        print(f"\ncurrent_user:  Guest")
+    else:
+        print(f"\ncurrent_user:  {current_user}")
+
+
 # Routes
 """
     
@@ -58,14 +125,13 @@ def toggle_count():
 """
 @views.route('/')
 def home():
-    users = User.query.all()
-    print("Users:")
-    for user in users:
-        print(f"  {user}")
-    if str(current_user)[0] != 'I':
-        print(f"\ncurrent_user:  Guest")
-    else:
-        print(f"\ncurrent_user:  {current_user}")
+    #if not User.query.first():
+    #    print(not User.query.first())
+    #    pre_populate_db()
+    #isolate_users()
+
+    display_user_data()
+
     return render_template('home.html', title='Home', user=current_user)
 
 
