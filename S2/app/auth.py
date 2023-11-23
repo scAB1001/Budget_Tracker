@@ -90,6 +90,8 @@ def signup():
         password2 = form.confirm_password.data
 
         if handle_registration(email, first_name, password1, password2):
-            return redirect(url_for('views.home'))
+            return redirect(url_for('views.login'))
+        else:
+            flash('Unable to create an account at this time. Try again.', category=DANGER)
 
     return render_template("signup.html", form=form, user=current_user, title='Signup')

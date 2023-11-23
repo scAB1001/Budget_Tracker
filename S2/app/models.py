@@ -23,10 +23,51 @@ class BaseModel(db.Model):
 class User(BaseModel, UserMixin):
     __tablename__ = 'user'
 
-    email = db.Column(db.String(150), unique=True)
-    password = db.Column(db.String(150))
-    first_name = db.Column(db.String(150))
-    #notes = db.relationship('Note')
+    email = db.Column(db.String(30), unique=True)
+    password = db.Column(db.String(20))
+    first_name = db.Column(db.String(20))
+    # tblName = db.relationship('tblName')
 
     def __repr__(self):
-        return f"UserID:{self.id}\t{self.first_name}, {self.email}, {self.password}"
+        return f"ID:{self.id}\t{self.first_name}, {self.email}, {self.password}"
+
+
+class Car(BaseModel):
+    __tablename__ = 'cars'
+
+    model = db.Column(db.String(255))
+    make = db.Column(db.String(255))
+    year = db.Column(db.Integer)
+    body_type = db.Column(db.String(255))
+    monthly_payment = db.Column(db.Float)
+    horsepower = db.Column(db.Integer)
+
+    leases = db.relationship('Lease', backref='car', lazy=True)
+    interactions = db.relationship('UserInteraction', backref='car', lazy=True)
+
+    def __repr__(self):
+        return f"<Car {self.model} {self.make} {self.year}>"
+
+
+class Lease(BaseModel):
+    __tablename__ = 'leases'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
+    term_length = db.Column(db.Integer)
+    mileage_limit = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"<Lease {self.user_id} {self.car_id} {self.term_length}>"
+
+
+class UserInteraction(BaseModel):
+    __tablename__ = 'user_interactions'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
+    swipe_type = db.Column(db.String(50))
+    timestamp = db.Column(db.DateTime(timezone=True), default=DT)
+
+    def __repr__(self):
+        return f"<UserInteraction {self.user_id} {self.car_id} {self.swipe_type}>"

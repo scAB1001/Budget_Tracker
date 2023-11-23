@@ -54,8 +54,13 @@ def toggle_count():
 @views.route('/')
 def home():
     users = User.query.all()
+    print("Users:")
     for user in users:
-        print(user)
+        print(f"  {user}")
+    if str(current_user)[0] != 'I':
+        print(f"\ncurrent_user:  Guest")
+    else:
+        print(f"\ncurrent_user:  {current_user}")
     return render_template('home.html', title='Home', user=current_user)
 
 
@@ -64,7 +69,7 @@ def home():
 def explore():
     if request.method == 'POST': 
         print("POST")
-    return render_template('explore.html', title='Explore', user=current_user)
+    return render_template('explore.html', title='Explore', user=current_user, click_count=click_count)
 
 
 @views.route('/saved')

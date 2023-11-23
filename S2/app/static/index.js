@@ -33,3 +33,27 @@ function hide(eId) {
   x.style.display = "none";
 }
 
+// Swipe functionality
+function initializeSwipe() {
+    let startX;
+
+    document.querySelectorAll('.swiper-card').forEach(card => {
+        card.addEventListener('mousedown', (e) => {
+            startX = e.clientX;
+            e.preventDefault();
+        });
+
+        card.addEventListener('mouseup', (e) => {
+            if (startX - e.clientX > 150) { // Swiped left
+                card.style.transform = 'translateX(-100%)';
+            } else if (startX - e.clientX < -150) { // Swiped right
+                card.style.transform = 'translateX(100%)';
+            }
+            e.preventDefault();
+        });
+    });
+}
+
+// Initialize the swipe functionality
+initializeSwipe();
+

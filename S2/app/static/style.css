@@ -43,7 +43,7 @@ body {
     /* Should match the max-width of .content */
     max-width: 1024px;
     width: 100%;
-    height: 5.5%;
+    height: 6%;
     /* Ensure it is sent to front */
     z-index: 1000;
     /* For nav bar roundness */
@@ -108,14 +108,13 @@ body {
     width: auto;
 }
 
-/* Content styles */
 .content {
-    width: 100%;
     /* Set the max-width to the desired width of the central strip */
     max-width: 1024px;
+    width: 100%;
     margin: 0 auto;
-    position: relative;
     /* Needed for absolute positioning of header and footer */
+    position: relative;
     flex-grow: 1;
     /* Adjust based on top/bottom bar height */
     padding-top: 50px;
@@ -187,7 +186,18 @@ body {
 
 .cta-button {
     background-color: rgba(255, 255, 255, 0.9);
-    color: #fd267d;
+    color: #cf1560;
+    padding: 0.75rem 1.5rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.cta-button-danger {
+    background-color: rgb(200, 0, 0);
+    color: #ffeaf2;
     padding: 0.75rem 1.5rem;
     border-radius: 20px;
     text-decoration: none;
@@ -273,30 +283,79 @@ body {
     margin-bottom: 0.5rem;
 }
 
-.marquee {
-    overflow: hidden;
+marquee {
+    padding-top: 15px;
+    width: 100%;
+    height: 100px;
+}
+
+/* Login Container */
+.login-container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 3rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-signin {
+    margin-top: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.error {
+    color: #d9534f;
+    /* Red color for errors */
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: #fd267d;
+    border-color: #fd267d;
+    /* Add any other button styles here */
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #ff7854;
+    border-color: #ff7854;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .login-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+}
+
+#image-swiper-container {
+    /* Or any size you prefer */
+    width: 1000px; 
+    height: 1400px;
     position: relative;
-    background-color: #333;
-    /* Set to desired background color */
-    color: white;
-    /* Set to desired text color */
-    white-space: nowrap;
-    z-index: 2000;
+    overflow: hidden;
+    background-color: #6a6969;
 }
 
-.marquee-content {
-    display: inline-block;
+.swiper-card {
+    padding: 1rem 1rem;
+    object-fit: contain;
     position: absolute;
-    animation: marquee-animation 10s linear infinite;
-    z-index: 2000;
-}
-
-@keyframes marquee-animation {
-    0% {
-        left: 100%;
-    }
-
-    100% {
-        left: -100%;
-    }
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+    transition: transform 0.5s ease;
 }

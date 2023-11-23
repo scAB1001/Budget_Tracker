@@ -1,18 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<head>
-    <script src="{{ url_for('static', filename='index.js') }}"></script>
-    <script src="{{ url_for('static', filename='ajax_js.js') }}"></script>
-</head>
 <div class="login">
     <section class="intro">
         <h1>Signup</h1>
-        <p>Don't have an account? Make one.</p>
+        <p>Create an account.</p>
     </section>
 
     <!-- User Guide Section -->
-    <br><br><section class="user-guide">
+    <section class="user-guide">
         <h2>Login to Use AutoSwipe</h2>
         <ol class="guide-steps">
             <li>
@@ -26,22 +22,40 @@
         </ol>
     </section>
 
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.email.label }} {{ form.email }}
-        </div>
-        <div class="form-group">
-            {{ form.first_name.label }} {{ form.first_name }}
-        </div>
-        <div class="form-group">
-            {{ form.password.label }} {{ form.password }}
-        </div>
-        <div class="form-group">
-            {{ form.confirm_password.label }} {{ form.confirm_password }}
-        </div>
-        <button type="submit" class="btn btn-primary">Sign Up</button>
-    </form>
+    <div>
+        <form method="POST" class="form-signin">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control") }}
+                {% if form.email.errors %}
+                <div class="error">{{ form.email.errors[0] }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.first_name.label(class="form-label") }}
+                {{ form.first_name(class="form-control") }}
+                {% if form.first_name.errors %}
+                <div class="error">{{ form.first_name.errors[0] }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+                {% if form.password.errors %}
+                <div class="error">{{ form.password.errors[0] }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.confirm_password.label(class="form-label") }}
+                {{ form.confirm_password(class="form-control") }}
+                {% if form.confirm_password.errors %}
+                <div class="error">{{ form.confirm_password.errors[0] }}</div>
+                {% endif %}
+            </div>
+            <button type="submit" class="cta-button">Submit</button>
+        </form>
+    </div>
     
     <div class="flash messages">
         {% with messages = get_flashed_messages() %}

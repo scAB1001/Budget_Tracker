@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<head>
-    <script src="{{ url_for('static', filename='index.js') }}"></script>
-    <script src="{{ url_for('static', filename='ajax_js.js') }}"></script>
-</head>
 <div class="explore">
     <section class="intro">
         <h1>Explore</h1>
@@ -12,24 +8,40 @@
     </section>
 
     <!-- User Guide Section -->
-    <br><br><section class="user-guide">
+    <section class="user-guide">
         <h2>Login to Use AutoSwipe</h2>
         <ol class="guide-steps">
             <li>
-                <h3>Create an Account</h3>
-                <p>Sign up for a new account to get started. It's quick and easy!</p>
-            </li>
-            <li>
-                <h3>Log In</h3>
-                <p>Already have an account? Login to get started.</p>
+                <h3>Swipe Through Vehicles</h3>
+                <p>Swipe left to pass or swipe right to save any vehicle to your favourites.</p>
             </li>
         </ol>
     </section>
 
+    <div id="image-swiper-container">
+        <div class="swiper-card" id="card1">
+            <img src="{{ url_for('static', filename='cars/308GTRainbow1.jpg') }}" alt="Image 1">
+        </div>
+        <div class="swiper-card" id="card2">
+            <img src="{{ url_for('static', filename='cars/astonMartinLagonda1.jpg') }}" alt="Image 2">
+        </div>
+        <div class="swiper-card" id="card3">
+            <img src="{{ url_for('static', filename='cars/countachlp400Lamborghini1.jpg') }}" alt="Image 3">
+        </div>
+        <div class="swiper-card" id="card4">
+            <img src="{{ url_for('static', filename='cars/testarossa1.jpg') }}" alt="Image 4">
+        </div>
+        <!-- Add more cards as needed -->
+    </div>
+
+
+
     <div>
         <h3>Button Time</h3>
-        <button id="click-me">Click me!</button>
-        <p>You have clicked the button <span id="click-count">{{ click_count }}</span> times.</p>
+        <div class="cta-button">
+            <a id="click-me"><img src="{{ url_for('static', filename='icons/heart.png') }}" alt="Like icon" class="nav-icon"></a>
+        </div>
+        <p><span id="click-count">{{ click_count }}</span> likes.</p>
     </div>
 
     <div class="flash messages">
