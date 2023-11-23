@@ -23,12 +23,19 @@ class BaseModel(db.Model):
 class User(BaseModel, UserMixin):
     __tablename__ = 'user'
 
+    # Existing fields
     email = db.Column(db.String(30), unique=True)
     password = db.Column(db.String(20))
     first_name = db.Column(db.String(20))
 
+    # Define relationships
+    leases = db.relationship('Lease', backref='user', lazy=True)
+    interactions = db.relationship(
+        'UserInteraction', backref='user', lazy=True)
+
     def __repr__(self):
         return f"ID:{self.id}  {self.first_name}, {self.email}, {self.password}"
+
 
 
 class Car(BaseModel):
@@ -65,7 +72,7 @@ class UserInteraction(BaseModel):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
-    swipe_type = db.Column(db.String(5))
+    swipe_type = db.Column(db.String(10))
     timestamp = db.Column(db.DateTime(timezone=True), default=DT)
 
     def __repr__(self):

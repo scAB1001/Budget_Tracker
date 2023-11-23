@@ -88,21 +88,20 @@ def pre_populate_db():
 
 
 def display_user_data():
-    # Retrieve all users
     users = User.query.all()
-
     for user in users:
         print(f"User: {user.first_name}, Email: {user.email}")
-        
+
         # Print all leases for this user
         for lease in user.leases:
-            car = Car.query.get(lease.car_id)
-            print(f"\tLeased Car: {car.model}, Year: {car.year}, Lease Term: {lease.term_length} months")
+            print(
+                f"\tLeased Car ID: {lease.car_id}, Lease Term: {lease.term_length} months")
 
         # Print all interactions for this user
         for interaction in user.interactions:
-            car = Car.query.get(interaction.car_id)
-            print(f"\tInteraction: {interaction.swipe_type} on {car.model}, Year: {car.year}")
+            print(
+                f"\tInteraction: {interaction.swipe_type} with Car ID: {interaction.car_id}")
+
 
 
 def isolate_users():
