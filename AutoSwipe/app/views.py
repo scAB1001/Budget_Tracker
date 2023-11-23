@@ -27,16 +27,6 @@ views = Blueprint('views', __name__)
 
 """
 
-# Attempts to stage and apply a commit to the db, else rollback the attempt
-def update_db(entry):
-    try:
-        db.session.add(entry)
-        db.session.commit()
-    except Exception:
-        db.session.rollback()
-        flash(f"An error occurred while adding this entry.", DANGER)
-
-
 click_count = 30
 should_increment = True
 @views.route('/toggle_count', methods=['POST'])
@@ -51,40 +41,77 @@ def toggle_count():
     #print(f"Current click count: {click_count}")
     return jsonify(click_count=click_count)
 
+
+# Attempts to stage and apply a commit to the db, else rollback the attempt
+def update_db(entry):
+    try:
+        db.session.add(entry)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        flash(f"An error occurred while adding this entry.", DANGER)
+
+
+def is_table_empty(model):
+    # Returns True if the table is empty, False otherwise
+    return db.session.query(model).count() == 0
+
+
+def clear_tables():
+    # Clear all data from tables
+    if not is_table_empty(UserInteraction):
+        UserInteraction.query.delete()
+        
+    if not is_table_empty(Lease):
+        Lease.query.delete()
+    
+    if not is_table_empty(Car):
+        Car.query.delete()
+    
+    if not is_table_empty(User):
+        User.query.delete()
+    
+    db.session.commit()
+    
+
 def pre_populate_db():
+    # Clear all tables
+    clear_tables()
+    
     # Create Users
-    users = [
-        User(email='user1@example.com', password='password1', first_name='User1'),
-        User(email='user2@example.com', password='password2', first_name='User2'),
-        User(email='user3@example.com', password='password3', first_name='User3'),
-        User(email='user4@example.com', password='password4', first_name='User4'),
-        User(email='user5@example.com', password='password5', first_name='User5'),
-    ]
+    if is_table_empty(User) and is_table_empty(Car) and is_table_empty(Lease) and is_table_empty(UserInteraction):
+        users = [
+            User(email='user1@example.com', password='password1', first_name='User1'),
+            User(email='user2@example.com', password='password2', first_name='User2'),
+            User(email='user3@example.com', password='password3', first_name='User3'),
+            User(email='user4@example.com', password='password4', first_name='User4'),
+            User(email='user5@example.com', password='password5', first_name='User5'),
+        ]
 
-    # Create Cars
-    cars = [
-        Car(model='Model S', make='Tesla', year=2020, body_type='Sedan', monthly_payment=700.00, horsepower=670),
-        Car(model='Mustang', make='Ford', year=2019, body_type='Coupe', monthly_payment=500.00, horsepower=450),
-        # Add more cars as needed
-    ]
+        # Create Cars
+        cars = [
+            Car(model='Model S', make='Tesla', year=2020, body_type='Sedan', monthly_payment=700.00, horsepower=670),
+            Car(model='Mustang', make='Ford', year=2019, body_type='Coupe', monthly_payment=500.00, horsepower=450),
+            # Add more cars as needed
+        ]
 
-    # Add users and cars to the session
-    db.session.add_all(users)
-    db.session.add_all(cars)
+        # Add users and cars to the session
+        db.session.add_all(users)
+        db.session.add_all(cars)
 
-    # Commit the users and cars to the database
-    db.session.commit()
+        # Commit the users and cars to the database
+        db.session.commit()
 
-    # Create Leases and User Interactions
-    for user in users:
-        for car in cars:
-            lease = Lease(user_id=user.id, car_id=car.id, term_length=36, mileage_limit=12000)
-            interaction = UserInteraction(user_id=user.id, car_id=car.id, swipe_type='like', timestamp=datetime.now())
-            db.session.add(lease)
-            db.session.add(interaction)
+        # Create Leases and User Interactions
+        for user in users:
+            for car in cars:
+                lease = Lease(user_id=user.id, car_id=car.id, term_length=36, mileage_limit=12000)
+                interaction = UserInteraction(user_id=user.id, car_id=car.id, swipe_type='like', timestamp=datetime.now())
+                db.session.add(lease)
+                db.session.add(interaction)
 
-    # Commit the leases and interactions to the database
-    db.session.commit()
+        # Commit the leases and interactions to the database
+        db.session.commit()
 
 
 def display_user_data():
@@ -101,7 +128,6 @@ def display_user_data():
         for interaction in user.interactions:
             print(
                 f"\tInteraction: {interaction.swipe_type} with Car ID: {interaction.car_id}")
-
 
 
 def isolate_users():
@@ -129,7 +155,7 @@ def home():
     #    pre_populate_db()
     #isolate_users()
 
-    display_user_data()
+    clear_tables()
 
     return render_template('home.html', title='Home', user=current_user)
 

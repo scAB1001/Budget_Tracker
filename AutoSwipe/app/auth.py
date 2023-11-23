@@ -6,12 +6,12 @@ from .forms import LoginForm, RegistrationForm
 from . import db
 
 auth = Blueprint('auth', __name__)
-DANGER, SUCCESS = 'error', 'success'
+DANGER, SUCCESS, HASH_TYPE = 'error', 'success', 'pbkdf2:sha256'  # scrypt
 
 # Helper method to migrate old password hash to a new method
 def migrate_password(user, password):
     if user.password.startswith('sha256$') and check_password_hash(user.password, password):
-        user.password = generate_password_hash(password, method='scrypt')
+        user.password = generate_password_hash(password, method=HASH_TYPE)
         db.session.commit()
 
 
@@ -49,7 +49,7 @@ def handle_registration(email, first_name, password1, password2):
         flash('Password must be at least 7 characters.', category=DANGER)
     else:
         new_user = User(email=email, first_name=first_name,
-                        password=generate_password_hash(password1, method='scrypt'))
+                        password=generate_password_hash(password1, method=HASH_TYPE))
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user, remember=True)
@@ -90,7 +90,7 @@ def signup():
         password2 = form.confirm_password.data
 
         if handle_registration(email, first_name, password1, password2):
-            return redirect(url_for('views.login'))
+            return redirect(url_for('auth.login'))
         else:
             flash('Unable to create an account at this time. Try again.', category=DANGER)
 
