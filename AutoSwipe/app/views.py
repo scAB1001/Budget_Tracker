@@ -76,7 +76,7 @@ def clear_tables():
 
 def pre_populate_db():
     # Clear all tables
-    clear_tables()
+    #clear_tables()
     
     # Create Users
     if is_table_empty(User) and is_table_empty(Car) and is_table_empty(Lease) and is_table_empty(UserInteraction):
@@ -155,7 +155,7 @@ def home():
     #    pre_populate_db()
     #isolate_users()
 
-    clear_tables()
+    #clear_tables()
 
     return render_template('home.html', title='Home', user=current_user)
 

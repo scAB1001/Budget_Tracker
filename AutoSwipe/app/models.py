@@ -37,7 +37,6 @@ class User(BaseModel, UserMixin):
         return f"ID:{self.id}  {self.first_name}, {self.email}, {self.password}"
 
 
-
 class Car(BaseModel):
     __tablename__ = 'cars'
 
