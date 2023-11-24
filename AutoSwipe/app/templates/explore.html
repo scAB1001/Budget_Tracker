@@ -2,60 +2,33 @@
 
 {% block content %}
 <div class="explore">
-    <section class="intro">
-        <h1>Explore</h1>
-        <p>Find your dream car.</p>
-    </section>
-
-    <!-- User Guide Section -->
-    <section class="user-guide">
-        <h2>Login to Use AutoSwipe</h2>
-        <ol class="guide-steps">
-            <li>
-                <h3>Swipe Through Vehicles</h3>
-                <p>Swipe left to pass or swipe right to save any vehicle to your favourites.</p>
-            </li>
-        </ol>
-    </section>
-
-    <div id="image-swiper-container">
-        <div class="swiper-card" id="card1">
-            <img src="{{ url_for('static', filename='cars/308GTRainbow1.jpg') }}" alt="Image 1">
-        </div>
-        <div class="swiper-card" id="card2">
-            <img src="{{ url_for('static', filename='cars/astonMartinLagonda1.jpg') }}" alt="Image 2">
-        </div>
-        <div class="swiper-card" id="card3">
-            <img src="{{ url_for('static', filename='cars/countachlp400Lamborghini1.jpg') }}" alt="Image 3">
-        </div>
-        <div class="swiper-card" id="card4">
-            <img src="{{ url_for('static', filename='cars/testarossa1.jpg') }}" alt="Image 4">
-        </div>
-        <!-- Add more cards as needed -->
+    <!-- Source: https://github.com/CodeSteppe/card-swiper -->
+    <div class="card-container">
+        <ion-icon id="dislike" name="close"></ion-icon>
+        <div id="swiper"></div>
+        <ion-icon id="like" name="heart-circle"></ion-icon>
+        
+        <script src="{{ url_for('static', filename='card.js') }}"></script>
+        <script src="{{ url_for('static', filename='cardContainer.js') }}"></script>
+        
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     </div>
-
-
-
-    <div>
-        <h3>Button Time</h3>
-        <div class="cta-button">
-            <a id="click-me"><img src="{{ url_for('static', filename='icons/heart.png') }}" alt="Like icon" class="nav-icon"></a>
-        </div>
-        <p><span id="click-count">{{ click_count }}</span> likes.</p>
+    <div class="after-cards">
+        <h1>Find your dream car</h1>
     </div>
+</div>
 
-    <div class="flash messages">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul class="flashes">
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
 
-    
+<div class="flash messages">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
 </div>
 {% endblock %}
