@@ -162,8 +162,35 @@ def home():
 
 @views.route('/test')
 def test():
-
-    return render_template('test.html', title='Test', user=current_user)
+    cars = [
+        {
+            'image_url': 'static/testarossa1.jpg',
+            'car_name': '1960 Ferrari Testarossa V6',
+            'details': 'Lease Price: £12,000pm   \tBody: Coupe\nHorsepower: 390bhp\t\tMake: Ferrari'
+        }""",
+        {
+            'image_url': 'static/countachlp400Lamborghini1.jpg',
+            'car_name': '1990 Lamborghini Countach V12',
+            'details': 'Lease Price: £18,000pm\tBody: Sports\tHorsepower: 410bhp\t\tMake: Lamborghini'
+        },
+        {
+            'image_url': 'static/astonMartinLagonda1.jpg',
+            'car_name': '1970 Aston Martin Lagonda V8',
+            'details': 'Lease Price: £4,000pm\tBody: Saloon\tHorsepower: 305bhp\t\tMake: Aston Martin'
+        },
+        {
+            'image_url': 'static/308GTRainbow1.jpg',
+            'car_name': '1976 Ferrari GT Bertone Rainbow V8',
+            'details': 'Lease Price: £50,000pm\tBody: Coupe\tHorsepower: 255bhp\t\tMake: Ferrari'
+        },
+        {
+            'image_url': 'static/testarossa1.jpg',
+            'car_name': '1960 Ferrari Testarossa V6',
+            'details': 'Lease Price: £12,000pm\tBody: Coupe\tHorsepower: 390bhp\t\tMake: Ferrari'
+        }"""
+        # Add other car dictionaries here
+    ]
+    return render_template('test.html', title='Test', user=current_user, cars=cars)
 
 
 @views.route('/explore')
