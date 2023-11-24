@@ -148,6 +148,18 @@ def isolate_users():
         print(f"\ncurrent_user:  {current_user}")
 
 
+def display_table_nicely(numCards, li):
+    print(f'\nList of {numCards} cars:\n[')
+    for card in li:
+        print('\t{')
+        data = card.items()
+        for key, value in data:
+            if isinstance(value, str):
+                value = value.replace('\n', ' ').replace('\t\t', ', ')
+            print(f'\t\t{key}: {value},')
+        print('\t},')
+    print(']\n')
+
 # Routes
 """
     
@@ -200,14 +212,13 @@ def react():
     
 
 def pre_populate_tblCars():
-    dir = '/static/cars/'  # Prepend before when passing into args
     try:
         # Format: Car(car_name, make, model, year, body_type, horsepower, monthly_payment, mileage)
         
         # List of cars to add
         cars_to_add = [
             Car(image='308GTRainbow1.jpg', car_name='Ferrari 308 GT Bertone Rainbow', make='Ferrari', model='308 GT', 
-                year=1976, body_type='Coupe with retractable targa-style roof', horsepower=255, monthly_payment=52585.91, mileage=89017),
+                year=1976, body_type='2-door coupe', horsepower=255, monthly_payment=52585.91, mileage=89017),
             
             Car(image='astonMartinLagonda1.jpg', car_name='Aston Martin Lagonda Series 2', make='Aston Martin', model='Lagonda', 
                 year=1976, body_type='4-door saloon', horsepower=280, monthly_payment=15461.56, mileage=103633),
@@ -235,10 +246,8 @@ def test():
         print("Deleting rows...")
         Car.query.delete()
         is_table_empty(Car)
-        print("Car table EMPTY")    
     
-    print()
-    print("Adding rows...")
+    print("\nAdding rows...")
     pre_populate_tblCars()
     is_table_empty(Car)    
         
@@ -250,45 +259,18 @@ def test():
     #    print("UserInteraction table EMPTY")    
     
     tblCars = Car.query.all()
-    list_of_car_details = []
+    car_card_details = []
     for car in tblCars:
-        list_of_car_details.append(car.card_info())
-    print()
-    print(f'List of cars:\n{list_of_car_details}\n\n')
-    """
-    # After appending all car rows, the output should look like this
-    list_of_car_details = [
-        {
-            'carID': 1,
-            'imageUrl': 'static/cars/testarossa1.jpg',
-            'carName': '1960 Ferrari Testarossa V6',
-            'details': 'Price: £12,000pm\t\tBody: Coupe\nHorsepower: 390bhp\t\tMake: Ferrari'
-        },
-        {
-            'carID': 2,
-            'imageUrl': 'static/cars/countachlp400Lamborghini1.jpg',
-            'carName': '1990 Lamborghini Countach V12',
-            'details': 'Price: £18,000pm\t\tBody: Sports\nHorsepower: 410bhp\t\tMake: Lamborghini'
-        },
-        {
-            'carID': 3,
-            'imageUrl': 'static/cars/astonMartinLagonda1.jpg',
-            'carName': '1970 Aston Martin Lagonda V8',
-            'details': 'Price: £4,000pm\t\tBody: Saloon\nHorsepower: 305bhp\t\tMake: Aston Martin'
-        },
-        {
-            'carID': 4,
-            'imageUrl': 'static/cars/308GTRainbow1.jpg',
-            'carName': '1976 Ferrari GT Bertone Rainbow V8',
-            'details': 'Price: £50,000pm\t\tBody: Coupe\nHorsepower: 255bhp\t\tMake: Ferrari'
-        }
-    ]"""
+        car_card_details.append(car.card_info())
+
+    numCards = len(car_card_details)
+    display_table_nicely(numCards, car_card_details)
     
-    numCards = len(list_of_car_details)
     
+        
     return render_template(
         'test.html', title='Test', user=current_user, 
-        cars=list_of_car_details, numCards=numCards)
+        cars=car_card_details, numCards=numCards)
 
 
 

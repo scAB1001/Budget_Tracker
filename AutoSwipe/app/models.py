@@ -58,21 +58,12 @@ class Car(BaseModel):
         return f"Car {self.id}: [{self.make}, {self.model}, {self.year}]"
     
     # Key details for card display
-    def card_info0(self):
-        return {
-            'carID': f'{self.id}',
-            'imageUrl': f'{self.image}',
-            'carName': f'{self.car_name}',
-            'details': f'Price: £{self.monthly_payment}pm\t\tBody: {self.body_type}\nHorsepower: {self.horsepower}bhp\t\tMake: {self.make}'
-        }
-        
-    #test for int
     def card_info(self):
         return {
-            'carID1': f'{self.id}',
-            'carID2': f'{type(self.id)}',
-            'carID3': int({self.id}),
-            'carID4': f'{int(self.id)}'
+            'carID': int(str(self.id)),
+            'imageUrl': f'{self.image}',
+            'carName': f'{self.car_name}',
+            'details': f'Price: £{self.monthly_payment}pm\tBody: {self.body_type}\nHorsepower: {self.horsepower}bhp\t\tMake: {self.make}'
         }
     
     # Full details to display in 'Saved' section
@@ -106,30 +97,3 @@ class UserInteraction(BaseModel):
     def __repr__(self):
         return f"UserInteraction [{self.user_id}, {self.car_id}, {self.swiped_right}]"
 
-list_of_cars= [
-    
-    {
-        'carID': '1', 
-        'imageUrl': '308GTRainbow1.jpg', 
-        'carName': 'Ferrari 308 GT Bertone Rainbow', 
-        'details': 'Price: £52585.91pm\t\tBody: Coupe with retractable targa-style roof\nHorsepower: 255bhp\t\tMake: Ferrari'
-    }, 
-    {
-        'carID': '2', 
-        'imageUrl': 'astonMartinLagonda1.jpg', 
-        'carName': 'Aston Martin Lagonda Series 2', 
-        'details': 'Price: £15461.56pm\t\tBody: 4-door saloon\nHorsepower: 280bhp\t\tMake: Aston Martin'
-    }, 
-    {
-        'carID': '3', 
-        'imageUrl': 'testarossa1.jpg', 
-        'carName': 'Ferrari Testarossa', 
-        'details': 'Price: £34185.91pm\t\tBody: 2-door berlinetta\nHorsepower: 385bhp\t\tMake: Ferrari'
-    }, 
-    {
-        'carID': '4', 
-        'imageUrl': 'countachlp400Lamborghini1.jpg', 
-        'carName': 'Lamborghini Countach LP400', 
-        'details': 'Price: £82042.47pm\t\tBody: 2-door coupe\nHorsepower: 375bhp\t\tMake: Lamborghini'
-    }
-]

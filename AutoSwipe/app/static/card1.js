@@ -27,9 +27,11 @@ class Card {
     // Set carID as a data attribute
     card.dataset.carID = this.carID;
     
+    // Prepend to imageURL
+    const dir = '/static/cars/';
     const img = document.createElement('img');
     img.alt = `Image of ${this.carName}`;
-    img.src = this.imageUrl; 
+    img.src = dir + this.imageUrl; 
     card.append(img);
 
     const infoDiv = document.createElement('div');
