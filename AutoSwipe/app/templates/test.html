@@ -5,13 +5,13 @@
   
   <!-- Source: https://github.com/CodeSteppe/card-swiper -->
   <div class="card-container">
-    
     <ion-icon id="dislike" name="close"></ion-icon>
     
-    <div id="swiper"></div>
+    <div id="swiper">
+      <!-- When you finish the cards -->
+    </div>
     
     <ion-icon id="like" name="heart-circle"></ion-icon>
-    
     <!-- Local Scripts -->
     <script type="text/javascript">const cars = {{ cars | tojson | safe }};</script>
     <script src="{{ url_for('static', filename='card1.js') }}"></script>

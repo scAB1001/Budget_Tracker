@@ -1,10 +1,10 @@
 class Card {
-  constructor({ imageUrl, onDismiss, onLike, onDislike, car_name, details}) {
+  constructor({imageUrl, onDismiss, onLike, onDislike, carName, details}) {
     this.imageUrl = imageUrl;
     this.onDismiss = onDismiss;
     this.onLike = onLike;
     this.onDislike = onDislike;
-    this.car_name = car_name;
+    this.carName = carName;
     this.details = details;
     this.#init();
   }
@@ -32,7 +32,7 @@ class Card {
     infoDiv.classList.add('card-info');
     
     const carDiv = document.createElement('div');
-    carDiv.textContent = this.car_name;
+    carDiv.textContent = this.carName;
     infoDiv.append(carDiv);
     
     const detailsP = document.createElement('p');

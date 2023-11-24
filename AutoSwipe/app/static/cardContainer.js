@@ -17,7 +17,7 @@ let cardCount = 0;
 
 // functions
 function appendNewCard() {
-  const car_name = "Car"; 
+  const carName = "Car"; 
   const details = "Lease Price: £12,000pm   \tBody: Coupe\nHorsepower: 390bhp\t\tMake: Ferrari";
 
   const card = new Card({
@@ -34,7 +34,7 @@ function appendNewCard() {
       dislike.classList.toggle('trigger');
     },
 
-    car_name: car_name,
+    carName: carName,
     details: details
   });
 

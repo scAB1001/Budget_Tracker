@@ -1,11 +1,12 @@
 class Card {
-  constructor({ imageUrl, onDismiss, onLike, onDislike, car_name, details}) {
+  constructor({carID, imageUrl, carName, details, onDismiss, onLike, onDislike}) {
+    this.carID = carID;
     this.imageUrl = imageUrl;
+    this.carName = carName;
+    this.details = details;
     this.onDismiss = onDismiss;
     this.onLike = onLike;
     this.onDislike = onDislike;
-    this.car_name = car_name;
-    this.details = details;
     this.#init();
   }
  
@@ -23,23 +24,27 @@ class Card {
   #init = () => {
     const card = document.createElement('div');
     card.classList.add('card');
+    // Set carID as a data attribute
+    card.dataset.carID = this.carID;
     
     const img = document.createElement('img');
-    img.src = this.imageUrl;
+    img.alt = `Image of ${this.carName}`;
+    img.src = this.imageUrl; 
     card.append(img);
 
     const infoDiv = document.createElement('div');
     infoDiv.classList.add('card-info');
     
     const carDiv = document.createElement('div');
-    carDiv.textContent = this.car_name;
+    carDiv.textContent = this.carName;
     infoDiv.append(carDiv);
     
     const detailsP = document.createElement('p');
     detailsP.textContent = this.details;
     infoDiv.append(detailsP);
 
-    card.append(infoDiv); // Append the infoDiv to the card
+    // Append the infoDiv to the card
+    card.append(infoDiv);
     this.element = card;
 
     if (this.#isTouchDevice()) {
@@ -49,6 +54,7 @@ class Card {
     }
   }
 
+    // Listener methods
   #listenToTouchEvents = () => {
     this.element.addEventListener('touchstart', (e) => {
       const touch = e.changedTouches[0];
@@ -131,6 +137,22 @@ class Card {
     setTimeout(() => {
       this.element.remove();
     }, 1000);
+
+    // Send like/dislike POST data
+    console.log("About to send POST"); // CONFIRMATION
+    const isLiked = direction === 1;
+
+    fetch('/react', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ carID: `${this.carID}`, liked: isLiked })
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+
     if (typeof this.onDismiss === 'function') {
       this.onDismiss();
     }

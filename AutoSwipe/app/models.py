@@ -71,8 +71,8 @@ class UserInteraction(BaseModel):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
-    swipe_type = db.Column(db.String(10))
+    swiped_right = db.Column(db.Boolean)
     timestamp = db.Column(db.DateTime(timezone=True), default=DT)
 
     def __repr__(self):
-        return f"UserInteraction [{self.user_id}, {self.car_id}, {self.swipe_type}]"
+        return f"UserInteraction [{self.user_id}, {self.car_id}, {self.swiped_right}]"

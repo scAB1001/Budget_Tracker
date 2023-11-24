@@ -91,7 +91,7 @@ def pre_populate_db():
         # Create Cars
         cars = [
             Car(model='Model S', make='Tesla', year=2020, body_type='Sedan', monthly_payment=700.00, horsepower=670),
-            Car(model='Mustang', make='Ford', year=2019, body_type='Coupe', monthly_payment=500.00, horsepower=450),
+            Car(model='Mustang', make='Ford', year=2019, body_type='Coupe', monthly_payment=500.00, horsepower=450)
             # Add more cars as needed
         ]
 
@@ -122,7 +122,7 @@ def display_user_data():
         # Print all leases for this user
         for lease in user.leases:
             print(
-                f"\tLeased Car ID: {lease.car_id}, Lease Term: {lease.term_length} months")
+                f"\tLeased Car ID: {lease.car_id}, Term: {lease.term_length} months")
 
         # Print all interactions for this user
         for interaction in user.interactions:
@@ -160,31 +160,77 @@ def home():
     return render_template('home.html', title='Home', user=current_user)
 
 
+
+@app.route('/react', methods=['POST'])
+def react():
+    if not current_user.is_authenticated:
+        return jsonify({"status": "error", "message": "User not logged in."}), 401
+
+    data = request.json; print(f"Payload data:\n{data}")
+    
+    try:
+        # .get() results in None type if not found
+        carID = int(data.get('carID'))
+        status = data.get('liked') == True
+        
+    except (TypeError, ValueError):
+        return jsonify({"status": "error", "message": "Invalid data"}), 400
+    
+    # Create a new user interaction entry
+    new_interaction = UserInteraction(
+        user_id=current_user.id, 
+        car_id=carID, 
+        swiped_right=status
+    )
+    db.session.add(new_interaction)
+    
+    try:
+        db.session.commit()
+        return jsonify({"status": "success", "carID": carID, "liked": status})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+    
+
+
+
+
 @views.route('/test')
 def test():
+    if not is_table_empty(UserInteraction):
+        interactions = UserInteraction.query.all()
+        for interaction in interactions:
+            print(f"UserID: {interaction.user_id}, CarID: {interaction.car_id}, Liked: {interaction.swiped_right}")
+    else:
+        print("UserInteraction table EMPTY")    
     cars = [
         {
-            'image_url': 'static/cars/testarossa1.jpg',
-            'car_name': '1960 Ferrari Testarossa V6',
-            'details': 'Lease Price: £12,000pm   \tBody: Coupe\nHorsepower: 390bhp\t\tMake: Ferrari'
+            'carID': 1,
+            'imageUrl': 'static/cars/testarossa1.jpg',
+            'carName': '1960 Ferrari Testarossa V6',
+            'details': 'Price: £12,000pm\t\tBody: Coupe\nHorsepower: 390bhp\t\tMake: Ferrari'
         },
         {
-            'image_url': 'static/cars/countachlp400Lamborghini1.jpg',
-            'car_name': '1990 Lamborghini Countach V12',
-            'details': 'Lease Price: £18,000pm   \tBody: Sports\tHorsepower: 410bhp\t\tMake: Lamborghini'
+            'carID': 2,
+            'imageUrl': 'static/cars/countachlp400Lamborghini1.jpg',
+            'carName': '1990 Lamborghini Countach V12',
+            'details': 'Price: £18,000pm\t\tBody: Sports\nHorsepower: 410bhp\t\tMake: Lamborghini'
         },
         {
-            'image_url': 'static/cars/astonMartinLagonda1.jpg',
-            'car_name': '1970 Aston Martin Lagonda V8',
-            'details': 'Lease Price: £4,000pm   \tBody: Saloon\tHorsepower: 305bhp\t\tMake: Aston Martin'
+            'carID': 3,
+            'imageUrl': 'static/cars/astonMartinLagonda1.jpg',
+            'carName': '1970 Aston Martin Lagonda V8',
+            'details': 'Price: £4,000pm\t\tBody: Saloon\nHorsepower: 305bhp\t\tMake: Aston Martin'
         },
         {
-            'image_url': 'static/cars/308GTRainbow1.jpg',
-            'car_name': '1976 Ferrari GT Bertone Rainbow V8',
-            'details': 'Lease Price: £50,000pm   \tBody: Coupe\tHorsepower: 255bhp\t\tMake: Ferrari'
+            'carID': 4,
+            'imageUrl': 'static/cars/308GTRainbow1.jpg',
+            'carName': '1976 Ferrari GT Bertone Rainbow V8',
+            'details': 'Price: £50,000pm\t\tBody: Coupe\nHorsepower: 255bhp\t\tMake: Ferrari'
         }
     ]
-    return render_template('test.html', title='Test', user=current_user, cars=cars)
+    numCards = len(cars)
+    return render_template('test.html', title='Test', user=current_user, cars=cars, numCards=numCards)
 
 
 @views.route('/explore')

@@ -9,24 +9,30 @@ let cardCount = 0;
 // functions
 function appendNewCard(carData) {
   const card = new Card({
-    imageUrl: carData.image_url,
-    car_name: carData.car_name,
+    carID: carData.carID,
+    imageUrl: carData.imageUrl,
+    carName: carData.carName,
     details: carData.details,
     
     onDismiss: appendNewCard,
     onLike: () => {
+      console.log(`${carData.carName} liked`); // CONFIRMATION
       like.style.animationPlayState = 'running';
       like.classList.toggle('trigger');
     },
     onDislike: () => {
+      console.log(`${carData.carName} disliked`); // CONFIRMATION
       dislike.style.animationPlayState = 'running';
       dislike.classList.toggle('trigger');
     }
 
   });
-
-  swiper.append(card.element);
+  /* When console.log is in the onLike: scope, it does not get caught ever.
+   * This suggests the dismiss, onLike/Dislike are never caught
+  */ 
   cardCount++;
+  console.log(`card${cardCount} added`);  
+  swiper.append(card.element);
 
   const cards = swiper.querySelectorAll('.card:not(.dismissing)');
   cards.forEach((card, index) => {
