@@ -40,18 +40,47 @@ class User(BaseModel, UserMixin):
 class Car(BaseModel):
     __tablename__ = 'cars'
 
-    model = db.Column(db.String(255))
+    image = db.Column(db.String(255))
+    car_name = db.Column(db.String(255))
     make = db.Column(db.String(255))
+    model = db.Column(db.String(255))
     year = db.Column(db.Integer)
     body_type = db.Column(db.String(255))
-    monthly_payment = db.Column(db.Float)
     horsepower = db.Column(db.Integer)
+    monthly_payment = db.Column(db.Float)
+    mileage = db.Column(db.Integer)
 
     leases = db.relationship('Lease', backref='car', lazy=True)
     interactions = db.relationship('UserInteraction', backref='car', lazy=True)
 
+    # Summary details
     def __repr__(self):
-        return f"Car [{self.model}, {self.make}, {self.year}]"
+        return f"Car {self.id}: [{self.make}, {self.model}, {self.year}]"
+    
+    # Key details for card display
+    def card_info0(self):
+        return {
+            'carID': f'{self.id}',
+            'imageUrl': f'{self.image}',
+            'carName': f'{self.car_name}',
+            'details': f'Price: £{self.monthly_payment}pm\t\tBody: {self.body_type}\nHorsepower: {self.horsepower}bhp\t\tMake: {self.make}'
+        }
+        
+    #test for int
+    def card_info(self):
+        return {
+            'carID1': f'{self.id}',
+            'carID2': f'{type(self.id)}',
+            'carID3': int({self.id}),
+            'carID4': f'{int(self.id)}'
+        }
+    
+    # Full details to display in 'Saved' section
+    def full_details(self):
+        return (
+            f"Car(car_name='{self.car_name}', make='{self.make}', model='{self.model}', "
+            f"year={self.year}, body_type='{self.body_type}', horsepower={self.horsepower}, "
+            f"monthly_payment={self.monthly_payment}, mileage={self.mileage})")
 
 
 class Lease(BaseModel):
@@ -76,3 +105,31 @@ class UserInteraction(BaseModel):
 
     def __repr__(self):
         return f"UserInteraction [{self.user_id}, {self.car_id}, {self.swiped_right}]"
+
+list_of_cars= [
+    
+    {
+        'carID': '1', 
+        'imageUrl': '308GTRainbow1.jpg', 
+        'carName': 'Ferrari 308 GT Bertone Rainbow', 
+        'details': 'Price: £52585.91pm\t\tBody: Coupe with retractable targa-style roof\nHorsepower: 255bhp\t\tMake: Ferrari'
+    }, 
+    {
+        'carID': '2', 
+        'imageUrl': 'astonMartinLagonda1.jpg', 
+        'carName': 'Aston Martin Lagonda Series 2', 
+        'details': 'Price: £15461.56pm\t\tBody: 4-door saloon\nHorsepower: 280bhp\t\tMake: Aston Martin'
+    }, 
+    {
+        'carID': '3', 
+        'imageUrl': 'testarossa1.jpg', 
+        'carName': 'Ferrari Testarossa', 
+        'details': 'Price: £34185.91pm\t\tBody: 2-door berlinetta\nHorsepower: 385bhp\t\tMake: Ferrari'
+    }, 
+    {
+        'carID': '4', 
+        'imageUrl': 'countachlp400Lamborghini1.jpg', 
+        'carName': 'Lamborghini Countach LP400', 
+        'details': 'Price: £82042.47pm\t\tBody: 2-door coupe\nHorsepower: 375bhp\t\tMake: Lamborghini'
+    }
+]
