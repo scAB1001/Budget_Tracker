@@ -2,33 +2,29 @@
 
 {% block content %}
 <div class="explore">
+
     <!-- Source: https://github.com/CodeSteppe/card-swiper -->
     <div class="card-container">
         <ion-icon id="dislike" name="close"></ion-icon>
-        <div id="swiper"></div>
+
+        <div id="swiper">
+            <!-- When you finish the cards -->
+        </div>
+
         <ion-icon id="like" name="heart-circle"></ion-icon>
-        
+        <!-- Local Scripts -->
+        <script type="text/javascript">const cars = {{ cars | tojson | safe }};</script>
         <script src="{{ url_for('static', filename='card.js') }}"></script>
         <script src="{{ url_for('static', filename='cardContainer.js') }}"></script>
-        
+
+        <!-- Ionicons Scripts -->
         <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
         <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     </div>
+
     <div class="after-cards">
         <h1>Find your dream car</h1>
     </div>
 </div>
 
-
-<div class="flash messages">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul class="flashes">
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-</div>
 {% endblock %}

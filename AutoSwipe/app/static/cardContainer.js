@@ -3,43 +3,36 @@ const swiper = document.querySelector('#swiper');
 const like = document.querySelector('#like');
 const dislike = document.querySelector('#dislike');
 
-// constants
-const urls = [
-  './static/cars/testarossa1.jpg',
-  './static/cars/countachlp400Lamborghini1.jpg',
-  './static/cars/astonMartinLagonda1.jpg',
-  './static/cars/308GTRainbow1.jpg',
-  './static/cars/testarossa1.jpg' 
-];
-
 // variables
 let cardCount = 0;
 
 // functions
-function appendNewCard() {
-  const carName = "Car"; 
-  const details = "Lease Price: £12,000pm   \tBody: Coupe\nHorsepower: 390bhp\t\tMake: Ferrari";
-
+function appendNewCard(carData) {
   const card = new Card({
-    // This will cycle through your array of local images
-    imageUrl: urls[cardCount % urls.length],
+    carID: carData.carID,
+    imageUrl: carData.imageUrl,
+    carName: carData.carName,
+    details: carData.details,
     
     onDismiss: appendNewCard,
     onLike: () => {
+      console.log(`${carData.carName} liked`); // CONFIRMATION
       like.style.animationPlayState = 'running';
       like.classList.toggle('trigger');
     },
     onDislike: () => {
+      console.log(`${carData.carName} disliked`); // CONFIRMATION
       dislike.style.animationPlayState = 'running';
       dislike.classList.toggle('trigger');
-    },
+    }
 
-    carName: carName,
-    details: details
   });
-
-  swiper.append(card.element);
+  /* When console.log is in the onLike: scope, it does not get caught ever.
+   * This suggests the dismiss, onLike/Dislike are never caught
+  */ 
   cardCount++;
+  console.log(`card${cardCount} added`);  
+  swiper.append(card.element);
 
   const cards = swiper.querySelectorAll('.card:not(.dismissing)');
   cards.forEach((card, index) => {
@@ -47,7 +40,7 @@ function appendNewCard() {
   });
 }
 
-// first 5 cards (urls.length)
-for (let i = 0; i < 5; i++) {
-  appendNewCard();
-}
+// Load the initial cards
+cars.forEach((carData) => {
+  appendNewCard(carData);
+});

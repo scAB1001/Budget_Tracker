@@ -63,7 +63,7 @@ class Car(BaseModel):
             'carID': int(str(self.id)),
             'imageUrl': f'{self.image}',
             'carName': f'{self.car_name}',
-            'details': f'Price: £{self.monthly_payment}pm\tBody: {self.body_type}\nHorsepower: {self.horsepower}bhp\t\tMake: {self.make}'
+            'details': f'Price: £{self.monthly_payment}pm\t\tBody: {self.body_type}\nHorsepower: {self.horsepower}bhp\t\tMake: {self.make}'
         }
     
     # Full details to display in 'Saved' section

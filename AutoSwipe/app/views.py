@@ -212,6 +212,15 @@ def react():
     
 
 def pre_populate_tblCars():
+    if not is_table_empty(Car):
+        print("Deleting rows...")
+        Car.query.delete()
+        is_table_empty(Car)
+    
+    print("\nAdding rows...")
+    pre_populate_tblCars()
+    is_table_empty(Car)    
+    
     try:
         # Format: Car(car_name, make, model, year, body_type, horsepower, monthly_payment, mileage)
         
@@ -242,14 +251,7 @@ def pre_populate_tblCars():
 
 @views.route('/test')
 def test():
-    if not is_table_empty(Car):
-        print("Deleting rows...")
-        Car.query.delete()
-        is_table_empty(Car)
     
-    print("\nAdding rows...")
-    pre_populate_tblCars()
-    is_table_empty(Car)    
         
     #if not is_table_empty(UserInteraction):
     #    interactions = UserInteraction.query.all()
@@ -264,7 +266,7 @@ def test():
         car_card_details.append(car.card_info())
 
     numCards = len(car_card_details)
-    display_table_nicely(numCards, car_card_details)
+    #display_table_nicely(numCards, car_card_details)
     
     
         
@@ -277,9 +279,15 @@ def test():
 @views.route('/explore')
 @login_required
 def explore():
-    if request.method == 'POST': 
-        print("POST")
-    return render_template('explore.html', title='Explore', user=current_user, click_count=click_count)
+    #print(len("countachlp400Lamborghini1.jpg"))
+    numCards = db.session.query(Car).count()
+    tblCars = Car.query.all()
+    
+    cars = []
+    for car in tblCars:
+        cars.append(car.card_info())
+        
+    return render_template('explore.html', title='Explore', user=current_user, cars=cars, numCards=numCards)
 
 
 @views.route('/saved')
@@ -319,34 +327,34 @@ def delete_account():
 
 def extra_db(): 
     """
-    Car(image=dir+'.jpg', car_name='Mercedes-Benz 300SL', make='Mercedes-Benz', model='300SL', 
+    Car(image='.jpg', car_name='Mercedes-Benz 300SL', make='Mercedes-Benz', model='300SL', 
         year=1954, body_type='Coupe', horsepower=215, monthly_payment=2230.65, mileage=92350),
 
-    Car(image=dir+'.jpg', car_name='Aston Martin Lagonda Series 1', make='Aston Martin', model='Lagonda', 
+    Car(image='.jpg', car_name='Aston Martin Lagonda Series 1', make='Aston Martin', model='Lagonda', 
         year=1974, body_type='4-door saloon', horsepower=280, monthly_payment=54611.96, mileage=18324),
 
 
-    Car(image=dir+'.jpg', car_name='Aston Martin Lagonda Series 3', make='Aston Martin', model='Lagonda', 
+    Car(image='.jpg', car_name='Aston Martin Lagonda Series 3', make='Aston Martin', model='Lagonda', 
         year=1986, body_type='4-door saloon', horsepower=0, monthly_payment=7766.58, mileage=132084),
 
-    Car(image=dir+'.jpg', car_name='Aston Martin Lagonda Series 4', make='Aston Martin', model='Lagonda', 
+    Car(image='.jpg', car_name='Aston Martin Lagonda Series 4', make='Aston Martin', model='Lagonda', 
         year=1987, body_type='4-door saloon', horsepower=0, monthly_payment=33633.98, mileage=123117),
 
-    Car(image=dir+'.jpg', car_name='Ferrari 512 TR', make='Ferrari', model='512 TR', 
+    Car(image='.jpg', car_name='Ferrari 512 TR', make='Ferrari', model='512 TR', 
         year=1991, body_type='2-door berlinetta', horsepower=422, monthly_payment=31245.32, mileage=198978),
 
-    Car(image=dir+'.jpg', car_name='Ferrari F512 M', make='Ferrari', model='F512 M', 
+    Car(image='.jpg', car_name='Ferrari F512 M', make='Ferrari', model='F512 M', 
         year=1994, body_type='2-door berlinetta', horsepower=434, monthly_payment=6352.03, mileage=196267),
 
-    Car(image=dir+'.jpg', car_name='Lamborghini Countach LP400 S', make='Lamborghini', model='LP400 S', 
+    Car(image='.jpg', car_name='Lamborghini Countach LP400 S', make='Lamborghini', model='LP400 S', 
         year=1978, body_type='2-door coupe', horsepower=355, monthly_payment=17981.98, mileage=108654),
 
-    Car(image=dir+'.jpg', car_name='Lamborghini Countach LP500 S', make='Lamborghini', model='LP500 S', 
+    Car(image='.jpg', car_name='Lamborghini Countach LP500 S', make='Lamborghini', model='LP500 S', 
         year=1982, body_type='2-door coupe', horsepower=370, monthly_payment=27854.73, mileage=100220),
 
-    Car(image=dir+'.jpg', car_name='Lamborghini Countach LP5000 Quattrovalvole', make='Lamborghini', model='LP5000 Quattrovalvole', 
+    Car(image='.jpg', car_name='Lamborghini Countach LP5000 Quattrovalvole', make='Lamborghini', model='LP5000 Quattrovalvole', 
         year=1985, body_type='2-door coupe', horsepower=455, monthly_payment=81930.27, mileage=103074),
 
-    Car(image=dir+'.jpg', car_name='Lamborghini Countach 25th Anniversary Edition', make='Lamborghini', model='25th Anniversary Edition', 
+    Car(image='.jpg', car_name='Lamborghini Countach 25th Anniversary Edition', make='Lamborghini', model='25th Anniversary Edition', 
         year=1988, body_type='2-door coupe', horsepower=414, monthly_payment=36409.78, mileage=140320)
     """
