@@ -95,5 +95,5 @@ class UserInteraction(BaseModel):
     timestamp = db.Column(db.DateTime(timezone=True), default=DT)
 
     def __repr__(self):
-        return f"UserInteraction [{self.user_id}, {self.car_id}, {self.swiped_right}]"
+        return f"UserInteraction: ID:{self.id} [userID:{self.user_id}, carID:{self.car_id}, swiped_right:{self.swiped_right}]"
 

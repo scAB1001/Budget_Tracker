@@ -21,7 +21,9 @@
         </div>
     </section>
     <section class="cta">
+        {% if not user.is_authenticated %}
         <a href="/login" class="cta-button">Already on Board</a>
+        {% endif %}
         <a href="/signup" class="cta-button">Start the Journey</a>
     </section>
 

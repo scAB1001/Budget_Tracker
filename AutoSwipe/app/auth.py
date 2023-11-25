@@ -30,7 +30,7 @@ def login():
         if handle_login(email, password):
             return redirect(url_for('views.home'))
 
-    return render_template("login.html", form=form, user=current_user, title='Login')
+    return render_template("/admin/login.html", form=form, user=current_user, title='Login')
 
 
 # Helper method to handle user registration
@@ -67,7 +67,7 @@ def signup():
         else:
             flash('Unable to create an account at this time. Try again.', category=DANGER)
 
-    return render_template("signup.html", form=form, user=current_user, title='Signup')
+    return render_template("/admin/signup.html", form=form, user=current_user, title='Signup')
 
 
 @auth.route('/logout')

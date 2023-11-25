@@ -1,3 +1,5 @@
+from app.models import UserInteraction
+from app import db
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from .models import User, Car, Lease, UserInteraction
@@ -69,8 +71,8 @@ def clear_tables():
     if not is_table_empty(Car):
         Car.query.delete()
     
-    if not is_table_empty(User):
-        User.query.delete()
+    #if not is_table_empty(User):
+    #    User.query.delete()
     
     db.session.commit()
     
@@ -135,18 +137,6 @@ def display_user_data():
             print(
                 f"\tInteraction: {interaction.swipe_type} with Car ID: {interaction.car_id}")
 
- 
-def isolate_users():
-    users = User.query.all()
-    print("Users:")
-    for user in users:
-        print(f"  {user}")
-
-    if str(current_user)[0] != 'I':
-        print(f"\ncurrent_user:  Guest")
-    else:
-        print(f"\ncurrent_user:  {current_user}")
-
 
 def display_table_nicely(numCards, li):
     print(f'\nList of {numCards} cars:\n[')
@@ -160,6 +150,58 @@ def display_table_nicely(numCards, li):
         print('\t},')
     print(']\n')
 
+
+def delete_user_interactions(user_id):
+    """
+    Deletes all UserInteraction entries associated with a specific user.
+
+    :param user_id: ID of the user whose interactions should be deleted.
+    """
+    try:
+        # Query UserInteraction entries for the specific user
+        to_delete = UserInteraction.query.filter_by(
+            user_id=user_id)
+
+        # Check if there are interactions to delete
+        if to_delete.count() > 0:
+            to_delete.delete()
+            db.session.commit()
+            print(f"All interactions for user ID {user_id} have been deleted.")
+        else:
+            print(f"No interactions found for user ID {user_id}.")
+
+    except Exception as e:
+        db.session.rollback()
+        print(
+            f"An error occurred while deleting interactions for user ID {user_id}: {e}")
+
+
+def delete_related_model(key_id, model):
+    try:
+        # Query UserInteraction entries for the specific user
+        to_delete = model.query.filter_by(key_id=key_id)
+
+        # Check if there are interactions to delete
+        if to_delete.count() > 0:
+            # Delete the filtered entries
+            to_delete.delete()
+            # Commit the changes to the database
+            db.session.commit()
+            print(f"All data has been succefully deleted.")
+        else:
+            print(f"No data found.")
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"An error occurred while deleting: {e}")
+
+
+
+# Call the function with the specific user ID
+#delete_user_interactions(3)
+
+
+
 # Routes
 """
     
@@ -168,15 +210,14 @@ def display_table_nicely(numCards, li):
 """
 @views.route('/')
 def home():
+    clear_tables()
     # DANGER #
     #if not User.query.first():
     #    print(not User.query.first())
     #    pre_populate_db()
-    #isolate_users()
 
-    #clear_tables()
 
-    return render_template('home.html', title='Home', user=current_user)
+    return render_template('/site/home.html', title='Home', user=current_user)
 
 
 @app.route('/react', methods=['POST'])
@@ -206,6 +247,7 @@ def react():
     except Exception as e:
         db.session.rollback()
         return jsonify({"status": "error", "message": str(e)}), 500
+
     
 
 def pre_populate_tblCars():
@@ -300,32 +342,37 @@ def explore():
     for car in tblCars:
         cars.append(car.card_info())
         
-    return render_template('explore.html', title='Explore', user=current_user, cars=cars, numCards=numCards)
+    return render_template('/site/explore.html', title='Explore', user=current_user, cars=cars, numCards=numCards)
 
 
 @views.route('/saved')
 @login_required
 def saved():
-    return render_template('saved.html', title='Saved', user=current_user)
+    return render_template('/site/saved.html', title='Saved', user=current_user)
 
 
 @views.route('/history')
 @login_required
 def history():
-    return render_template('history.html', title='History', user=current_user)
+    return render_template('/site/history.html', title='History', user=current_user)
 
 
 @views.route('/settings')
 @login_required
 def settings():
-    return render_template('settings.html', title='Settings', user=current_user)
+    states = UserInteraction.query.all()
+    for i in states:
+        print(i)
+    return render_template('/site/settings.html', title='Settings', user=current_user)
 
 
 @views.route('/delete_account', methods=['POST'])
 @login_required
 def delete_account():
     if current_user.is_authenticated:
+        # Delete current user and current user_interaction
         user = User.query.get(current_user.id)
+        delete_user_interactions(current_user.id)
         if user:
             db.session.delete(user)
             db.session.commit()
@@ -341,10 +388,10 @@ def delete_account():
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html', title='Error: 404', user=current_user), 404
+    return render_template('/error/404.html', title='Error: 404', user=current_user), 404
 
 
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()  # Rollback the session in case of database errors
-    return render_template('500.html', title='Error: 500', user=current_user), 500
+    return render_template('/error/500.html', title='Error: 500', user=current_user), 500
