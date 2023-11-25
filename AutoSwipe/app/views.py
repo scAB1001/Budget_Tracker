@@ -219,7 +219,7 @@ def pre_populate_tblCars():
     try:
         # Format: Car(car_name, make, model, year, body_type, horsepower, monthly_payment, mileage)
         cars_to_add = [
-            Car(image='astonMartinSILagonda1', car_name='astonMartinSILagonda1', make='Aston Martin', model='Lagonda', 
+            Car(image='astonMartinSILagonda1', car_name='Aston Martin Lagonda Series 1', make='Aston Martin', model='Lagonda',
             year=1974, body_type='4-door saloon', horsepower=280, monthly_payment=54611.96, mileage=18324),
         
             Car(image='astonMartinSIILagonda2', car_name='Aston Martin Lagonda Series 2', make='Aston Martin', model='Lagonda', 
