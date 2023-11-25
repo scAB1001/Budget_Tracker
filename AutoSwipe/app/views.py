@@ -1,11 +1,9 @@
 from app.models import UserInteraction
-from app import db
-from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, session
+from flask_login import login_required, logout_user, current_user
 from .models import User, Car, Lease, UserInteraction
 from .forms import LoginForm, RegistrationForm
 from app import app, db, admin
-from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView
 
 admin.add_view(ModelView(User, db.session))
@@ -56,7 +54,7 @@ def update_db(entry):
 
 def is_table_empty(model):
     # Returns True if the table is empty, False otherwise
-    print(f"COUNT = {db.session.query(model).count()}")
+    print(f"{model.__name__} count: {db.session.query(model).count()}")
     return db.session.query(model).count() == 0
 
 
@@ -71,11 +69,12 @@ def clear_tables():
     if not is_table_empty(Car):
         Car.query.delete()
     
-    #if not is_table_empty(User):
-    #    User.query.delete()
+    if not is_table_empty(User):
+        User.query.delete()
     
     db.session.commit()
     
+
 # DANGER #
 # Do not use until password is hashed
 def pre_populate_db():
@@ -176,32 +175,6 @@ def delete_user_interactions(user_id):
             f"An error occurred while deleting interactions for user ID {user_id}: {e}")
 
 
-def delete_related_model(key_id, model):
-    try:
-        # Query UserInteraction entries for the specific user
-        to_delete = model.query.filter_by(key_id=key_id)
-
-        # Check if there are interactions to delete
-        if to_delete.count() > 0:
-            # Delete the filtered entries
-            to_delete.delete()
-            # Commit the changes to the database
-            db.session.commit()
-            print(f"All data has been succefully deleted.")
-        else:
-            print(f"No data found.")
-
-    except Exception as e:
-        db.session.rollback()
-        print(f"An error occurred while deleting: {e}")
-
-
-
-# Call the function with the specific user ID
-#delete_user_interactions(3)
-
-
-
 # Routes
 """
     
@@ -210,10 +183,10 @@ def delete_related_model(key_id, model):
 """
 @views.route('/')
 def home():
-    clear_tables()
+    #clear_tables()
+    
     # DANGER #
     #if not User.query.first():
-    #    print(not User.query.first())
     #    pre_populate_db()
 
 
@@ -379,6 +352,9 @@ def delete_account():
             flash('Your account has successfully been deleted.', category=SUCCESS)
         else:
             flash('User not found.', category=DANGER)
+        # Logout
+        logout_user()
+        session['login_attempts'] = 0
         return redirect(url_for('auth.login'))
     else:
         flash('You must be logged in to perform this action.', category=DANGER)

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="homepage">
+<div class="settings">
     <section class="intro">
         <h1>Settings</h1>
         <p>Customise on your own terms.</p>
@@ -12,7 +12,6 @@
         </form>
     </section>
 
-    
     <div class="flash messages">
         {% with messages = get_flashed_messages() %}
         {% if messages %}

@@ -15,7 +15,7 @@ class BaseModel(db.Model):
     """
     __abstract__ = True
 
-    id = db.Column(db.Integer, primary_key=True)  # Primary key column
+    id = db.Column(db.Integer, primary_key=True, nullable=False)  # Primary key column
     created_at = db.Column(db.DateTime(timezone=True), default=DT)  # Creation timestamp
     updated_at = db.Column(db.DateTime(timezone=True), default=DT, onupdate=DT)  # Update timestamp
 
@@ -24,9 +24,9 @@ class User(BaseModel, UserMixin):
     __tablename__ = 'user'
 
     # Existing fields
-    email = db.Column(db.String(30), unique=True)
-    password = db.Column(db.String(20))
-    first_name = db.Column(db.String(20))
+    email = db.Column(db.String(30), unique=True, nullable=False)
+    password = db.Column(db.String(20), nullable=False)
+    first_name = db.Column(db.String(20), nullable=False)
 
     # Define relationships
     leases = db.relationship('Lease', backref='user', lazy=True)
@@ -40,15 +40,15 @@ class User(BaseModel, UserMixin):
 class Car(BaseModel):
     __tablename__ = 'cars'
 
-    image = db.Column(db.String(255))
-    car_name = db.Column(db.String(255))
-    make = db.Column(db.String(255))
-    model = db.Column(db.String(255))
-    year = db.Column(db.Integer)
-    body_type = db.Column(db.String(255))
-    horsepower = db.Column(db.Integer)
-    monthly_payment = db.Column(db.Float)
-    mileage = db.Column(db.Integer)
+    image = db.Column(db.String(255), unique=True, nullable=False)
+    car_name = db.Column(db.String(255), unique=True, nullable=False)
+    make = db.Column(db.String(255), nullable=False)
+    model = db.Column(db.String(255), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    body_type = db.Column(db.String(255), nullable=False)
+    horsepower = db.Column(db.Integer, nullable=False)
+    monthly_payment = db.Column(db.Float, nullable=False)
+    mileage = db.Column(db.Integer, nullable=False)
 
     leases = db.relationship('Lease', backref='car', lazy=True)
     interactions = db.relationship('UserInteraction', backref='car', lazy=True)
@@ -79,8 +79,8 @@ class Lease(BaseModel):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
-    term_length = db.Column(db.Integer)
-    mileage_limit = db.Column(db.Integer)
+    term_length = db.Column(db.Integer, nullable=False)
+    mileage_limit = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f"Lease [{self.user_id}, {self.car_id}, {self.term_length}]"
@@ -91,7 +91,7 @@ class UserInteraction(BaseModel):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
-    swiped_right = db.Column(db.Boolean)
+    swiped_right = db.Column(db.Boolean, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), default=DT)
 
     def __repr__(self):
