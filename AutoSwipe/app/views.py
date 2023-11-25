@@ -337,3 +337,14 @@ def delete_account():
         flash('You must be logged in to perform this action.', category=DANGER)
         return redirect(url_for('auth.login'))
     return True
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html', title='Error: 404', user=current_user), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()  # Rollback the session in case of database errors
+    return render_template('500.html', title='Error: 500', user=current_user), 500

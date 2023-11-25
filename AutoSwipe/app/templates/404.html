@@ -1,38 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="history">
-    <section class="intro">
-        <h1>ERROR 404</h1>
-        <p>Page Not Found.</p>
-    </section>
-
-    <!-- User Guide Section -->
-    <section class="user-guide">
-        <h2>Your AutoSwipe History</h2>
-        <ol class="guide-steps">
-            <li>
-                <h3>Review Your Favourites</h3>
-                <p>Access your saved favourites anytime and find your perfect match.</p>
-            </li>
-            <li>
-                <h3>Get In Touch</h3>
-                <p>Found the one? Get in touch with the seller right through the app.</p>
-            </li>
-        </ol>
-    </section>
-
-    
-    <div class="flash messages">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul class="flashes">
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    {% endblock %}
+<div class="error-page">
+    <h1>404</h1>
+    <h2>Oops! Page Not Found</h2>
+    <p>We can't seem to find the page you're looking for.</p>
+    <p><a href="/home" class="cta-button">Go Home</a></p>
 </div>
+{% endblock %}
