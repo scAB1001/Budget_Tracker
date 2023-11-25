@@ -1,0 +1,140 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>{{ entry_type|capitalize }}s</h1>
+<div class="flash messages">
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <ul class="flashes">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %} {% endwith %}
+</div>
+
+<div id="entriesAccordion">
+  <div class="card">
+    <div
+      class="card-header"
+      id="entriesHeading"
+      style="background-color: #ecc6f3"
+    >
+      <h2 class="mb-0">
+        <button
+          class="btnShift"
+          data-toggle="collapse"
+          data-target="#entriesCollapse"
+          aria-expanded="true"
+          aria-controls="entriesCollapse"
+        >
+          <span> View {{ entry_type|capitalize }}s </span>
+        </button>
+      </h2>
+    </div>
+
+    <div
+      id="entriesCollapse"
+      class="collapse show"
+      aria-labelledby="entriesHeading"
+      data-parent="#entriesAccordion"
+      style="background-color: #ecc6f3"
+    >
+      <div class="card-body">
+        <div class="table-responsive" style="background-color: #ecc6f3">
+          <table
+            class="table table-striped table-bordered"
+            style="background-color: #e8cfed"
+          >
+            {% if entries %}
+            <thead class="thead-dark">
+              <tr class="hover-highlight">
+                <th>Name</th>
+                <th>Category</th>
+                <th style="text-align: center">Amount (£)</th>
+                <th style="text-align: center">Action
+                  <button type="button" class="btn btn-danger rounded-pill" onClick="deleteAllEntries('{{ entry_type }}')">
+                    Delete All
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for id, entry in entries.items() %}
+              <tr>
+                <td>{{ entry['name'] }}</td>
+                <td>{{ entry['category'] }}</td>
+                <td style="text-align: center">{{ entry['amount'] }}</td>
+
+                <td style="text-align: center">
+                  <button
+                    type="button"
+                    class="btn btn-warning rounded-pill"
+                    onClick="editEntry('{{ entry_type }}', {{ id }})"
+                  >
+                    Edit {{ entry_type|capitalize }}
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger rounded-pill"
+                    onClick="deleteEntry('{{ entry_type }}', {{ id }})"
+                  >
+                    Delete {{ entry_type|capitalize }}
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %} {% else %}
+              <tr>
+                <td colspan="4" style="text-align: center">
+                  <h3>No data here!</h3>
+                </td>
+              </tr>
+            </tbody>
+            {% endif %}
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if entries %}
+  <div class="card">
+    <div
+      class="card-header"
+      id="summaryHeading"
+      style="background-color: #ecc6f3"
+    >
+      <h2 class="mb-0">
+        <button
+          class="btnShift"
+          data-toggle="collapse"
+          data-target="#summaryCollapse"
+          aria-expanded="true"
+          aria-controls="summaryCollapse"
+        >
+          <span> View Summary Statistics </span>
+        </button>
+      </h2>
+    </div>
+
+    <div
+      id="summaryCollapse"
+      class="collapse"
+      aria-labelledby="summaryHeading"
+      data-parent="#entriesAccordion"
+      style="background-color: #ecc6f3"
+    >
+      <div class="card-body">
+        <p>Your total {{ entry_type }}: £{{ total }}</p>
+        <p>
+          Your largest {{ entry_type|capitalize }} was... "{{ max_name }}" - £{{
+          max_value }}
+        </p>
+        <p>You frequent in this area... {{ most_frequent }}</p>
+      </div>
+    </div>
+  </div>
+  <br /><br />
+  {% endif %}
+</div>
+{% endblock %}
