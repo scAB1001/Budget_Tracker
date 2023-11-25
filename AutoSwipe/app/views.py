@@ -179,12 +179,9 @@ def home():
     return render_template('home.html', title='Home', user=current_user)
 
 
-
 @app.route('/react', methods=['POST'])
+@login_required
 def react():
-    if not current_user.is_authenticated:
-        return jsonify({"status": "error", "message": "User not logged in."}), 401
-
     data = request.json#; print(f"Payload data:\n{data}")
     
     try:
@@ -214,12 +211,12 @@ def react():
 def pre_populate_tblCars():
     if not is_table_empty(Car):
         Car.query.delete()
-        print(f"Deleting rows... New: {is_table_empty(Car)}")
+        print(f"Deleting rows... table_empty: {is_table_empty(Car)}")
     
     try:
         # Format: Car(car_name, make, model, year, body_type, horsepower, monthly_payment, mileage)
         cars_to_add = [
-            Car(image='astonMartinSILagonda1', car_name='astonMartinSILagonda1', make='Aston Martin', model='Lagonda', 
+            Car(image='astonMartinSILagonda1', car_name='Aston Martin Lagonda Series 1', make='Aston Martin', model='Lagonda',
             year=1974, body_type='4-door saloon', horsepower=280, monthly_payment=54611.96, mileage=18324),
         
             Car(image='astonMartinSIILagonda2', car_name='Aston Martin Lagonda Series 2', make='Aston Martin', model='Lagonda', 
@@ -332,56 +329,11 @@ def delete_account():
         if user:
             db.session.delete(user)
             db.session.commit()
-            flash('Your account has been deleted.', category=SUCCESS)
+            flash('Your account has successfully been deleted.', category=SUCCESS)
         else:
             flash('User not found.', category=DANGER)
-        return redirect(url_for('auth.login'))  # Redirect to logout route
+        return redirect(url_for('auth.login'))
     else:
         flash('You must be logged in to perform this action.', category=DANGER)
-        return redirect(url_for('auth.login'))  # Redirect to login page
+        return redirect(url_for('auth.login'))
     return True
-
-def extra_db(): 
-    """
-           
-    
-    Car(image='astonMartinSILagonda1.jpg', car_name='astonMartinSILagonda1', make='Aston Martin', model='Lagonda', 
-        year=1974, body_type='4-door saloon', horsepower=280, monthly_payment=54611.96, mileage=18324),
-    
-    Car(image='astonMartinSIILagonda2.jpg', car_name='Aston Martin Lagonda Series 2', make='Aston Martin', model='Lagonda', 
-            year=1976, body_type='4-door saloon', horsepower=280, monthly_payment=15461.56, mileage=103633),
-        
-    Car(image='astonMartinSIIILagonda3.jpg', car_name='Aston Martin Lagonda Series 3', make='Aston Martin', model='Lagonda', 
-        year=1986, body_type='4-door saloon', horsepower=0, monthly_payment=7766.58, mileage=132084),
-
-    Car(image='astonMartinSIVLagonda4.jpg', car_name='Aston Martin Lagonda Series 4', make='Aston Martin', model='Lagonda', 
-        year=1987, body_type='4-door saloon', horsepower=0, monthly_payment=33633.98, mileage=123117),
-
-    Car(image='ferrariTestarossa1.jpg', car_name='Ferrari Testarossa', make='Ferrari', model='Testarossa', 
-        year=1984, body_type='2-door berlinetta', horsepower=385, monthly_payment=34185.91, mileage=146545),
-
-    Car(image='ferrariF512M2.jpg', car_name='Ferrari F512 M', make='Ferrari', model='F512 M', 
-        year=1994, body_type='2-door berlinetta', horsepower=434, monthly_payment=6352.03, mileage=196267),
-    
-    Car(image='ferrariF512TR3.jpg', car_name='Ferrari F512 TR', make='Ferrari', model='512 TR', 
-        year=1991, body_type='2-door berlinetta', horsepower=422, monthly_payment=31245.32, mileage=198978),
-
-    Car(image='ferrari308GTRainbow4.jpg', car_name='Ferrari 308 GT Bertone Rainbow', make='Ferrari', model='308 GT', 
-        year=1976, body_type='2-door coupe', horsepower=255, monthly_payment=52585.91, mileage=89017),
-    
-    Car(image='countachLP400Lamborghini1.jpg', car_name='Lamborghini Countach LP400', make='Lamborghini', model='LP400', 
-        year=1974, body_type='2-door coupe', horsepower=375, monthly_payment=82042.47, mileage=167228),
-    
-    Car(image='countachLP500Lamborghini2.jpg', car_name='Lamborghini Countach LP500', make='Lamborghini', model='LP500', 
-        year=1982, body_type='2-door coupe', horsepower=370, monthly_payment=27854.73, mileage=100220),
-
-    Car(image='countachLP5000LamborghiniQuattrovalvole3.jpg', car_name='Lamborghini Countach LP5000 Quattrovalvole', make='Lamborghini', model='LP5000 Quattrovalvole', 
-        year=1985, body_type='2-door coupe', horsepower=455, monthly_payment=81930.27, mileage=103074),
-
-    Car(image='countach25thAnniversaryLamborghini4.jpg', car_name='Lamborghini Countach 25th Anniversary', make='Lamborghini', model='25th Anniversary Edition', 
-        year=1988, body_type='2-door coupe', horsepower=414, monthly_payment=36409.78, mileage=140320),
-    
-    Car(image='mercedesBenz300SLGullwing1.jpg', car_name='Mercedes-Benz 300SL Gullwing', make='Mercedes-Benz', model='300SL', 
-        year=1954, body_type='Coupe', horsepower=215, monthly_payment=2230.65, mileage=92350)
-    
-    """

@@ -1,62 +1,23 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-from .models import User
+from .auth_service import authenticate_user, create_user, migrate_password
 from .forms import LoginForm, RegistrationForm
-from . import db
 
 auth = Blueprint('auth', __name__)
-DANGER, SUCCESS, HASH_TYPE = 'error', 'success', 'pbkdf2:sha256'  # scrypt
-
-# Helper method to migrate old password hash to a new method
-def migrate_password(user, password):
-    if user.password.startswith('sha256$') and check_password_hash(user.password, password):
-        user.password = generate_password_hash(password, method=HASH_TYPE)
-        db.session.commit()
+DANGER, SUCCESS = 'error', 'success'
 
 
 # Helper method to handle user login
 def handle_login(email, password):
-    user = User.query.filter_by(email=email).first()
+    user = authenticate_user(email, password)
     if user:
-        # Migrate old password hash if needed
-        migrate_password(user, password)
-
-        if check_password_hash(user.password, password):
-            flash('Logged in successfully!', category=SUCCESS)
-            login_user(user, remember=True)
-            return True
-        else:
-            flash('Incorrect email or password, try again.', category=DANGER)
-    else:
-        flash('Email does not exist.', category=DANGER)
-
-    return False
-
-
-# Helper method to handle user registration
-def handle_registration(email, first_name, password1, password2):
-    user = User.query.filter_by(email=email).first()
-    if user:
-        flash('Email already exists.', category=DANGER)
-    elif len(email) < 4:
-        flash('Email must be greater than 3 characters.', category=DANGER)
-    elif len(first_name) < 2:
-        flash('First name must be greater than 1 character.', category=DANGER)
-    elif password1 != password2:
-        flash('Passwords do not match.', category=DANGER)
-    elif len(password1) < 7:
-        flash('Password must be at least 7 characters.', category=DANGER)
-    else:
-        new_user = User(email=email, first_name=first_name,
-                        password=generate_password_hash(password1, method=HASH_TYPE))
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user, remember=True)
-        flash('Account created!', category=SUCCESS)
+        migrate_password(user, password)  # Migrate password if needed
+        login_user(user, remember=True)
+        flash(f'Logged in successfully!', category=SUCCESS)
         return True
-
-    return False
+    else:
+        flash('Incorrect email or password, try again.', category=DANGER)
+        return False
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -67,17 +28,29 @@ def login():
         password = form.password.data
 
         if handle_login(email, password):
-            #next_page = request.args.get('next', None); redirect(next_page) if next_page else
-            return redirect(url_for('views.explore'))
+            return redirect(url_for('views.home'))
 
     return render_template("login.html", form=form, user=current_user, title='Login')
 
 
-@auth.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('auth.login'))
+# Helper method to handle user registration
+def handle_registration(email, first_name, password1, password2):
+    if password1 != password2:
+        flash('Passwords do not match.', category=DANGER)
+        return False
+    elif len(password1) < 7:
+        flash('Password must be at least 7 characters.', category=DANGER)
+        return False
+    else:
+        user = create_user(email, first_name, password1)
+        if user:
+            login_user(user, remember=True)
+            flash('Account created!', category=SUCCESS)
+            return True
+        else:
+            flash('Unable to create an account at this time. Try again.',
+                  category=DANGER)
+            return False
 
 
 @auth.route('/signup', methods=['GET', 'POST'])
@@ -90,8 +63,16 @@ def signup():
         password2 = form.confirm_password.data
 
         if handle_registration(email, first_name, password1, password2):
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('views.home'))
         else:
             flash('Unable to create an account at this time. Try again.', category=DANGER)
 
     return render_template("signup.html", form=form, user=current_user, title='Signup')
+
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash(f'Logged out successfully!', category=SUCCESS)
+    return redirect(url_for('auth.login'))
