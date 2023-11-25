@@ -1,13 +1,3 @@
-flask
-flask-login
-flask-mail
-flask-sqlalchemy
-flask-migrate
-flask-whooshalchemy
-flask-wtf
-flask-babel
-coverage
-
 flask-admin
 alembic==1.12.0
 aniso8601==9.0.1
