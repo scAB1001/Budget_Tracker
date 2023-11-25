@@ -95,6 +95,8 @@ body {
     text-decoration: none;
     display: flex;
     align-items: center;
+    text-align: center;
+    padding-left: 20%;
 }
 
 .settings-nav img,
@@ -129,7 +131,8 @@ body {
 }
 
 .intro {
-    color: #fff;
+    padding-top: 2%;
+    color: rgba(253, 250, 250, 0.897);
     margin-bottom: 0;
 }
 
@@ -140,13 +143,15 @@ body {
 
 .intro p {
     font-size: 1.25rem;
-    color: #ddd;
+    color: rgb(212, 212, 212);
 }
 
 .features {
     display: flex;
     justify-content: space-around;
     margin-bottom: 2rem;
+    padding-top: 3%;
+    cursor: help;
 }
 
 .feature {
@@ -182,7 +187,7 @@ body {
 .cta-button {
     background-color: rgba(255, 255, 255, 0.9);
     color: #cf1560;
-    padding: 0.75rem 1.5rem;
+    padding: 1.75rem 2.5rem;
     border-radius: 20px;
     text-decoration: none;
     font-weight: bold;
@@ -378,9 +383,12 @@ marquee {
     position: absolute;
     border-radius: 20px;
     overflow: hidden;
-    transform: translateZ(calc(-30px * var(--i))) translateY(calc(-20px * var(--i))) rotate(calc(-4deg * var(--i)));
-    filter: drop-shadow(2px 2px 20px rgba(0, 0, 0, 0.5));
-    cursor: pointer;
+    transform: 
+        translateZ(calc(-30px * var(--i))) 
+        translateY(calc(-12px * var(--i))) 
+        rotate(calc(-2.00deg * var(--i)));
+    filter: drop-shadow(2px 2px 18px rgba(0, 0, 0, 0.5));
+    cursor: grabbing;
     user-select: none;
     transition: transform 0.5s;
 }

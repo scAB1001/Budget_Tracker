@@ -31,7 +31,7 @@ class Card {
     const dir = '/static/cars/';
     const img = document.createElement('img');
     img.alt = `Image of ${this.carName}`;
-    img.src = dir + this.imageUrl; 
+    img.src = dir + this.imageUrl + '.jpg'; 
     card.append(img);
 
     const infoDiv = document.createElement('div');
