@@ -85,8 +85,8 @@ def handle_registration(email, first_name, password1, password2):
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if not current_user.is_authenticated and session['login_attempts'] >= MAX_LOGIN_ATTEMPTS: ##
-        flash(f'Too many login attempts, please create a new account', category=DANGER)
+    if not current_user.is_authenticated and session.get('login_attempts', 0) >= MAX_LOGIN_ATTEMPTS: ##
+        flash(f'Too many login attempts, create a new account.', category=DANGER)
 
     # If user is already logged in and wants to create another account,
     #   they will be logged out of the initial upon creation

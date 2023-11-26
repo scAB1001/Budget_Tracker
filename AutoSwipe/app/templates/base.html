@@ -20,8 +20,6 @@
       {% else %}
       <marquee direction="right"><h3>Login to use AutoSwipe.</h3></marquee>
       {% endif %}
-      <!-- REMOVE WHEN DONE -->
-      <h2><a href="/test" title="TEST">TEST</a></h2>
     </nav>
   </header>
 
@@ -39,18 +37,17 @@
     </nav>
   </footer>
   
+ <!-- Flash messages -->
   <div class="flash messages">
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul class="flashes">
       {% for message in messages %}
-      <li>{{ message }}</li>
+      {{ message }}
       {% endfor %}
     </ul>
     {% endif %}
     {% endwith %}
   </div>
-
 </body>
-
 </html>

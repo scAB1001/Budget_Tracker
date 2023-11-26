@@ -7,11 +7,19 @@
   <div class="card-container">
     <ion-icon id="dislike" name="close"></ion-icon>
     
-    <div id="swiper">
-      <!-- When you finish the cards -->
+    
+    <div class="card">
+      <div id="swiper">
+        <!-- When you finish the cards -->
+        <a href="/saved" class="icon-saved" title="Saved">
+          <img src="{{ url_for('static', filename='icons/bookmark.png') }}"
+           alt="Saved icon" class="nav-icon">
+        </a>
+      </div>
     </div>
     
     <ion-icon id="like" name="heart-circle"></ion-icon>
+
     <!-- Local Scripts -->
     <script type="text/javascript">const cars = {{ cars | tojson | safe }};</script>
     <script src="{{ url_for('static', filename='card.js') }}"></script>
@@ -23,16 +31,5 @@
   </div>
 
   <div class="after-cards"><h1>Find your dream car</h1></div>
-  <div class="flash messages">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul class="flashes">
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-  </div>
 </div>
 {% endblock %}

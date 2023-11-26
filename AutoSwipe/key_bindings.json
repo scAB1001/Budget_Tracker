@@ -8,6 +8,14 @@
     "command": "workbench.action.terminal.resizePaneDown"
   },
   {
+    "key": "ctrl+left ctrl+left",
+    "command": "workbench.action.terminal.resizePaneLeft"
+  },
+  {
+    "key": "ctrl+right ctrl+right",
+    "command": "workbench.action.terminal.resizePaneRight"
+  },
+  {
     "key": "ctrl+;",
     "command": "workbench.action.toggleMaximizedPanel"
   },
