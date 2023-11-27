@@ -1,3 +1,5 @@
+// Source: https://github.com/CodeSteppe/card-swiper
+
 class Card {
   constructor({carID, imageUrl, carName, details, onDismiss, onLike, onDislike}) {
     this.carID = carID;
@@ -10,7 +12,7 @@ class Card {
     this.#init();
   }
  
-  // private properties
+  // Private properties
   #startPoint;
   #offsetX;
   #offsetY;
@@ -81,7 +83,7 @@ class Card {
 
     document.addEventListener('mouseup', this.#handleMoveUp);
 
-    // prevent card from being dragged
+    // Prevent card from being dragged
     this.element.addEventListener('dragstart', (e) => {
       e.preventDefault();
     });
@@ -92,13 +94,13 @@ class Card {
     this.#offsetY = y - this.#startPoint.y;
     const rotate = this.#offsetX * 0.1;
     this.element.style.transform = `translate(${this.#offsetX}px, ${this.#offsetY}px) rotate(${rotate}deg)`;
-    // dismiss card
+    // Dismiss card
     if (Math.abs(this.#offsetX) > this.element.clientWidth * 0.7) {
       this.#dismiss(this.#offsetX > 0 ? 1 : -1);
     }
   }
 
-  // mouse event handlers
+  // Mouse event handlers
   #handleMouseMove = (e) => {
     e.preventDefault();
     if (!this.#startPoint) return;
@@ -112,7 +114,7 @@ class Card {
     this.element.style.transform = '';
   }
 
-  // touch event handlers
+  // Touch event handlers
   #handleTouchMove = (e) => {
     if (!this.#startPoint) return;
     const touch = e.changedTouches[0];

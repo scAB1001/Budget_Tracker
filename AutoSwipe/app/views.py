@@ -175,6 +175,74 @@ def delete_user_interactions(user_id):
             f"An error occurred while deleting interactions for user ID {user_id}: {e}")
 
 
+def pre_populate_tblCars():
+    # Reset cars abd user interactions tables when meeting the explore page?
+    if not is_table_empty(Car):
+        Car.query.delete()
+        print(f"Deleting rows... table_empty: {is_table_empty(Car)}\n")
+        
+    if current_user.is_authenticated:
+        delete_user_interactions(current_user.id)
+        db.session.commit()
+        print(f"Deleting rows... table_empty: {is_table_empty(UserInteraction)}")
+        
+    
+    try:
+        # Format: Car(car_name, make, model, year, body_type, horsepower, monthly_payment, mileage)
+        cars_to_add = [
+            Car(image='astonMartinSILagonda1', car_name='Aston Martin Lagonda Series 1', make='Aston Martin', model='Lagonda',
+            year=1974, body_type='4-door saloon', horsepower=280, monthly_payment=54611.96, mileage=18324),
+        
+            Car(image='astonMartinSIILagonda2', car_name='Aston Martin Lagonda Series 2', make='Aston Martin', model='Lagonda', 
+                year=1976, body_type='4-door saloon', horsepower=280, monthly_payment=15461.56, mileage=103633),
+                
+            Car(image='astonMartinSIIILagonda3', car_name='Aston Martin Lagonda Series 3', make='Aston Martin', model='Lagonda', 
+                year=1986, body_type='4-door saloon', horsepower=0, monthly_payment=7766.58, mileage=132084),
+
+            Car(image='astonMartinSIVLagonda4', car_name='Aston Martin Lagonda Series 4', make='Aston Martin', model='Lagonda', 
+                year=1987, body_type='4-door saloon', horsepower=0, monthly_payment=33633.98, mileage=123117),
+
+            Car(image='ferrariTestarossa1', car_name='Ferrari Testarossa', make='Ferrari', model='Testarossa', 
+                year=1984, body_type='2-door berlinetta', horsepower=385, monthly_payment=34185.91, mileage=146545),
+
+            Car(image='ferrariF512M2', car_name='Ferrari F512 M', make='Ferrari', model='F512 M', 
+                year=1994, body_type='2-door berlinetta', horsepower=434, monthly_payment=6352.03, mileage=196267),
+            
+            Car(image='ferrariF512TR3', car_name='Ferrari F512 TR', make='Ferrari', model='512 TR', 
+                year=1991, body_type='2-door berlinetta', horsepower=422, monthly_payment=31245.32, mileage=198978),
+
+            Car(image='ferrari308GTRainbow4', car_name='Ferrari 308 GT Bertone Rainbow', make='Ferrari', model='308 GT', 
+                year=1976, body_type='2-door coupe', horsepower=255, monthly_payment=52585.91, mileage=89017),
+            
+            Car(image='countachLP400Lamborghini1', car_name='Lamborghini Countach LP400', make='Lamborghini', model='LP400', 
+                year=1974, body_type='2-door coupe', horsepower=375, monthly_payment=82042.47, mileage=167228),
+            
+            Car(image='countachLP500Lamborghini2', car_name='Lamborghini Countach LP500', make='Lamborghini', model='LP500', 
+                year=1982, body_type='2-door coupe', horsepower=370, monthly_payment=27854.73, mileage=100220),
+
+            Car(image='countachLP5000LamborghiniQuattrovalvole3', car_name='Lamborghini Countach LP5000 Quattrovalvole', make='Lamborghini', model='LP5000 Quattrovalvole', 
+                year=1985, body_type='2-door coupe', horsepower=455, monthly_payment=81930.27, mileage=103074),
+
+            Car(image='countach25thAnniversaryLamborghini4', car_name='Lamborghini Countach 25th Anniversary', make='Lamborghini', model='25th Anniversary Edition', 
+                year=1988, body_type='2-door coupe', horsepower=414, monthly_payment=36409.78, mileage=140320),
+            
+            Car(image='mercedesBenz300SLGullwing1', car_name='Mercedes-Benz 300SL Gullwing', make='Mercedes-Benz', model='300SL', 
+                year=1954, body_type='2-door coupe', horsepower=215, monthly_payment=22230.65, mileage=92350)
+        ]
+        
+        # Add cars to the database
+        print("\nAdding rows...")
+        db.session.add_all(cars_to_add)
+        db.session.commit()
+        is_table_empty(Car)    
+        return jsonify({"status": "success", "message": "Cars added successfully"})
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+
 # Routes
 """
     
@@ -223,65 +291,6 @@ def react():
 
     
 
-def pre_populate_tblCars():
-    if not is_table_empty(Car):
-        Car.query.delete()
-        print(f"Deleting rows... table_empty: {is_table_empty(Car)}")
-    
-    try:
-        # Format: Car(car_name, make, model, year, body_type, horsepower, monthly_payment, mileage)
-        cars_to_add = [
-            Car(image='astonMartinSILagonda1', car_name='Aston Martin Lagonda Series 1', make='Aston Martin', model='Lagonda',
-            year=1974, body_type='4-door saloon', horsepower=280, monthly_payment=54611.96, mileage=18324),
-        
-            Car(image='astonMartinSIILagonda2', car_name='Aston Martin Lagonda Series 2', make='Aston Martin', model='Lagonda', 
-                year=1976, body_type='4-door saloon', horsepower=280, monthly_payment=15461.56, mileage=103633),
-                
-            Car(image='astonMartinSIIILagonda3', car_name='Aston Martin Lagonda Series 3', make='Aston Martin', model='Lagonda', 
-                year=1986, body_type='4-door saloon', horsepower=0, monthly_payment=7766.58, mileage=132084),
-
-            Car(image='astonMartinSIVLagonda4', car_name='Aston Martin Lagonda Series 4', make='Aston Martin', model='Lagonda', 
-                year=1987, body_type='4-door saloon', horsepower=0, monthly_payment=33633.98, mileage=123117),
-
-            Car(image='ferrariTestarossa1', car_name='Ferrari Testarossa', make='Ferrari', model='Testarossa', 
-                year=1984, body_type='2-door berlinetta', horsepower=385, monthly_payment=34185.91, mileage=146545),
-
-            Car(image='ferrariF512M2', car_name='Ferrari F512 M', make='Ferrari', model='F512 M', 
-                year=1994, body_type='2-door berlinetta', horsepower=434, monthly_payment=6352.03, mileage=196267),
-            
-            Car(image='ferrariF512TR3', car_name='Ferrari F512 TR', make='Ferrari', model='512 TR', 
-                year=1991, body_type='2-door berlinetta', horsepower=422, monthly_payment=31245.32, mileage=198978),
-
-            Car(image='ferrari308GTRainbow4', car_name='Ferrari 308 GT Bertone Rainbow', make='Ferrari', model='308 GT', 
-                year=1976, body_type='2-door coupe', horsepower=255, monthly_payment=52585.91, mileage=89017),
-            
-            Car(image='countachLP400Lamborghini1', car_name='Lamborghini Countach LP400', make='Lamborghini', model='LP400', 
-                year=1974, body_type='2-door coupe', horsepower=375, monthly_payment=82042.47, mileage=167228),
-            
-            Car(image='countachLP500Lamborghini2', car_name='Lamborghini Countach LP500', make='Lamborghini', model='LP500', 
-                year=1982, body_type='2-door coupe', horsepower=370, monthly_payment=27854.73, mileage=100220),
-
-            Car(image='countachLP5000LamborghiniQuattrovalvole3', car_name='Lamborghini Countach LP5000 Quattrovalvole', make='Lamborghini', model='LP5000 Quattrovalvole', 
-                year=1985, body_type='2-door coupe', horsepower=455, monthly_payment=81930.27, mileage=103074),
-
-            Car(image='countach25thAnniversaryLamborghini4', car_name='Lamborghini Countach 25th Anniversary', make='Lamborghini', model='25th Anniversary Edition', 
-                year=1988, body_type='2-door coupe', horsepower=414, monthly_payment=36409.78, mileage=140320),
-            
-            Car(image='mercedesBenz300SLGullwing1', car_name='Mercedes-Benz 300SL Gullwing', make='Mercedes-Benz', model='300SL', 
-                year=1954, body_type='Coupe', horsepower=215, monthly_payment=2230.65, mileage=92350)
-        ]
-        
-        # Add cars to the database
-        print("\nAdding rows...")
-        db.session.add_all(cars_to_add)
-        db.session.commit()
-        is_table_empty(Car)    
-        return jsonify({"status": "success", "message": "Cars added successfully"})
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"status": "error", "message": str(e)}), 500
-
 @views.route('/test')
 def test():
     #if not is_table_empty(UserInteraction):
@@ -291,17 +300,24 @@ def test():
     #else:
     #    print("UserInteraction table EMPTY")    
     
-    tblCars = Car.query.all()
-    car_card_details = []
-    for car in tblCars:
-        car_card_details.append(car.card_info())
+    #tblCars = Car.query.all()
+    #car_card_details = []
+    #for car in tblCars:
+    #    car_card_details.append(car.card_info())
 
-    numCards = len(car_card_details)
-    #display_table_nicely(numCards, car_card_details)
+    #numCards = len(car_card_details)
+    ##display_table_nicely(numCards, car_card_details)
     
-    return render_template(
-        'test.html', title='Test', user=current_user, 
-        cars=car_card_details, numCards=numCards)
+    #return render_template(
+    #    'test.html', title='Test', user=current_user, 
+    #    cars=car_card_details, numCards=numCards)
+    
+    
+    car = Car.query.first().full_details()
+    display_table_nicely(1, [car])
+    
+    return render_template('test.html', title='Test', user=current_user, car=car)
+    
 
 
 @views.route('/explore')
@@ -322,6 +338,20 @@ def explore():
 @login_required
 def saved():
     return render_template('/site/saved.html', title='Saved', user=current_user)
+
+
+@views.route('/saved/single_view')
+@login_required
+def single_view():
+    #tblCars = Car.query.first()  # all()
+    
+    # Query car by ID and Name (Only one car at a time)
+    cars = [Car.query.first().card_info()]
+    #for car in tblCars:
+    #    cars.append(car.card_info())
+    
+    return render_template('/site/single_view.html', title='Car', user=current_user, cars=cars)
+    
 
 
 @views.route('/history')

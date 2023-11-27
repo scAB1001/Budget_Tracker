@@ -21,16 +21,7 @@
             </li>
         </ol>
     </section>
-    <div class="flash messages">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul class="flashes">
-            {% for message in messages %}
-            {{ message }}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
+    <h2><a href="/saved/single_view" title="**Car Name**">Car X</a></h2>
+
 </div>
 {% endblock %}
