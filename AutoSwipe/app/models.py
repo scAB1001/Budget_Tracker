@@ -68,11 +68,17 @@ class Car(BaseModel):
     
     # Full details to display in 'Saved (single_view)' section
     def full_details(self):
-        return (
-            f"Car(car_name='{self.car_name}', make='{self.make}', model='{self.model}', "
-            f"year={self.year}, body_type='{self.body_type}', horsepower={self.horsepower}, "
-            f"monthly_payment={self.monthly_payment}, mileage={self.mileage})")
-
+        return {
+            'imageUrl': f'{self.image}',
+            'carName': f'{self.car_name}',
+            'make': f'{self.make}',
+            'model': f'{self.model}',
+            'year': f'{self.year}',
+            'body_type': f'{self.body_type}',
+            'horsepower': f'{self.horsepower}',
+            'monthly_payment': f'{self.monthly_payment}',
+            'mileage': f'{self.mileage}'
+        }
 
 class Lease(BaseModel):
     __tablename__ = 'leases'

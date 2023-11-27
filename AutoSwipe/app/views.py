@@ -175,54 +175,6 @@ def delete_user_interactions(user_id):
             f"An error occurred while deleting interactions for user ID {user_id}: {e}")
 
 
-# Routes
-"""
-    
-    View entries
-
-"""
-@views.route('/')
-def home():
-    #clear_tables()
-    
-    # DANGER #
-    #if not User.query.first():
-    #    pre_populate_db()
-
-
-    return render_template('/site/home.html', title='Home', user=current_user)
-
-
-@app.route('/react', methods=['POST'])
-@login_required
-def react():
-    data = request.json#; print(f"Payload data:\n{data}")
-    
-    try:
-        # .get() results in None type if not found
-        carID = int(data.get('carID'))
-        status = data.get('liked') == True
-        
-    except (TypeError, ValueError):
-        return jsonify({"status": "error", "message": "Invalid data"}), 400
-    
-    # Create a new user interaction entry
-    new_interaction = UserInteraction(
-        user_id=current_user.id, 
-        car_id=carID, 
-        swiped_right=status
-    )
-    db.session.add(new_interaction)
-    
-    try:
-        db.session.commit()
-        return jsonify({"status": "success", "carID": carID, "liked": status})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-    
-
 def pre_populate_tblCars():
     # Reset cars abd user interactions tables when meeting the explore page?
     if not is_table_empty(Car):
@@ -289,6 +241,56 @@ def pre_populate_tblCars():
         db.session.rollback()
         return jsonify({"status": "error", "message": str(e)}), 500
 
+
+
+# Routes
+"""
+    
+    View entries
+
+"""
+@views.route('/')
+def home():
+    #clear_tables()
+    
+    # DANGER #
+    #if not User.query.first():
+    #    pre_populate_db()
+
+
+    return render_template('/site/home.html', title='Home', user=current_user)
+
+
+@app.route('/react', methods=['POST'])
+@login_required
+def react():
+    data = request.json#; print(f"Payload data:\n{data}")
+    
+    try:
+        # .get() results in None type if not found
+        carID = int(data.get('carID'))
+        status = data.get('liked') == True
+        
+    except (TypeError, ValueError):
+        return jsonify({"status": "error", "message": "Invalid data"}), 400
+    
+    # Create a new user interaction entry
+    new_interaction = UserInteraction(
+        user_id=current_user.id, 
+        car_id=carID, 
+        swiped_right=status
+    )
+    db.session.add(new_interaction)
+    
+    try:
+        db.session.commit()
+        return jsonify({"status": "success", "carID": carID, "liked": status})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+    
+
 @views.route('/test')
 def test():
     #if not is_table_empty(UserInteraction):
@@ -311,9 +313,12 @@ def test():
     #    cars=car_card_details, numCards=numCards)
     
     
-    cars = [Car.query.first().card_info()]
+    car = Car.query.first().full_details()
+    print(car)
+    print()
+    display_table_nicely(1, [car])
     
-    return render_template('test.html', title='Test', user=current_user, cars=cars)
+    return render_template('test.html', title='Test', user=current_user, car=car)
     
 
 

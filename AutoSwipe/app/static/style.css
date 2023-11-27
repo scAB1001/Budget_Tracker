@@ -521,8 +521,8 @@ marquee {
 
 /* Styles for the single-view image */
 .image-container {
-    width: 960px;
-    height: 750px;
+    width: 920px;
+    min-height: 600px;
     /* Ensures the image doesn't exceed the container */
     overflow: hidden;
     /* Centers the image within the container */
