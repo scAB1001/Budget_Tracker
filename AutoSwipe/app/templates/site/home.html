@@ -2,10 +2,7 @@
 
 {% block content %}
 <div class="homepage">
-    <section class="intro">
-        <h1>Welcome to AutoSwipe</h1>
-        <p>Discover your next car with a simple swipe.</p>
-    </section>
+    <section class="intro"><h1>Welcome to AutoSwipe</h1></section>
     <section class="features">
         <div class="feature">
             <h2>Explore</h2>
@@ -22,9 +19,9 @@
     </section>
     <section class="cta">
         {% if not user.is_authenticated %}
-        <a href="/login" class="cta-button">Already on Board</a>
+        <a href="/login" class="cta-button">Sign in</a>
         {% endif %}
-        <a href="/signup" class="cta-button">Start the Journey</a>
+        <a href="/signup" class="cta-button">Sign up</a>
     </section>
 
     <!-- New User Guide Section -->
@@ -33,12 +30,8 @@
         <ol class="guide-steps">
             {% if not user.is_authenticated %}
             <li>
-                <h3>Create an Account</h3>
+                <h3>Create an Account or Sign into an existing one</h3>
                 <p>Sign up for a new account to get started. It's quick and easy!</p>
-            </li>
-            <li>
-                <h3>Log In</h3>
-                <p>Already have an account? Login to get started.</p>
             </li>
             {% endif %}
             <li>
@@ -46,12 +39,8 @@
                 <p>Swipe left to pass or swipe right to save any vehicle for later.</p>
             </li>
             <li>
-                <h3>Review Your Favourites</h3>
-                <p>Access your saved favourites anytime and find your perfect match.</p>
-            </li>
-            <li>
-                <h3>Get In Touch</h3>
-                <p>Found the one? Get in touch with the seller right through the app.</p>
+                <h3>Review Your Favourites and Get In Touch</h3>
+                <p>Access your favourites anytime and contact the lessor.</p>
             </li>
         </ol>
     </section>
