@@ -6,10 +6,7 @@
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <div class="single-view">
-  <section class="intro">
-    <p>See more details below.</p>
-  </section>
-
+  <br><br>
   <div id="entriesAccordion">
     <div class="card">
       <div class="card-header" id="entriesHeading" style="background-color: #ecc6f3">
@@ -47,7 +44,7 @@
       <h2 class="mb-0">
         <button class="btnShift" data-toggle="collapse" data-target="#summaryCollapse" aria-expanded="true"
           aria-controls="summaryCollapse">
-          <span> View Summary Statistics </span>
+          <span> Click to see more details </span>
         </button>
       </h2>
     </div>
@@ -55,38 +52,30 @@
     <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#entriesAccordion"
       style="background-color: #ecc6f3">
 
-      <table class="table table-striped table-bordered" style="background-color: #e8cfed">
-        <thead class="thead-dark">
-          <tr class="hover-highlight">
-            <th>Make</th>
-            <th>Model</th>
-            <th>Year</th>
-            <th>Body</th>
-            <th>Horsepower</th>
-            <th>Monthly Fee</th>
-            <th>Mileage</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ car['make'] }}</td>
-            <td>{{ car['model'] }}</td>
-            <td>{{ car['year'] }}</td>
-            <td>{{ car['body_type'] }}</td>
-            <td>{{ car['horsepower'] }} bhp</td>
-            <td>£{{ car['monthly_payment'] }}</td>
-            <td>{{ car['mileage'] }}</td>
-          </tr> 
-          <tr>
-            <td colspan="4" style="text-align: center">
-              <h3>No data here!</h3>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      
+      <div class="single-card-container">
+        <article class="single-card" id="cardInfo">
+          <header>
+            <h2 class="single-title" id="cardTitle">{{ car['carName'] }}</h2>
+          </header>
+          <section class="single-content" aria-labelledby="cardTitle">
+            <p><strong>Make:</strong> {{ car['make'] }}</p>
+            <p><strong>Model:</strong> {{ car['model'] }}</p>
+            <p><strong>Year:</strong> {{ car['year'] }}</p>
+            <p><strong>Body Type:</strong> {{ car['body_type'] }}</p>
+            <p><strong>Horsepower:</strong> {{ car['horsepower'] }} bhp</p>
+            <p><strong>Monthly Fee:</strong> £{{ car['monthly_payment'] }}</p>
+            <p><strong>Mileage:</strong> {{ car['mileage'] }}</p>
+          </section>
+          <footer class="card-footer">
+            <button class="contact-button" aria-label="Contact Lessor">Contact Lessor</button>
+          </footer>
+        </article>
+      </div>
+      
+
     </div>
   </div>
-
 </div>
 
 <div>

@@ -314,8 +314,6 @@ def test():
     
     
     car = Car.query.first().full_details()
-    print(car)
-    print()
     display_table_nicely(1, [car])
     
     return render_template('test.html', title='Test', user=current_user, car=car)
