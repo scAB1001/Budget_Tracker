@@ -1,35 +1,107 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="explore">
-  
-  <!-- Source: https://github.com/CodeSteppe/card-swiper -->
-  <div class="card-container">
-    <ion-icon id="dislike" name="close"></ion-icon>
-    
-    
-    <div class="card">
-      <div id="swiper">
-        <!-- When you finish the cards -->
-        <a href="/saved" class="icon-saved" title="Saved">
-          <img src="{{ url_for('static', filename='icons/bookmark.png') }}"
-           alt="Saved icon" class="nav-icon">
-        </a>
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<div class="single-view">
+  <section class="intro">
+    <h1>**Car name**</h1>
+    <p>Your car details.</p>
+  </section>
+
+
+<div id="entriesAccordion">
+  <div class="card">
+    <div class="card-header" id="entriesHeading" style="background-color: #ecc6f3">
+      <h2 class="mb-0">
+        <button class="btnShift" data-toggle="collapse" data-target="#entriesCollapse" aria-expanded="true"
+          aria-controls="entriesCollapse">
+          <span> View Summary Statistics </span>
+        </button>
+      </h2>
+    </div>
+
+    <div id="entriesCollapse" class="collapse show" aria-labelledby="entriesHeading" data-parent="#entriesAccordion"
+      style="background-color: #ecc6f3">
+      <div class="card-body">
+        <div class="table-responsive" style="background-color: #ecc6f3">
+          <!-- Was a table 
+          ferrariTestarossa1
+          mercedesBenz300SLGullwing1
+          -->
+          <!-- If we make the car a clickable image in the grid view section and have a link to each single_view of the car -->
+          <div class="image-container">
+            <a href="/test" class="**IMG CAR**" title="Test">
+              <img class="full-view" src="{{ url_for('static', filename='cars/ferrariTestarossa1.jpg') }}" alt="**CAR**" class="nav-icon">
+            </a>
+          </div>
+
+          
+        </div>
       </div>
     </div>
-    
-    <ion-icon id="like" name="heart-circle"></ion-icon>
-
-    <!-- Local Scripts -->
-    <script type="text/javascript">const cars = {{ cars | tojson | safe }};</script>
-    <script src="{{ url_for('static', filename='card.js') }}"></script>
-    <script src="{{ url_for('static', filename='cardContainer.js') }}"></script>
-    
-    <!-- Ionicons Scripts -->
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   </div>
 
-  <div class="after-cards"><h1>Find your dream car</h1></div>
+
+  <div class="card">
+    <div class="card-header" id="summaryHeading" style="background-color: #ecc6f3">
+      <h2 class="mb-0">
+        <button class="btnShift" data-toggle="collapse" data-target="#summaryCollapse" aria-expanded="true"
+          aria-controls="summaryCollapse">
+          <span> View Summary Statistics </span>
+        </button>
+      </h2>
+    </div>
+
+    <div id="summaryCollapse" class="collapse" aria-labelledby="summaryHeading" data-parent="#entriesAccordion"
+      style="background-color: #ecc6f3">
+
+      <table class="table table-striped table-bordered" style="background-color: #e8cfed">
+        <thead class="thead-dark">
+          <tr class="hover-highlight">
+            <th>Name</th>
+      
+            <th>Category</th>
+      
+            <th style="text-align: center">Amount (£)</th>
+      
+            <th style="text-align: center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+      
+          <tr>
+            <td> entry['name'] </td>
+            <td> entry['category'] </td>
+            <td style="text-align: center"> entry['amount'] </td>
+            <td style="text-align: center">
+              Edit entry_type|capitalize
+              Delete entry_type|capitalize
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" style="text-align: center">
+              <h3>No data here!</h3>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div>
+  <!-- Script from code.jquery.com allows the nav bar to be interactive (drop downs) -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+
+  <!-- Script from bootstrap also aids in nav bar interactivity -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
 </div>
 {% endblock %}
