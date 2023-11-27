@@ -1,12 +1,14 @@
+// Source: https://github.com/CodeSteppe/card-swiper
+
 // DOM
 const swiper = document.querySelector('#swiper');
 const like = document.querySelector('#like');
 const dislike = document.querySelector('#dislike');
 
-// variables
+// Variables
 let cardCount = 0;
 
-// functions
+// Functions
 function appendNewCard(carData) {
   const card = new Card({
     carID: carData.carID,
@@ -27,7 +29,8 @@ function appendNewCard(carData) {
     }
 
   });
-  /* When console.log is in the onLike: scope, it does not get caught ever.
+  /* ERROR: Like/dislike don't get animated
+   * When console.log is in the onLike: scope, it does not get caught ever.
    * This suggests the dismiss, onLike/Dislike are never caught
   */ 
   cardCount++;

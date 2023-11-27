@@ -224,9 +224,16 @@ def react():
     
 
 def pre_populate_tblCars():
+    # Reset cars abd user interactions tables when meeting the explore page?
     if not is_table_empty(Car):
         Car.query.delete()
-        print(f"Deleting rows... table_empty: {is_table_empty(Car)}")
+        print(f"Deleting rows... table_empty: {is_table_empty(Car)}\n")
+        
+    if current_user.is_authenticated:
+        delete_user_interactions(current_user.id)
+        db.session.commit()
+        print(f"Deleting rows... table_empty: {is_table_empty(UserInteraction)}")
+        
     
     try:
         # Format: Car(car_name, make, model, year, body_type, horsepower, monthly_payment, mileage)
@@ -268,7 +275,7 @@ def pre_populate_tblCars():
                 year=1988, body_type='2-door coupe', horsepower=414, monthly_payment=36409.78, mileage=140320),
             
             Car(image='mercedesBenz300SLGullwing1', car_name='Mercedes-Benz 300SL Gullwing', make='Mercedes-Benz', model='300SL', 
-                year=1954, body_type='Coupe', horsepower=215, monthly_payment=2230.65, mileage=92350)
+                year=1954, body_type='2-door coupe', horsepower=215, monthly_payment=22230.65, mileage=92350)
         ]
         
         # Add cars to the database
@@ -291,17 +298,23 @@ def test():
     #else:
     #    print("UserInteraction table EMPTY")    
     
-    tblCars = Car.query.all()
-    car_card_details = []
-    for car in tblCars:
-        car_card_details.append(car.card_info())
+    #tblCars = Car.query.all()
+    #car_card_details = []
+    #for car in tblCars:
+    #    car_card_details.append(car.card_info())
 
-    numCards = len(car_card_details)
-    #display_table_nicely(numCards, car_card_details)
+    #numCards = len(car_card_details)
+    ##display_table_nicely(numCards, car_card_details)
     
-    return render_template(
-        'test.html', title='Test', user=current_user, 
-        cars=car_card_details, numCards=numCards)
+    #return render_template(
+    #    'test.html', title='Test', user=current_user, 
+    #    cars=car_card_details, numCards=numCards)
+    
+    
+    cars = [Car.query.first().card_info()]
+    
+    return render_template('test.html', title='Test', user=current_user, cars=cars)
+    
 
 
 @views.route('/explore')
@@ -322,6 +335,20 @@ def explore():
 @login_required
 def saved():
     return render_template('/site/saved.html', title='Saved', user=current_user)
+
+
+@views.route('/saved/single_view')
+@login_required
+def single_view():
+    #tblCars = Car.query.first()  # all()
+    
+    # Query car by ID and Name (Only one car at a time)
+    cars = [Car.query.first().card_info()]
+    #for car in tblCars:
+    #    cars.append(car.card_info())
+    
+    return render_template('/site/single_view.html', title='Car', user=current_user, cars=cars)
+    
 
 
 @views.route('/history')

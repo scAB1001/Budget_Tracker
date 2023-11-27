@@ -66,7 +66,7 @@ class Car(BaseModel):
             'details': f'Price: £{self.monthly_payment}pm\t\tBody: {self.body_type}\nHorsepower: {self.horsepower}bhp\t\tMake: {self.make}'
         }
     
-    # Full details to display in 'Saved' section
+    # Full details to display in 'Saved (single_view)' section
     def full_details(self):
         return (
             f"Car(car_name='{self.car_name}', make='{self.make}', model='{self.model}', "

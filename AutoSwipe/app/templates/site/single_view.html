@@ -5,26 +5,28 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
-<div class="history">
+<div class="single-view">
     <section class="intro">
-        <h1>History</h1>
-        <p>Your swipe log.</p>
+        <h1>**Car name**</h1>
+        <p>Your car details.</p>
     </section>
 
-    <!-- User Guide Section -->
-    <section class="user-guide">
-        <h2>Your AutoSwipe History</h2>
-        <ol class="guide-steps">
-            <li>
-                <h3>Review Your Favourites</h3>
-                <p>Access your saved favourites anytime and find your perfect match.</p>
-            </li>
-            <li>
-                <h3>Get In Touch</h3>
-                <p>Found the one? Get in touch with the seller right through the app.</p>
-            </li>
-        </ol>
-    </section>
+    
+    <div class="explore">
+    
+        <!-- Source: https://github.com/CodeSteppe/card-swiper -->
+        <div class="card-container">
+    
+            <div id="swiper"></div>
+    
+            <!-- Local Scripts -->
+            <script type="text/javascript">const cars = {{ cars | tojson | safe }};</script>
+            <script src="{{ url_for('static', filename='card.js') }}"></script>
+            <script src="{{ url_for('static', filename='cardContainer.js') }}"></script>
+        </div>
+    
+    </div>
+
 
     <div id="entriesAccordion">
         <div class="card">
